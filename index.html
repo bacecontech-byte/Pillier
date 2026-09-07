@@ -10036,7 +10036,9 @@ function pillierPlanPrice(k){var a=(lang===2)?{starter:299,pro:499,team:999}:{st
 // Landing "Planos" dropdown — rendered from JS so it follows language + currency.
 function renderPricingDropdown(){
   var el=document.getElementById("pricing-dropdown");if(!el)return;
-  var per=_t3b("/mo","/mois","/mês");
+  // Build the per-period suffix with the slash OUTSIDE the quoted literal so no
+  // source token reads as a root-relative path (Google was crawling it → 404).
+  var per="/"+_t3b("mo","mois","mês");
   var T={starter:"Starter",pro:_t3b("Professional","Professionnel","Profissional"),ent:"Enterprise",
     popular:_t3b("POPULAR","POPULAIRE","POPULAR"),
     su:_t3b("Up to 5 users","Jusqu'à 5 utilisateurs","Até 5 usuários"),
@@ -10110,7 +10112,7 @@ function renderBilling(){
     team:_t3b("Up to 15 users","Jusqu'à 15 utilisateurs","Até 15 usuários"),
     enterprise:_t3b("Custom, unlimited users","Sur mesure, utilisateurs illimités","Sob medida, usuários ilimitados")
   };
-  var perMo=_t3b("/mo","/mois","/mês");
+  var perMo="/"+_t3b("mo","mois","mês"); // slash outside the literal — see renderPricingDropdown
   var html="";
   if(trialing){
     html+="<div style='background:rgba(44,190,255,0.1);border:1px solid rgba(44,190,255,0.3);border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:13px;color:var(--text);line-height:1.5;'>"+_t3b("Trial: ","Essai : ","Teste: ")+"<b>"+tdays+" "+_t3b("days left","jours restants","dias restantes")+"</b> — "+_t3b("commit to keep your plan or you'll return to Free.","engagez-vous ou vous repasserez au Gratuit.","confirme para manter seu plano ou você voltará ao Free.")+"</div>";
