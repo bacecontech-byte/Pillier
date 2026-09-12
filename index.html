@@ -6255,6 +6255,36 @@ function saveExpensesLocal(){
   catch(e){try{localStorage.setItem("pillier-expenses-v1",JSON.stringify(out.map(function(c){c.receipt_thumb=null;return c;})));}catch(_){}}
 }
 function _expFromRow(r){return {id:r.id,project:r.project||"",vendor:r.vendor||"",category:r.category||"Outros",subcategory:r.subcategory||"",amount:Number(r.amount)||0,currency:r.currency||"BRL",method:r.method||"",note:r.note||"",receipt_url:r.receipt_url||null,receipt_thumb:null,ocr:!!r.ocr,status:r.status||"pending",created_by:r.created_by||"",created_at:r.created_at||new Date().toISOString()};}
+// Ids currently being inserted — prevents saveExpenseDB + the sync sweep from
+// double-inserting the same expense (which produced duplicate ledger rows).
+var _expSyncing={};
+// Content signature used to detect duplicates and to make a delete "stick" even
+// if a concurrent write is still in flight. project|vendor|amount|method|day.
+function _expSig(e){
+  var day="";try{day=_finIsoDay(new Date(e.created_at));}catch(_){}
+  return [e.project||"",(e.vendor||"").trim().toLowerCase(),(Number(e.amount)||0).toFixed(2),e.method||"",day].join("|");
+}
+function _expTombs(){try{return JSON.parse(localStorage.getItem("pillier-expenses-tomb")||"[]");}catch(e){return [];}}
+function _expAddTomb(sig){try{var a=_expTombs();if(a.indexOf(sig)<0){a.push(sig);if(a.length>400)a=a.slice(-400);localStorage.setItem("pillier-expenses-tomb",JSON.stringify(a));}}catch(e){}}
+function _expClearTomb(sig){try{var a=_expTombs().filter(function(s){return s!==sig;});localStorage.setItem("pillier-expenses-tomb",JSON.stringify(a));}catch(e){}}
+// Collapse duplicate rows (same signature) keeping the richest copy, and delete
+// the surplus copies from the DB so they don't reload. Runs after each load.
+function _dedupeExpenses(){
+  var best={},order=[],surplusIds=[];
+  (expenses||[]).forEach(function(e){
+    var s=_expSig(e);
+    var score=(e.subcategory?2:0)+((e.receipt_thumb||_receiptObjectPath(e.receipt_url))?1:0)+(/^\d+$/.test(String(e.id))?0:0.5);
+    if(!(s in best)){best[s]={e:e,score:score};order.push(s);return;}
+    var cur=best[s];
+    if(score>cur.score){if(!/^\d+$/.test(String(cur.e.id)))surplusIds.push(cur.e.id);best[s]={e:e,score:score};}
+    else{if(!/^\d+$/.test(String(e.id)))surplusIds.push(e.id);}
+  });
+  if(order.length!==(expenses||[]).length){
+    expenses=order.map(function(s){return best[s].e;});
+    saveExpensesLocal();
+    if(surplusIds.length&&dbOk&&dbCoId&&db){try{db.from("expenses").delete().in("id",surplusIds).then(function(){console.log("[finance] removed",surplusIds.length,"duplicate row(s)");});}catch(_){}}
+  }
+}
 async function loadExpenses(){
   loadExpensesLocal();
   if(dbOk&&dbCoId&&db){
@@ -6268,7 +6298,12 @@ async function loadExpenses(){
         var rows=r.data.map(_expFromRow);
         rows.forEach(function(e){if(!e.receipt_url&&thumbById[String(e.id)])e.receipt_thumb=thumbById[String(e.id)];});
         expenses=rows.concat(localOnly);
+        // Drop anything the user deleted this session (guards against a lagging
+        // write resurrecting it), then collapse any duplicate rows.
+        var tomb=_expTombs();
+        if(tomb.length){var surplus=[];expenses=expenses.filter(function(e){if(tomb.indexOf(_expSig(e))>=0){if(!/^\d+$/.test(String(e.id)))surplus.push(e.id);return false;}return true;});if(surplus.length&&db){try{db.from("expenses").delete().in("id",surplus);}catch(_){}}}
         saveExpensesLocal();
+        _dedupeExpenses();
       }else if(r&&r.error){console.warn("[finance] loadExpenses (using local):",r.error.message);}
     }catch(e){console.warn("[finance] loadExpenses error (using local):",e.message);}
     try{await syncPendingExpenses();}catch(e){}
@@ -6279,11 +6314,17 @@ async function loadExpenses(){
 // Re-insert expenses that were created offline (still carry a numeric temp id).
 async function syncPendingExpenses(){
   if(!dbOk||!dbCoId||!db)return;
-  var pend=expenses.filter(function(e){return /^\d+$/.test(String(e.id));});
+  // Signatures already present as a synced (uuid) row — never create a twin.
+  var syncedSigs={};expenses.forEach(function(e){if(!/^\d+$/.test(String(e.id)))syncedSigs[_expSig(e)]=1;});
+  var pend=expenses.filter(function(e){return /^\d+$/.test(String(e.id))&&!_expSyncing[String(e.id)]&&!syncedSigs[_expSig(e)];});
   for(var i=0;i<pend.length;i++){try{await saveExpenseDB(pend[i]);}catch(e){break;}}
 }
 async function saveExpenseDB(e){
   if(!dbOk||!dbCoId||!db)return;
+  var _oid=String(e.id);
+  if(_expSyncing[_oid])return; // already being inserted — avoid a duplicate row
+  _expSyncing[_oid]=1;
+  try{
   // Upload the receipt image to the private bucket first; store its object path.
   var _stored=e.receipt_url&&String(e.receipt_url).indexOf("data:")!==0;
   if(!_stored){
@@ -6297,9 +6338,10 @@ async function saveExpenseDB(e){
     var r=await db.from("expenses").insert(payload).select();
     // Graceful fallback if the DB hasn't been migrated for `subcategory` yet.
     if(r&&r.error&&/subcategory/.test(r.error.message||"")){console.warn("[finance] subcategory column missing — run supabase/finance.sql; syncing without it");r=await db.from("expenses").insert(base).select();}
-    if(r&&!r.error&&r.data&&r.data[0]){var idx=expenses.findIndex(function(x){return String(x.id)===String(e.id);});if(idx>=0){expenses[idx].id=r.data[0].id;saveExpensesLocal();}console.log("[finance] expense synced",r.data[0].id);}
+    if(r&&!r.error&&r.data&&r.data[0]){var idx=expenses.findIndex(function(x){return String(x.id)===_oid;});if(idx>=0){expenses[idx].id=r.data[0].id;saveExpensesLocal();}console.log("[finance] expense synced",r.data[0].id);}
     else if(r&&r.error){console.warn("[finance] expense DB save failed (kept local):",r.error.message);}
   }catch(err){console.warn("[finance] expense DB save error (kept local):",err.message);}
+  }finally{delete _expSyncing[_oid];}
 }
 // Upload a data-URL image to the PRIVATE `receipts` bucket → returns the object
 // PATH (not a URL). The path is stored in receipt_url and later resolved to a
@@ -6440,11 +6482,28 @@ function renderFinance(){
   body.innerHTML=h;
 }
 function toggleExpenseStatus(id){var e=expenses.filter(function(x){return String(x.id)===String(id);})[0];if(!e)return;e.status=(e.status==="reviewed")?"pending":"reviewed";saveExpensesLocal();if(dbOk&&dbCoId&&db&&!/^\d+$/.test(String(id))){try{db.from("expenses").update({status:e.status,updated_at:new Date().toISOString()}).eq("id",id);}catch(_){}}try{if(document.getElementById("tab-9")&&document.getElementById("tab-9").classList.contains("active"))renderFinance();}catch(_){}try{var ro=document.getElementById("rdo-overlay");if(ro&&ro.classList.contains("open"))renderRDOCosts();}catch(_){}}
-function deleteExpense(id){
+async function deleteExpense(id){
   if(!window.confirm(_t3("Delete this expense?","Supprimer cette dépense ?","Excluir esta despesa?")))return;
+  var target=expenses.filter(function(x){return String(x.id)===String(id);})[0];
   expenses=expenses.filter(function(x){return String(x.id)!==String(id);});saveExpensesLocal();
-  if(dbOk&&dbCoId&&db&&!/^\d+$/.test(String(id))){try{db.from("expenses").delete().eq("id",id);}catch(_){}}
-  renderFinance();toast(_t3("Expense deleted","Dépense supprimée","Despesa excluída"));
+  // Tombstone by content so it can't be resurrected by a lagging/duplicate write.
+  if(target)_expAddTomb(_expSig(target));
+  if(dbOk&&dbCoId&&db&&target){
+    try{
+      // Delete the exact row (if synced) AND any duplicate twins that share the
+      // same vendor/amount/method on the same day — this is what was reloading.
+      if(!/^\d+$/.test(String(id)))await db.from("expenses").delete().eq("id",id);
+      var day="";try{day=_finIsoDay(new Date(target.created_at));}catch(_){}
+      if(day){
+        var q=db.from("expenses").delete().eq("company_id",dbCoId).eq("vendor",target.vendor||"").eq("amount",Number(target.amount)||0).gte("created_at",day+"T00:00:00").lte("created_at",day+"T23:59:59.999");
+        if(target.method)q=q.eq("method",target.method);
+        await q;
+      }
+    }catch(err){console.warn("[finance] delete failed:",err.message);}
+  }
+  renderFinance();
+  try{var ro=document.getElementById("rdo-overlay");if(ro&&ro.classList.contains("open"))renderRDOCosts();}catch(_){}
+  toast(_t3("Expense deleted","Dépense supprimée","Despesa excluída"));
 }
 
 /* ── tab-10: Histórico de Preços (unit cost of key materials from OCR items) ─ */
@@ -6645,6 +6704,7 @@ async function submitExpense(){
   var createdAt=new Date().toISOString();
   if(_expFromRDO&&_expForcedDay){try{createdAt=new Date(_expForcedDay+"T12:00:00").toISOString();}catch(_){}}
   var e={id:Date.now(),project:getActiveSite()||((projects[0]&&projects[0].name)||""),vendor:vendor,category:cat,subcategory:sub,amount:amount,currency:financeCurrencyCode(),method:_expMethod||"",note:"",receipt_url:null,receipt_thumb:thumb,_pendingReceipt:_expReceiptData||null,ocr:!!_expReceiptData,status:"pending",created_by:(me&&me.name)||"",created_at:createdAt};
+  try{_expClearTomb(_expSig(e));}catch(_){} // a deliberate (re)add un-hides this signature
   expenses.unshift(e);saveExpensesLocal();
   saveExpenseDB(e); // uploads receipt + inserts row (best-effort; stays local if offline)
   var fromRDO=_expFromRDO;_expFromRDO=false;_expForcedDay=null;
