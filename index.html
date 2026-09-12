@@ -464,6 +464,69 @@ body{font-family:var(--font-b);background:var(--navy);color:var(--text);min-heig
 .sidebar-link span{display:inline;flex:1;min-width:0;}
 .sidebar-link span.sb-badge{flex:0 0 auto;margin-left:auto;background:#2cbeff;color:#062430;font-size:11px;font-weight:700;min-width:19px;width:auto;height:19px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 6px;}
 .sidebar-link span.sb-dot{flex:0 0 auto;margin-left:auto;width:7px;height:7px;border-radius:50%;background:#2cbeff;padding:0;min-width:0;}
+/* ── Financeiro: sidebar accordion ── */
+.fin-acc-head{display:flex;align-items:center;gap:12px;margin:1px 8px;padding:10px 12px;font-size:14px;font-weight:500;color:var(--text3);cursor:pointer;border-radius:11px;transition:all .15s;}
+.fin-acc-head:hover{color:var(--text);background:rgba(44,190,255,.06);}
+.fin-acc-head i.fin-acc-lead{font-size:20px;width:21px;flex-shrink:0;}
+.fin-acc-head .fin-acc-cd{margin-left:auto;font-size:16px;transition:transform .18s ease;flex-shrink:0;}
+.fin-acc.open .fin-acc-head .fin-acc-cd{transform:rotate(90deg);}
+.fin-acc.open .fin-acc-head{color:var(--text);}
+.fin-acc-body{overflow:hidden;max-height:0;transition:max-height .22s ease;}
+.fin-acc.open .fin-acc-body{max-height:280px;}
+.fin-acc-body .sidebar-link{font-size:13px;padding-left:22px;}
+.fin-acc-body .sidebar-link i{font-size:18px;}
+.fin-sub-accent{color:#0ea5e9 !important;}
+.app-wrap.sb-collapsed .fin-acc-head span,.app-wrap.sb-collapsed .fin-acc-head .fin-acc-cd{display:none;}
+.app-wrap.sb-collapsed .fin-acc-body{display:none;}
+.app-wrap.sb-collapsed .fin-acc-head{justify-content:center;padding:10px 0;}
+/* ── Financeiro: KPI + cards + chart + ledger ── */
+.fin-kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
+.fin-card{background:var(--navy2);border:1px solid var(--border2);border-radius:14px;padding:18px;margin-bottom:16px;}
+.fin-kpi-label{font-size:12px;color:var(--text2);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.fin-kpi-label i{font-size:16px;}
+.fin-kpi-val{font-family:var(--font-d);font-size:34px;font-weight:600;color:var(--white);font-variant-numeric:tabular-nums;line-height:1.05;letter-spacing:-0.5px;}
+.fin-kpi-sub{font-size:11px;color:var(--text3);margin-top:5px;}
+.fin-card-h{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.fin-card-sub{font-size:11px;color:var(--text3);margin-bottom:12px;}
+.fin-chart-wrap{overflow-x:auto;}
+.fin-legend{display:flex;gap:16px;font-size:11px;color:var(--text2);margin-top:8px;flex-wrap:wrap;}
+.fin-legend i{width:11px;height:11px;border-radius:3px;display:inline-block;margin-right:6px;vertical-align:middle;}
+.fin-ledger{width:100%;border-collapse:collapse;}
+.fin-ledger th{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);white-space:nowrap;}
+.fin-ledger td{font-size:13px;color:var(--text);padding:10px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.fin-ledger td.num{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;color:var(--white);white-space:nowrap;}
+.fin-pill{display:inline-block;font-size:10px;font-weight:600;padding:2px 9px;border-radius:20px;cursor:pointer;}
+.fin-pill.pending{color:#f59e0b;background:rgba(245,158,11,.12);}
+.fin-pill.reviewed{color:#4ade80;background:rgba(74,222,128,.12);}
+.fin-catcell{font-size:10px;color:var(--text2);display:block;margin-top:2px;}
+.fin-empty{text-align:center;color:var(--text3);font-size:13px;padding:40px 16px;}
+.fin-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:4px;}
+.fin-del:hover{color:#f87171;}
+.fin-inline-input{background:var(--navy3);border:1px solid var(--border);border-radius:9px;color:var(--white);font-size:14px;padding:9px 11px;font-family:inherit;box-sizing:border-box;}
+.fin-toggle{position:relative;width:44px;height:24px;border-radius:14px;background:var(--navy3);border:1px solid var(--border2);cursor:pointer;transition:background .15s;flex-shrink:0;}
+.fin-toggle.on{background:#0ea5e9;border-color:#0ea5e9;}
+.fin-toggle::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .15s;}
+.fin-toggle.on::after{transform:translateX(20px);}
+.fin-primary-btn{background:#0ea5e9;color:#04222f;font-weight:700;font-size:13px;font-family:inherit;border:none;border-radius:10px;padding:11px 16px;cursor:pointer;}
+.fin-primary-btn:hover{filter:brightness(1.06);}
+.fin-ghost-btn{background:none;border:1px solid var(--border2);color:var(--text2);font-size:13px;font-family:inherit;border-radius:10px;padding:11px 16px;cursor:pointer;}
+/* ── Expense capture modal ── */
+.exp-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:10000;display:flex;align-items:center;justify-content:center;padding:16px;}
+.exp-card{background:var(--navy2);border:1px solid var(--border2);border-radius:16px;width:480px;max-width:96vw;max-height:92vh;overflow:auto;}
+.exp-head{display:flex;align-items:center;gap:10px;padding:18px 20px 6px;}
+.exp-body{padding:8px 20px 20px;}
+.exp-drop{border:2px dashed var(--border2);border-radius:12px;padding:22px 16px;text-align:center;cursor:pointer;transition:all .15s;background:var(--navy3);}
+.exp-drop:hover,.exp-drop.drag{border-color:#0ea5e9;background:rgba(14,165,233,.06);}
+.exp-field{margin-bottom:12px;}
+.exp-field label{font-size:11px;color:var(--text2);display:block;margin-bottom:5px;}
+.exp-field input,.exp-field select{width:100%;padding:10px 12px;background:var(--navy3);border:1px solid var(--border);border-radius:9px;color:var(--white);font-size:14px;box-sizing:border-box;font-family:inherit;}
+.exp-amount-wrap{display:flex;align-items:center;gap:8px;}
+.exp-amount-wrap .exp-cur{font-size:14px;font-weight:700;color:var(--text2);flex-shrink:0;}
+.exp-methods{display:flex;flex-wrap:wrap;gap:6px;}
+.exp-method{flex:1;min-width:68px;text-align:center;padding:9px 6px;border:1px solid var(--border);border-radius:9px;font-size:12px;color:var(--text2);cursor:pointer;background:var(--navy3);}
+.exp-method.on{border-color:#0ea5e9;color:#0ea5e9;background:rgba(14,165,233,.08);font-weight:600;}
+.exp-foot{display:flex;gap:8px;padding:0 20px 20px;}
+@media(max-width:600px){.fin-kpi-grid{grid-template-columns:1fr;}.exp-card{width:100%;}}
 .sidebar-bottom{margin-top:auto;border-top:1px solid var(--border);padding:12px 14px;width:100%;}
 .user-chip{display:flex;align-items:center;gap:8px;}
 .user-avatar{width:30px;height:30px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;font-family:var(--font-d);flex-shrink:0;}
@@ -1951,6 +2014,15 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
       <div class="sidebar-link" onclick="showTab(5,this)"><i class="ti ti-users"></i><span id="nav-comm">Communauté</span><span class="sb-badge" id="sb-comm-badge" style="display:none;">0</span></div>
       <div class="sidebar-link" onclick="showTab(6,this)"><i class="ti ti-building-skyscraper"></i><span id="nav-proj">Mes projets</span></div>
       <div class="sidebar-link" onclick="showTab(7,this)"><i class="ti ti-files"></i><span id="nav-docs">Documents</span></div>
+      <div class="fin-acc" id="fin-acc">
+        <div class="fin-acc-head" onclick="toggleFinanceAccordion()"><i class="ti ti-cash-banknote fin-acc-lead"></i><span id="nav-fin">Financeiro</span><i class="ti ti-chevron-right fin-acc-cd"></i></div>
+        <div class="fin-acc-body">
+          <div class="sidebar-link fin-sub" onclick="openExpenseModal()"><i class="ti ti-sparkles fin-sub-accent"></i><span id="nav-fin-capture" class="fin-sub-accent">Registrar Despesa AI</span></div>
+          <div class="sidebar-link fin-sub" onclick="showTab(9,this)"><i class="ti ti-receipt"></i><span id="nav-fin-desp">Custos e Despesas</span></div>
+          <div class="sidebar-link fin-sub" onclick="showTab(10,this)"><i class="ti ti-trending-up"></i><span id="nav-fin-prices">Histórico de Preços</span></div>
+          <div class="sidebar-link fin-sub" onclick="showTab(11,this)"><i class="ti ti-bell-ringing"></i><span id="nav-fin-auto">Lembretes & Fechamento</span></div>
+        </div>
+      </div>
       </div>
     <div class="sidebar-bottom hide-on-mobile">
         <div id="pwa-install-sidebar" class="sidebar-link" onclick="installPWA()" style="display:none;"><i class="ti ti-download"></i><span>Install</span></div>
@@ -2315,6 +2387,24 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
               </div>
             </div>
           </div>
+        </div>
+        <!-- FINANCEIRO — Custos e Despesas -->
+        <div id="tab-9" class="tab">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap;">
+            <div><div style="font-family:var(--font-d);font-size:20px;font-weight:800;color:var(--text);" id="fin-desp-title">Custos e Despesas</div><div style="font-size:12px;color:var(--text3);" id="fin-desp-sub">Registro itemizado de transações</div></div>
+            <button class="fin-primary-btn" onclick="openExpenseModal()"><i class="ti ti-plus" style="vertical-align:-2px;margin-right:4px;"></i><span id="fin-desp-add">Registrar Despesa AI</span></button>
+          </div>
+          <div id="fin-desp-body"></div>
+        </div>
+        <!-- FINANCEIRO — Histórico de Preços -->
+        <div id="tab-10" class="tab">
+          <div style="margin-bottom:18px;"><div style="font-family:var(--font-d);font-size:20px;font-weight:800;color:var(--text);" id="fin-prices-title">Histórico de Preços</div><div style="font-size:12px;color:var(--text3);" id="fin-prices-sub">Evolução do custo unitário dos principais materiais</div></div>
+          <div id="fin-prices-body"></div>
+        </div>
+        <!-- FINANCEIRO — Lembretes & Fechamento -->
+        <div id="tab-11" class="tab">
+          <div style="margin-bottom:18px;"><div style="font-family:var(--font-d);font-size:20px;font-weight:800;color:var(--text);" id="fin-auto-title">Lembretes & Fechamento</div><div style="font-size:12px;color:var(--text3);" id="fin-auto-sub">Check-in automático de custos no fim do dia</div></div>
+          <div id="fin-auto-body"></div>
         </div>
         <div class="doc-viewer-overlay" id="doc-viewer-overlay" onclick="closeDocViewer(event)">
   <div class="doc-viewer-panel" onclick="event.stopPropagation()">
@@ -4086,6 +4176,7 @@ function applyLang(){
   try{var _pi=document.getElementById("pwa-install-label");if(_pi)_pi.textContent=plL("Installer l'application","Install app","Instalar aplicativo");}catch(e){}
   try{var _lo=document.getElementById("mob-logout-label");if(_lo)_lo.textContent=plL("Déconnexion","Log out","Sair");}catch(e){}
   try{renderSyncBadge();}catch(e){}
+  try{applyFinanceLang();}catch(e){}
   try{var _pt=document.getElementById("pm-team-input");if(_pt)_pt.placeholder=plL("Saisir un nom puis Entrée","Type a name, then Enter","Digite um nome e Enter");}catch(e){}
   try{if(typeof renderBilling==="function")renderBilling();}catch(e){}
   try{if(typeof renderPricingDropdown==="function")renderPricingDropdown();}catch(e){}
@@ -4798,6 +4889,7 @@ function enterApp(user){
   try{renderIaDot();}catch(e){}
   try{_fetchConnectedApps();}catch(e){} // preload so the first capture dispatches without delay
   try{if(localStorage.getItem("pillier-sb-collapsed")==="1"){var _w=document.querySelector(".app-wrap");if(_w)_w.classList.add("sb-collapsed");var _ci=document.getElementById("sb-collapse-ico");if(_ci)_ci.className="ti ti-chevron-right";}}catch(e){}
+  try{if(localStorage.getItem("pillier-fin-acc")==="1")_openFinanceAccordion(true);}catch(e){}
   document.getElementById("s-login").classList.remove("active");
   document.getElementById("s-content").classList.remove("active");
   document.getElementById("s-app").classList.add("active");
@@ -5327,6 +5419,7 @@ async function connectDB(){
     await loadDB();
     await loadPillierUsage();
     await loadProjects();
+    try{await loadExpenses();}catch(e){} // Financeiro ledger (offline-first)
     startRealtime();
   }catch(e){console.error("DB",e);}
 }
@@ -6037,6 +6130,370 @@ document.addEventListener("click",function(e){
   var m=document.getElementById("site-menu");
   if(m&&m.classList.contains("show")&&!e.target.closest(".site-chip-wrap"))closeSiteMenu();
 });
+
+/* ═══════════════════════ FINANCEIRO MODULE ═══════════════════════════════════
+ * Offline-first expense ledger + KPIs + 30-day burn chart + daily nudge.
+ * Mirrors the app's capture pattern: localStorage is the source of truth for the
+ * UI, Supabase (table `expenses`) is best-effort sync. i18n via _t3/plL. ──────*/
+var expenses=[];
+var _expMethod="",_expReceiptData=null;   // modal transient state
+
+// PT categories are canonical (match /api/finance/ocr + DB); labels are localized.
+var FIN_CATS=[
+  {v:"Material Básico",l:["Basic Material","Matériau de base","Material Básico"]},
+  {v:"Mão de Obra",l:["Labor","Main-d'œuvre","Mão de Obra"]},
+  {v:"Equipamentos",l:["Equipment","Équipement","Equipamentos"]},
+  {v:"Transporte",l:["Transport","Transport","Transporte"]},
+  {v:"Outros",l:["Other","Autres","Outros"]}
+];
+var FIN_METHODS=[
+  {v:"Pix",l:["Pix","Pix","Pix"]},
+  {v:"Cartão",l:["Card","Carte","Cartão"]},
+  {v:"Dinheiro",l:["Cash","Espèces","Dinheiro"]},
+  {v:"Boleto",l:["Boleto","Boleto","Boleto"]},
+  {v:"Virement",l:["Transfer","Virement","Transferência"]}
+];
+function _finCatLabel(v){var c=FIN_CATS.filter(function(x){return x.v===v;})[0];return c?_t3(c.l[0],c.l[1],c.l[2]):v;}
+function _finMethodLabel(v){var m=FIN_METHODS.filter(function(x){return x.v===v;})[0];return m?_t3(m.l[0],m.l[1],m.l[2]):v;}
+function financeCurrencyCode(){return lang===2?"BRL":lang===0?"EUR":"USD";}
+function financeCurrencySymbol(){return lang===2?"R$":lang===0?"€":"US$";}
+function financeMoney(v){var loc=lang===1?"en-US":lang===0?"fr-FR":"pt-BR";return financeCurrencySymbol()+" "+(Number(v)||0).toLocaleString(loc,{minimumFractionDigits:2,maximumFractionDigits:2});}
+function _finShortMoney(v){v=Number(v)||0;if(v>=1000000)return financeCurrencySymbol()+(v/1000000).toFixed(1)+"M";if(v>=1000)return financeCurrencySymbol()+Math.round(v/1000)+"k";return financeCurrencySymbol()+Math.round(v);}
+function _finIsoDay(d){function p(n){return (n<10?"0":"")+n;}return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate());}
+function _finDayShort(d){function p(n){return (n<10?"0":"")+n;}return p(d.getDate())+"/"+p(d.getMonth()+1);}
+function _finParseAmount(s){var n=parseFloat(String(s).replace(/[^0-9.,-]/g,"").replace(/\.(?=\d{3}\b)/g,"").replace(",",".") );return isFinite(n)?n:0;}
+
+/* ── persistence (offline-first) ─────────────────────────────────────────── */
+function loadExpensesLocal(){try{var r=localStorage.getItem("pillier-expenses-v1");expenses=r?JSON.parse(r):[];}catch(e){expenses=[];}}
+function saveExpensesLocal(){try{localStorage.setItem("pillier-expenses-v1",JSON.stringify(expenses.slice(0,500)));}catch(e){}}
+function _expFromRow(r){return {id:r.id,project:r.project||"",vendor:r.vendor||"",category:r.category||"Outros",amount:Number(r.amount)||0,currency:r.currency||"BRL",method:r.method||"",note:r.note||"",receipt_url:r.receipt_url||null,ocr:!!r.ocr,status:r.status||"pending",created_by:r.created_by||"",created_at:r.created_at||new Date().toISOString()};}
+async function loadExpenses(){
+  loadExpensesLocal();
+  if(dbOk&&dbCoId&&db){
+    try{
+      var r=await db.from("expenses").select("*").eq("company_id",dbCoId).order("created_at",{ascending:false}).limit(500);
+      if(r&&!r.error&&r.data){
+        var localOnly=expenses.filter(function(e){return /^\d+$/.test(String(e.id));}); // not yet synced
+        expenses=r.data.map(_expFromRow).concat(localOnly);
+        saveExpensesLocal();
+      }else if(r&&r.error){console.warn("[finance] loadExpenses (using local):",r.error.message);}
+    }catch(e){console.warn("[finance] loadExpenses error (using local):",e.message);}
+  }
+  try{loadFinanceSettings();}catch(e){}
+  try{renderFinanceIfActive();}catch(e){}
+}
+async function saveExpenseDB(e){
+  if(!dbOk||!dbCoId||!db)return;
+  try{
+    var payload={company_id:dbCoId,project:e.project,vendor:e.vendor,category:e.category,amount:e.amount,currency:e.currency,method:e.method,note:e.note||"",receipt_url:(e.receipt_url&&String(e.receipt_url).indexOf("http")===0)?e.receipt_url:null,ocr:!!e.ocr,status:e.status||"pending",created_by:(me&&me.name)||""};
+    var r=await db.from("expenses").insert(payload).select();
+    if(r&&!r.error&&r.data&&r.data[0]){var i=expenses.findIndex(function(x){return String(x.id)===String(e.id);});if(i>=0){expenses[i].id=r.data[0].id;saveExpensesLocal();}console.log("[finance] expense synced",r.data[0].id);}
+    else if(r&&r.error){console.warn("[finance] expense DB save failed (kept local):",r.error.message);}
+  }catch(err){console.warn("[finance] expense DB save error (kept local):",err.message);}
+}
+function activeSiteExpenses(){var a=getActiveSite();if(!a)return expenses;return expenses.filter(function(e){return e.project===a;});}
+
+/* ── budget + nudge settings ─────────────────────────────────────────────── */
+function getBudget(){try{return Number(localStorage.getItem("pillier-fin-budget"))||0;}catch(e){return 0;}}
+function getNudge(){try{return JSON.parse(localStorage.getItem("pillier-fin-nudge")||'{"enabled":false,"time":"17:30"}');}catch(e){return {enabled:false,time:"17:30"};}}
+function _persistFinanceSettings(){
+  if(dbOk&&dbCoId&&db){try{var n=getNudge();db.from("finance_settings").upsert({company_id:dbCoId,budget_monthly:getBudget(),nudge_enabled:!!n.enabled,nudge_time:n.time||"17:30",updated_at:new Date().toISOString()},{onConflict:"company_id"}).then(function(r){if(r&&r.error)console.warn("[finance] settings sync:",r.error.message);});}catch(e){}}
+}
+function setBudgetFromInput(){var el=document.getElementById("fin-budget-input");if(!el)return;var v=_finParseAmount(el.value);try{localStorage.setItem("pillier-fin-budget",String(v));}catch(e){}_persistFinanceSettings();toast("✅ "+_t3("Budget saved","Budget enregistré","Orçamento salvo"));renderFinanceIfActive();}
+function toggleNudge(){var n=getNudge();n.enabled=!n.enabled;try{localStorage.setItem("pillier-fin-nudge",JSON.stringify(n));}catch(e){}_persistFinanceSettings();renderFinanceAutomations();}
+function setNudgeTime(v){var n=getNudge();n.time=v||"17:30";try{localStorage.setItem("pillier-fin-nudge",JSON.stringify(n));}catch(e){}_persistFinanceSettings();}
+async function loadFinanceSettings(){
+  if(!(dbOk&&dbCoId&&db))return;
+  try{var r=await db.from("finance_settings").select("*").eq("company_id",dbCoId).maybeSingle();
+    if(r&&!r.error&&r.data){
+      if(r.data.budget_monthly!=null){try{localStorage.setItem("pillier-fin-budget",String(Number(r.data.budget_monthly)||0));}catch(e){}}
+      try{localStorage.setItem("pillier-fin-nudge",JSON.stringify({enabled:!!r.data.nudge_enabled,time:r.data.nudge_time||"17:30"}));}catch(e){}
+    }
+  }catch(e){}
+}
+
+/* ── accordion ───────────────────────────────────────────────────────────── */
+function toggleFinanceAccordion(){var a=document.getElementById("fin-acc");if(!a)return;var open=a.classList.toggle("open");try{localStorage.setItem("pillier-fin-acc",open?"1":"0");}catch(e){}}
+function _openFinanceAccordion(open){var a=document.getElementById("fin-acc");if(a)a.classList.toggle("open",!!open);try{localStorage.setItem("pillier-fin-acc",open?"1":"0");}catch(e){}}
+
+/* ── KPI helpers ─────────────────────────────────────────────────────────── */
+function _finMonthExpenses(){var now=new Date(),y=now.getFullYear(),m=now.getMonth();return activeSiteExpenses().filter(function(e){var d=new Date(e.created_at);return d.getFullYear()===y&&d.getMonth()===m;});}
+function _finMonthTotal(){return _finMonthExpenses().reduce(function(a,e){return a+(Number(e.amount)||0);},0);}
+function _finOcrCount(){return activeSiteExpenses().filter(function(e){return e.ocr;}).length;}
+function _finPendingCount(){return activeSiteExpenses().filter(function(e){return e.status==="pending";}).length;}
+
+/* ── 30-day burn chart (inline SVG, palette #0ea5e9 / #f59e0b) ───────────── */
+function _finLast30(){
+  var days=[],today=new Date();today.setHours(0,0,0,0);
+  for(var i=29;i>=0;i--){var d=new Date(today);d.setDate(d.getDate()-i);days.push({d:d,key:_finIsoDay(d),sum:0});}
+  var byKey={};days.forEach(function(x){byKey[x.key]=x;});
+  activeSiteExpenses().forEach(function(e){var k=_finIsoDay(new Date(e.created_at));if(byKey[k])byKey[k].sum+=(Number(e.amount)||0);});
+  return days;
+}
+function drawBurnChart(days,budget){
+  var W=680,H=200,padL=46,padR=14,padT=14,padB=24,iw=W-padL-padR,ih=H-padT-padB;
+  var cum=[],run=0;days.forEach(function(x){run+=x.sum;cum.push(run);});
+  var spent=cum[cum.length-1]||0;
+  var maxV=Math.max(budget||0,spent,1)*1.12;
+  var n=days.length;
+  function X(i){return padL+(n<2?0:iw*(i/(n-1)));}
+  function Y(v){return padT+ih-(ih*(v/maxV));}
+  var svg='<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="'+H+'" preserveAspectRatio="xMidYMid meet" font-family="var(--font-b)">';
+  svg+='<defs><linearGradient id="finGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0ea5e9" stop-opacity="0.34"/><stop offset="1" stop-color="#0ea5e9" stop-opacity="0.02"/></linearGradient></defs>';
+  [0,0.5,1].forEach(function(f){var yy=padT+ih-ih*f;svg+='<line x1="'+padL+'" y1="'+yy.toFixed(1)+'" x2="'+(W-padR)+'" y2="'+yy.toFixed(1)+'" stroke="var(--border)" stroke-width="1"/>';svg+='<text x="'+(padL-6)+'" y="'+(yy+3).toFixed(1)+'" text-anchor="end" font-size="9" fill="var(--text3)">'+_finShortMoney(maxV*f)+'</text>';});
+  var area="M"+X(0).toFixed(1)+","+Y(0).toFixed(1),line="";
+  for(var i=0;i<n;i++){var px=X(i).toFixed(1),py=Y(cum[i]).toFixed(1);area+=" L"+px+","+py;line+=(i?" L":"M")+px+","+py;}
+  area+=" L"+X(n-1).toFixed(1)+","+Y(0).toFixed(1)+" Z";
+  svg+='<path d="'+area+'" fill="url(#finGrad)"/>';
+  svg+='<path d="'+line+'" fill="none" stroke="#0ea5e9" stroke-width="2.5" stroke-linejoin="round"/>';
+  if(budget>0){svg+='<line x1="'+X(0).toFixed(1)+'" y1="'+Y(0).toFixed(1)+'" x2="'+X(n-1).toFixed(1)+'" y2="'+Y(budget).toFixed(1)+'" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5 4"/>';}
+  [0,Math.floor(n/2),n-1].forEach(function(i){svg+='<text x="'+X(i).toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle" font-size="9" fill="var(--text3)">'+_finDayShort(days[i].d)+'</text>';});
+  svg+='</svg>';
+  return svg;
+}
+
+/* ── tab-9: Custos e Despesas (KPIs + chart + ledger) ────────────────────── */
+function renderFinanceIfActive(){var t=document.getElementById("tab-9");if(t&&t.classList.contains("active")){renderFinance();}var t2=document.getElementById("tab-11");if(t2&&t2.classList.contains("active"))renderFinanceAutomations();}
+function renderFinance(){
+  var body=document.getElementById("fin-desp-body");if(!body)return;
+  var monthTotal=_finMonthTotal(),ocr=_finOcrCount(),pending=_finPendingCount(),budget=getBudget();
+  var list=activeSiteExpenses().slice(0,60);
+  var h="";
+  // KPI row
+  h+="<div class='fin-kpi-grid'>";
+  h+="<div class='fin-card' style='margin-bottom:0;'><div class='fin-kpi-label'><i class='ti ti-cash' style='color:#0ea5e9;'></i>"+_t3("Costs this month","Coûts ce mois-ci","Custos este mês")+"</div><div class='fin-kpi-val'>"+financeMoney(monthTotal)+"</div><div class='fin-kpi-sub'>"+(budget>0?(_t3("of","sur","de")+" "+financeMoney(budget)+" "+_t3("budget","de budget","de orçamento")+" · "+Math.round(monthTotal/budget*100)+"%"):_t3("No budget set","Aucun budget défini","Sem orçamento definido"))+"</div></div>";
+  h+="<div class='fin-card' style='margin-bottom:0;'><div class='fin-kpi-label'><i class='ti ti-receipt' style='color:#f59e0b;'></i>"+_t3("Receipts processed (OCR)","Reçus traités (OCR)","Recibos Processados (OCR)")+"</div><div class='fin-kpi-val'>"+ocr+"</div><div class='fin-kpi-sub'>"+pending+" "+_t3("awaiting review","en attente de validation","aguardando revisão")+"</div></div>";
+  h+="</div>";
+  // Chart card
+  h+="<div class='fin-card'><div class='fin-card-h'>"+_t3("30-day burn rate vs. budget","Consommation 30 jours vs budget","Consumo em 30 dias vs. orçamento")+"</div><div class='fin-card-sub'>"+_t3("Cumulative spend against your monthly budget projection.","Dépenses cumulées vs projection du budget mensuel.","Gasto acumulado vs. projeção do orçamento mensal.")+"</div>";
+  h+="<div class='fin-chart-wrap'>"+drawBurnChart(_finLast30(),budget)+"</div>";
+  h+="<div class='fin-legend'><span><i style='background:#0ea5e9;'></i>"+_t3("Cumulative spend","Dépenses cumulées","Gasto acumulado")+"</span><span><i style='background:#f59e0b;'></i>"+_t3("Budget projection","Projection budget","Projeção do orçamento")+"</span></div></div>";
+  // Ledger
+  h+="<div class='fin-card' style='padding:0;overflow:hidden;'>";
+  if(!list.length){h+="<div class='fin-empty'><i class='ti ti-receipt-off' style='font-size:30px;display:block;margin-bottom:8px;'></i>"+_t3("No expenses yet. Tap “Registrar Despesa AI” to add one.","Aucune dépense. Cliquez sur “Saisie Dépense IA”.","Nenhuma despesa ainda. Toque em “Registrar Despesa AI”.")+"</div>";}
+  else{
+    h+="<div style='overflow-x:auto;'><table class='fin-ledger'><thead><tr>"+
+       "<th>"+_t3("Date","Date","Data")+"</th><th>"+_t3("Vendor","Fournisseur","Fornecedor")+"</th><th>"+_t3("Method","Méthode","Método")+"</th><th style='text-align:right;'>"+_t3("Amount","Montant","Valor")+"</th><th>"+_t3("Status","Statut","Status")+"</th><th></th></tr></thead><tbody>";
+    list.forEach(function(e){
+      var d=new Date(e.created_at);
+      h+="<tr><td style='white-space:nowrap;color:var(--text3);'>"+_finDayShort(d)+"</td>"+
+         "<td>"+escapeHTML(e.vendor||"—")+(e.ocr?" <i class='ti ti-scan' title='OCR' style='font-size:12px;color:#0ea5e9;vertical-align:-1px;'></i>":"")+"<span class='fin-catcell'>"+escapeHTML(_finCatLabel(e.category))+"</span></td>"+
+         "<td style='color:var(--text2);white-space:nowrap;'>"+escapeHTML(_finMethodLabel(e.method)||"—")+"</td>"+
+         "<td class='num'>"+financeMoney(e.amount)+"</td>"+
+         "<td><span class='fin-pill "+(e.status==="reviewed"?"reviewed":"pending")+"' onclick=\"toggleExpenseStatus('"+String(e.id).replace(/'/g,"")+"')\">"+(e.status==="reviewed"?_t3("Reviewed","Validé","Revisado"):_t3("Pending","En attente","Pendente"))+"</span></td>"+
+         "<td style='text-align:right;'><button class='fin-del' onclick=\"deleteExpense('"+String(e.id).replace(/'/g,"")+"')\" title='"+_t3("Delete","Supprimer","Excluir")+"'><i class='ti ti-trash'></i></button></td></tr>";
+    });
+    h+="</tbody></table></div>";
+  }
+  h+="</div>";
+  body.innerHTML=h;
+}
+function toggleExpenseStatus(id){var e=expenses.filter(function(x){return String(x.id)===String(id);})[0];if(!e)return;e.status=(e.status==="reviewed")?"pending":"reviewed";saveExpensesLocal();if(dbOk&&dbCoId&&db&&!/^\d+$/.test(String(id))){try{db.from("expenses").update({status:e.status,updated_at:new Date().toISOString()}).eq("id",id);}catch(_){}}renderFinance();}
+function deleteExpense(id){
+  if(!window.confirm(_t3("Delete this expense?","Supprimer cette dépense ?","Excluir esta despesa?")))return;
+  expenses=expenses.filter(function(x){return String(x.id)!==String(id);});saveExpensesLocal();
+  if(dbOk&&dbCoId&&db&&!/^\d+$/.test(String(id))){try{db.from("expenses").delete().eq("id",id);}catch(_){}}
+  renderFinance();toast(_t3("Expense deleted","Dépense supprimée","Despesa excluída"));
+}
+
+/* ── tab-10: Histórico de Preços (unit cost of key materials from OCR items) ─ */
+var FIN_MATERIALS=[
+  {key:"cimento",re:/ciment|cimento|cement/i,l:["Cement","Ciment","Cimento"],c:"#0ea5e9"},
+  {key:"aco",re:/\ba[cç]o\b|acier|steel|vergalh|rebar/i,l:["Steel","Acier","Aço"],c:"#f59e0b"},
+  {key:"areia",re:/areia|sable|sand/i,l:["Sand","Sable","Areia"],c:"#4ade80"}
+];
+function _finMaterialSeries(){
+  var series={};FIN_MATERIALS.forEach(function(m){series[m.key]=[];});
+  activeSiteExpenses().forEach(function(e){
+    var hay=[e.vendor,e.note,e.category].join(" ");
+    FIN_MATERIALS.forEach(function(m){
+      if(m.re.test(hay)&&e.amount>0){series[m.key].push({d:new Date(e.created_at),v:Number(e.amount)});}
+    });
+  });
+  Object.keys(series).forEach(function(k){series[k].sort(function(a,b){return a.d-b.d;});});
+  return series;
+}
+function drawPriceChart(series){
+  var W=680,H=220,padL=48,padR=14,padT=14,padB=24,iw=W-padL-padR,ih=H-padT-padB;
+  var all=[];FIN_MATERIALS.forEach(function(m){(series[m.key]||[]).forEach(function(p){all.push(p);});});
+  if(!all.length)return "";
+  var minT=Math.min.apply(null,all.map(function(p){return p.d.getTime();}));
+  var maxT=Math.max.apply(null,all.map(function(p){return p.d.getTime();}));
+  var maxV=Math.max.apply(null,all.map(function(p){return p.v;}))*1.12||1;
+  function X(t){return padL+(maxT===minT?iw/2:iw*((t-minT)/(maxT-minT)));}
+  function Y(v){return padT+ih-(ih*(v/maxV));}
+  var svg='<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="'+H+'" preserveAspectRatio="xMidYMid meet" font-family="var(--font-b)">';
+  [0,0.5,1].forEach(function(f){var yy=padT+ih-ih*f;svg+='<line x1="'+padL+'" y1="'+yy.toFixed(1)+'" x2="'+(W-padR)+'" y2="'+yy.toFixed(1)+'" stroke="var(--border)" stroke-width="1"/>';svg+='<text x="'+(padL-6)+'" y="'+(yy+3).toFixed(1)+'" text-anchor="end" font-size="9" fill="var(--text3)">'+_finShortMoney(maxV*f)+'</text>';});
+  FIN_MATERIALS.forEach(function(m){
+    var pts=series[m.key]||[];if(!pts.length)return;
+    var path="";pts.forEach(function(p,i){path+=(i?" L":"M")+X(p.d.getTime()).toFixed(1)+","+Y(p.v).toFixed(1);});
+    svg+='<path d="'+path+'" fill="none" stroke="'+m.c+'" stroke-width="2.5" stroke-linejoin="round"/>';
+    pts.forEach(function(p){svg+='<circle cx="'+X(p.d.getTime()).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="3" fill="'+m.c+'"/>';});
+  });
+  svg+='</svg>';
+  return svg;
+}
+function renderPriceTrends(){
+  var body=document.getElementById("fin-prices-body");if(!body)return;
+  var series=_finMaterialSeries();
+  var total=FIN_MATERIALS.reduce(function(a,m){return a+(series[m.key]||[]).length;},0);
+  var h="<div class='fin-card'>";
+  if(!total){
+    h+="<div class='fin-empty'><i class='ti ti-chart-line' style='font-size:30px;display:block;margin-bottom:8px;'></i>"+_t3("Price points appear here as you capture receipts for cement, steel and sand.","Les prix apparaissent ici au fur et à mesure des reçus (ciment, acier, sable).","Os preços aparecem aqui conforme você captura recibos de cimento, aço e areia.")+"</div>";
+  }else{
+    h+="<div class='fin-card-h'>"+_t3("Unit cost evolution","Évolution du coût unitaire","Evolução do custo unitário")+"</div><div class='fin-card-sub'>"+_t3("Detected from your captured receipts.","Détecté à partir de vos reçus.","Detectado a partir dos seus recibos.")+"</div>";
+    h+="<div class='fin-chart-wrap'>"+drawPriceChart(series)+"</div>";
+    h+="<div class='fin-legend'>"+FIN_MATERIALS.map(function(m){return (series[m.key]||[]).length?("<span><i style='background:"+m.c+";'></i>"+_t3(m.l[0],m.l[1],m.l[2])+"</span>"):"";}).join("")+"</div>";
+  }
+  h+="</div>";
+  body.innerHTML=h;
+}
+
+/* ── tab-11: Lembretes & Fechamento (budget + daily nudge) ────────────────── */
+function renderFinanceAutomations(){
+  var body=document.getElementById("fin-auto-body");if(!body)return;
+  var budget=getBudget(),n=getNudge();
+  var pend=_finPendingCount(),amt=_finMonthExpenses().filter(function(e){return e.status==="pending";}).reduce(function(a,e){return a+(Number(e.amount)||0);},0);
+  var obra=getActiveSite()||plL("votre chantier","your site","sua obra");
+  var preview=_t3(
+    "Hi! You have "+pend+" pending receipt(s)/expense(s) ("+financeMoney(amt)+") for today’s close on "+obra+". Tap to review.",
+    "Bonjour ! Vous avez "+pend+" reçu(s)/dépense(s) en attente ("+financeMoney(amt)+") pour la clôture du jour sur "+obra+". Cliquez pour valider.",
+    "Olá! Você tem "+pend+" recibo(s) e despesa(s) pendentes ("+financeMoney(amt)+") para o fechamento do dia na "+obra+". Clique para validar.");
+  var h="";
+  // Budget card
+  h+="<div class='fin-card'><div class='fin-card-h'>"+_t3("Monthly budget","Budget mensuel","Orçamento mensal")+"</div><div class='fin-card-sub'>"+_t3("Used for the burn-rate chart and nudge context.","Utilisé pour le graphique et les rappels.","Usado no gráfico de consumo e nos lembretes.")+"</div>";
+  h+="<div style='display:flex;gap:8px;align-items:center;flex-wrap:wrap;'><span style='font-weight:700;color:var(--text2);'>"+financeCurrencySymbol()+"</span><input id='fin-budget-input' class='fin-inline-input' style='flex:1;min-width:140px;' inputmode='decimal' value='"+(budget||"")+"' placeholder='0,00'><button class='fin-primary-btn' onclick='setBudgetFromInput()'>"+_t3("Save","Enregistrer","Salvar")+"</button></div></div>";
+  // Nudge card
+  h+="<div class='fin-card'><div style='display:flex;align-items:center;justify-content:space-between;gap:12px;'><div><div class='fin-card-h'>"+_t3("Daily end-of-day nudge","Rappel de fin de journée","Lembrete de fim de dia")+"</div><div class='fin-card-sub' style='margin-bottom:0;'>"+_t3("Sends a check-in to your connected apps.","Envoie un rappel à vos apps connectées.","Envia um check-in para seus apps conectados.")+"</div></div><div class='fin-toggle "+(n.enabled?"on":"")+"' onclick='toggleNudge()'></div></div>";
+  h+="<div style='display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap;'><label style='font-size:12px;color:var(--text2);'>"+_t3("Time","Heure","Horário")+"</label><input type='time' class='fin-inline-input' style='width:120px;' value='"+(n.time||"17:30")+"' onchange='setNudgeTime(this.value)'><span style='font-size:11px;color:var(--text3);'>"+_t3("site local time","heure locale du chantier","horário local da obra")+"</span></div>";
+  h+="<div style='background:var(--navy3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-top:14px;font-size:12.5px;color:var(--text2);line-height:1.5;'><i class='ti ti-message-2' style='color:#0ea5e9;margin-right:6px;'></i>"+escapeHTML(preview)+"</div>";
+  h+="<div style='margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;'><button class='fin-primary-btn' onclick='sendNudgeTest()'><i class='ti ti-send' style='vertical-align:-2px;margin-right:4px;'></i>"+_t3("Send test now","Envoyer un test","Enviar teste agora")+"</button><button class='fin-ghost-btn' onclick=\"openSettingsModal();setTimeout(function(){try{setSettingsSection('apps')}catch(e){}},60);\">"+_t3("Manage connected apps","Gérer les apps connectées","Gerenciar apps conectados")+"</button></div>";
+  h+="<div style='font-size:11px;color:var(--text3);margin-top:10px;'>"+_t3("Scheduled server-side at ","Planifié côté serveur à ","Agendado no servidor às ")+(n.time||"17:30")+_t3(" via Vercel Cron (20:30 UTC).",", via Vercel Cron (20:30 UTC).", " via Vercel Cron (20:30 UTC).")+"</div></div>";
+  body.innerHTML=h;
+}
+async function sendNudgeTest(){
+  if(!dbCoId){toast(_t3("Log in first","Connectez-vous d'abord","Faça login primeiro"));return;}
+  var pend=_finMonthExpenses().filter(function(e){return e.status==="pending";});
+  var amt=pend.reduce(function(a,e){return a+(Number(e.amount)||0);},0);
+  var obra=getActiveSite()||((projects[0]&&projects[0].name)||plL("Chantier","Site","Obra"));
+  try{
+    var r=await fetch("/api/cron/daily-financial-nudge",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({company_id:dbCoId,obra:obra,pending_count:pend.length,amount:amt,currency:financeCurrencyCode(),lang:lang===2?"pt":lang===0?"fr":"en"})});
+    var d=await r.json();
+    console.log("[finance] nudge test",d);
+    if(d&&d.ok&&d.result&&d.result.dispatched>0)toast("✅ "+_t3("Nudge sent to ","Rappel envoyé à ","Lembrete enviado para ")+d.result.dispatched+" "+_t3("app(s)","app(s)","app(s)"));
+    else toast("⚠️ "+_t3("No connected apps yet — connect one in Settings.","Aucune app connectée — connectez-en une dans Paramètres.","Nenhum app conectado — conecte um em Configurações."));
+  }catch(e){console.error("[finance] nudge test failed",e);toast("Error: "+e.message);}
+}
+
+/* ── Expense capture modal ───────────────────────────────────────────────── */
+function openExpenseModal(){
+  if(!dbCoId&&!dbOk){/* still allow offline entry */}
+  _expMethod="";_expReceiptData=null;
+  try{closeSiteMenu();}catch(e){}
+  var ov=document.createElement("div");ov.className="exp-overlay";ov.id="exp-overlay";
+  var catOpts=FIN_CATS.map(function(c){return "<option value=\""+c.v+"\">"+escapeHTML(_finCatLabel(c.v))+"</option>";}).join("");
+  var methods=FIN_METHODS.map(function(m){return "<div class='exp-method' data-m=\""+m.v+"\" onclick=\"selectExpMethod(this,'"+m.v+"')\">"+escapeHTML(_finMethodLabel(m.v))+"</div>";}).join("");
+  var h="<div class='exp-card' onclick='event.stopPropagation()'>";
+  h+="<div class='exp-head'><i class='ti ti-cash-banknote' style='font-size:22px;color:#0ea5e9;'></i><div style='font-family:var(--font-d);font-size:17px;font-weight:800;color:var(--text);flex:1;'>"+_t3("Quick Expense AI","Saisie Dépense IA","Registrar Despesa AI")+"</div><i class='ti ti-x' style='font-size:20px;color:var(--text3);cursor:pointer;' onclick='closeExpenseModal()'></i></div>";
+  h+="<div class='exp-body'>";
+  // OCR drop-zone
+  h+="<div class='exp-drop' id='exp-drop' onclick=\"document.getElementById('exp-file').click()\">";
+  h+="<i class='ti ti-camera' style='font-size:26px;color:#0ea5e9;'></i>";
+  h+="<div style='font-size:13px;color:var(--text);font-weight:600;margin-top:8px;'>"+_t3("Take a photo or Upload (OCR)","Tirar Foto ou Upload (OCR)","Tirar Foto ou Upload (OCR)")+"</div>";
+  h+="<div style='font-size:11px;color:var(--text3);margin-top:3px;'>"+_t3("Receipts, invoices, cupom fiscal","Reçus, factures, cupom fiscal","Cupons fiscais, notas, faturas")+"</div>";
+  h+="<div id='exp-ocr-status' style='display:none;align-items:center;justify-content:center;gap:8px;margin-top:12px;color:#0ea5e9;font-size:12px;'><i class='ti ti-loader-2' style='animation:spin 1s linear infinite;'></i>"+_t3("Reading receipt…","Lecture du reçu…","Lendo o recibo…")+"</div>";
+  h+="<img id='exp-preview' style='display:none;max-height:120px;border-radius:8px;margin-top:12px;' />";
+  h+="</div>";
+  h+="<input type='file' id='exp-file' accept='image/*' capture='environment' style='display:none;' onchange='handleReceiptFile(this)'>";
+  h+="<div style='height:14px;'></div>";
+  // 4-field form
+  h+="<div class='exp-field'><label>"+_t3("Vendor","Fournisseur","Fornecedor")+"</label><input id='exp-vendor' placeholder='"+_t3("e.g. Depósito São José","ex. Dépôt São José","ex. Depósito São José")+"'></div>";
+  h+="<div class='exp-field'><label>"+_t3("Category","Catégorie","Categoria")+"</label><select id='exp-cat'>"+catOpts+"</select></div>";
+  h+="<div class='exp-field'><label>"+_t3("Amount","Montant","Valor")+"</label><div class='exp-amount-wrap'><span class='exp-cur'>"+financeCurrencySymbol()+"</span><input id='exp-amount' inputmode='decimal' placeholder='0,00' style='flex:1;'></div></div>";
+  h+="<div class='exp-field'><label>"+_t3("Payment method","Méthode de paiement","Método de pagamento")+"</label><div class='exp-methods'>"+methods+"</div></div>";
+  h+="</div>";
+  h+="<div class='exp-foot'><button class='fin-ghost-btn' style='flex:1;' onclick='closeExpenseModal()'>"+_t3("Cancel","Annuler","Cancelar")+"</button><button class='fin-primary-btn' style='flex:1;' onclick='submitExpense()'>"+_t3("Save cost","Enregistrer","Salvar Custo")+"</button></div>";
+  h+="</div>";
+  ov.innerHTML=h;
+  ov.onclick=function(e){if(e.target===ov)closeExpenseModal();};
+  document.body.appendChild(ov);
+  // drag & drop
+  var dz=document.getElementById("exp-drop");
+  if(dz){["dragenter","dragover"].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.add("drag");});});["dragleave","drop"].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.remove("drag");});});
+    dz.addEventListener("drop",function(e){var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];if(f)_readReceipt(f);});}
+}
+function closeExpenseModal(){var ov=document.getElementById("exp-overlay");if(ov)ov.remove();}
+function selectExpMethod(el,v){_expMethod=v;document.querySelectorAll(".exp-method").forEach(function(x){x.classList.toggle("on",x.getAttribute("data-m")===v);});}
+function handleReceiptFile(input){if(input.files&&input.files[0])_readReceipt(input.files[0]);}
+function _readReceipt(file){
+  if(!/^image\//.test(file.type)){toast(_t3("Please choose an image","Choisissez une image","Escolha uma imagem"));return;}
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    var dataUrl=ev.target.result;
+    var pv=document.getElementById("exp-preview");if(pv){pv.src=dataUrl;pv.style.display="inline-block";}
+    runReceiptOCR(dataUrl);
+  };
+  reader.readAsDataURL(file);
+}
+async function runReceiptOCR(dataUrl){
+  var sp=document.getElementById("exp-ocr-status");if(sp)sp.style.display="flex";
+  try{
+    var img=await compressPhoto(dataUrl,1280,0.8);
+    _expReceiptData=img;
+    var r=await fetch("/api/finance/ocr",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({image:img})});
+    var d=await r.json();
+    if(d&&d.ok&&d.data){
+      var x=d.data;
+      if(x.vendor){var ev1=document.getElementById("exp-vendor");if(ev1)ev1.value=x.vendor;}
+      if(x.category){var ec=document.getElementById("exp-cat");if(ec)ec.value=x.category;}
+      if(x.amount){var ea=document.getElementById("exp-amount");if(ea)ea.value=String(x.amount).replace(".",lang===1?".":",");}
+      if(x.method){selectExpMethod(null,x.method);}
+      console.log("[finance] OCR parsed",x.vendor,x.amount,x.category);
+      toast("✅ "+_t3("Receipt read — check the fields","Reçu analysé — vérifiez","Recibo lido — confira os campos"));
+    }else{
+      console.warn("[finance] OCR failed",d&&d.error);
+      toast("⚠️ "+_t3("Couldn't read it — fill in manually","Lecture impossible — saisissez à la main","Não deu para ler — preencha manualmente"));
+    }
+  }catch(e){console.error("[finance] OCR error",e);toast("⚠️ "+_t3("OCR error — fill in manually","Erreur OCR — saisie manuelle","Erro no OCR — preencha manualmente"));}
+  if(sp)sp.style.display="none";
+}
+function submitExpense(){
+  var vendorEl=document.getElementById("exp-vendor"),catEl=document.getElementById("exp-cat"),amtEl=document.getElementById("exp-amount");
+  var vendor=vendorEl?vendorEl.value.trim():"";
+  var cat=catEl?catEl.value:"Outros";
+  var amount=_finParseAmount(amtEl?amtEl.value:"");
+  if(!vendor){toast(_t3("Enter the vendor","Saisissez le fournisseur","Informe o fornecedor"));return;}
+  if(!amount||amount<=0){toast(_t3("Enter a valid amount","Montant invalide","Informe um valor válido"));return;}
+  var e={id:Date.now(),project:getActiveSite()||((projects[0]&&projects[0].name)||""),vendor:vendor,category:cat,amount:amount,currency:financeCurrencyCode(),method:_expMethod||"",note:"",receipt_url:_expReceiptData||null,ocr:!!_expReceiptData,status:"pending",created_by:(me&&me.name)||"",created_at:new Date().toISOString()};
+  expenses.unshift(e);saveExpensesLocal();
+  saveExpenseDB(e);
+  closeExpenseModal();
+  toast("✅ "+_t3("Cost saved","Coût enregistré","Custo salvo"));
+  // Live-update KPIs + chart + ledger (acceptance #3) by opening the ledger tab.
+  var link=document.querySelector('.fin-acc-body .sidebar-link[onclick*="showTab(9"]');
+  showTab(9,link||null);
+}
+
+/* ── i18n for the finance sidebar + tab headers ──────────────────────────── */
+function applyFinanceLang(){
+  var set=function(id,v){var el=document.getElementById(id);if(el)el.textContent=v;};
+  set("nav-fin",_t3("Financial","Financier","Financeiro"));
+  set("nav-fin-capture",_t3("Quick Expense AI","Saisie Dépense IA","Registrar Despesa AI"));
+  set("nav-fin-desp",_t3("Expenses","Dépenses","Custos e Despesas"));
+  set("nav-fin-prices",_t3("Price Trends","Historique des Prix","Histórico de Preços"));
+  set("nav-fin-auto",_t3("Daily Nudges","Rappels","Lembretes & Fechamento"));
+  set("fin-desp-title",_t3("Expenses","Dépenses","Custos e Despesas"));
+  set("fin-desp-sub",_t3("Itemized transaction ledger","Registre des transactions","Registro itemizado de transações"));
+  set("fin-desp-add",_t3("Quick Expense AI","Saisie Dépense IA","Registrar Despesa AI"));
+  set("fin-prices-title",_t3("Price Trends","Historique des Prix","Histórico de Preços"));
+  set("fin-prices-sub",_t3("Unit cost evolution of key materials","Évolution du coût unitaire des matériaux clés","Evolução do custo unitário dos principais materiais"));
+  set("fin-auto-title",_t3("Daily Nudges & Close","Rappels & Clôture","Lembretes & Fechamento"));
+  set("fin-auto-sub",_t3("Automated end-of-day cost check-in","Check-in automatique des coûts en fin de journée","Check-in automático de custos no fim do dia"));
+  // Re-render whichever finance tab is open so its content follows the language.
+  try{var t9=document.getElementById("tab-9");if(t9&&t9.classList.contains("active"))renderFinance();}catch(e){}
+  try{var t10=document.getElementById("tab-10");if(t10&&t10.classList.contains("active"))renderPriceTrends();}catch(e){}
+  try{var t11=document.getElementById("tab-11");if(t11&&t11.classList.contains("active"))renderFinanceAutomations();}catch(e){}
+}
 
 function startRealtime(){
   if(!db||!dbCoId)return;
@@ -8133,10 +8590,10 @@ function initChat(){
 function toggleChatSidebar(){var s=document.getElementById("chat-sidebar"),c=document.getElementById("chat-scrim");if(s)s.classList.toggle("open");if(c)c.classList.toggle("open");}
 function closeChatSidebar(){var s=document.getElementById("chat-sidebar"),c=document.getElementById("chat-scrim");if(s)s.classList.remove("open");if(c)c.classList.remove("open");}
 
-function getTabNames(){var S=STRINGS[lang];return["Dashboard",S.navCap||"Capture",S.navFiles||"My folders",S.navKb||"Knowledge base","Pillier IA",S.navComm||"Community",S.navProj||"My projects",S.navDocs||"Plans & Documents",S.navSettings||"Configurações"];}
+function getTabNames(){var S=STRINGS[lang];return["Dashboard",S.navCap||"Capture",S.navFiles||"My folders",S.navKb||"Knowledge base","Pillier IA",S.navComm||"Community",S.navProj||"My projects",S.navDocs||"Plans & Documents",S.navSettings||"Configurações",_t3("Expenses","Dépenses","Custos e Despesas"),_t3("Price Trends","Historique des Prix","Histórico de Preços"),_t3("Daily Nudges","Rappels","Lembretes & Fechamento")];}
 function showTab(i,btn){
   localStorage.setItem("bace-tab",i);
-  for(var j=0;j<9;j++){var el=document.getElementById("tab-"+j);if(el)el.classList.toggle("active",j===i);}
+  for(var j=0;j<12;j++){var el=document.getElementById("tab-"+j);if(el)el.classList.toggle("active",j===i);}
   document.querySelectorAll(".sidebar-link").forEach(function(b){b.classList.remove("active");});
   if(btn)btn.classList.add("active");
   document.getElementById("top-title").textContent=getTabNames()[i]||"";
@@ -8153,6 +8610,10 @@ function showTab(i,btn){
     var sc=document.getElementById("settings-user-co");if(sc)sc.textContent=me.co;
     [0,1,2].forEach(function(j){var btn=document.getElementById("lang-pref-"+j);if(btn)btn.classList.toggle("active",j===lang);});
   }
+  if(i===9||i===10||i===11){try{_openFinanceAccordion(true);}catch(e){}}
+  if(i===9){try{renderFinance();}catch(e){}}
+  if(i===10){try{renderPriceTrends();}catch(e){}}
+  if(i===11){try{renderFinanceAutomations();}catch(e){}}
 }
 
 function showLoad(show,txt){document.getElementById("loading").classList.toggle("show",show);if(txt)document.getElementById("load-txt").textContent=txt;}

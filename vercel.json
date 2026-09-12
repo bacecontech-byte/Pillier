@@ -1,10 +1,15 @@
 {
+  "crons": [
+    { "path": "/api/cron/daily-financial-nudge", "schedule": "30 20 * * *" }
+  ],
   "rewrites": [
     { "source": "/privacy", "destination": "/index.html" },
     { "source": "/terms", "destination": "/index.html" },
     { "source": "/code", "destination": "/index.html" },
     { "source": "/auth/verify-code", "destination": "/index.html" },
-    { "source": "/reset-password", "destination": "/index.html" }
+    { "source": "/reset-password", "destination": "/index.html" },
+    { "source": "/financeiro", "destination": "/index.html" },
+    { "source": "/financeiro/(.*)", "destination": "/index.html" }
   ],
   "headers": [
     {

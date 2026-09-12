@@ -248,7 +248,7 @@ export default async function handler(req, res) {
 //    Autodesk / Jira / Zapier) ──────────────────────────────────────────────
 
 // Normalize whatever the client sends into a stable incident shape.
-function normalizeIncident(raw) {
+export function normalizeIncident(raw) {
   raw = raw || {};
   const sevRaw = ("" + (raw.severity || raw.sev || "")).toLowerCase();
   const sevMap = { low: "Baixa", medium: "Média", high: "Alta", critical: "Crítica",
@@ -294,7 +294,7 @@ async function postJSON(url, body, headers) {
 }
 
 // Route one incident to one app using its stored config. Returns {ok, error?}.
-async function dispatchToApp(app, config, inc) {
+export async function dispatchToApp(app, config, inc) {
   config = config || {};
   try {
     if (app === "slack") return await dispatchSlack(config, inc);
@@ -555,7 +555,7 @@ async function saveTokens(companyId, provider, tokens) {
   }
 }
 
-async function getConnections(companyId, withTokens) {
+export async function getConnections(companyId, withTokens) {
   const select = withTokens ? "provider,tokens,updated_at" : "provider,updated_at";
   return supabaseRequest("GET", `cloud_connections?company_id=eq.${companyId}&select=${select}`);
 }
