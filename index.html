@@ -523,6 +523,12 @@ body{font-family:var(--font-b);background:var(--navy);color:var(--text);min-heig
 .fin-budget-name{flex:1;min-width:0;display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .fin-budget-cell{width:150px;flex-shrink:0;text-align:right;font-variant-numeric:tabular-nums;}
 .fin-budget-cell:focus{border-color:#0ea5e9;outline:none;}
+.fin-sb-list{display:flex;flex-direction:column;gap:14px;}
+.fin-sb-top{display:flex;justify-content:space-between;gap:10px;margin-bottom:6px;}
+.fin-sb-name{font-size:13px;color:var(--text);font-weight:600;}
+.fin-sb-val{font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.fin-sb-bar{height:8px;border-radius:6px;background:var(--navy3);overflow:hidden;}
+.fin-sb-fill{height:100%;border-radius:6px;transition:width .3s ease;min-width:2px;}
 @media(max-width:600px){.fin-budget-cell{width:120px;}}
 .fin-toggle{position:relative;width:44px;height:24px;border-radius:14px;background:var(--navy3);border:1px solid var(--border2);cursor:pointer;transition:background .15s;flex-shrink:0;}
 .fin-toggle.on{background:#0ea5e9;border-color:#0ea5e9;}
@@ -6490,6 +6496,28 @@ function drawBurnChart(days,budget){
 }
 
 /* ── tab-9: Custos e Despesas (KPIs + chart + ledger) ────────────────────── */
+// "All sites" view: each construction site's spend-this-month vs its own budget.
+function _finSiteBudgetCard(){
+  var L=function(en,fr,pt){return lang===1?en:lang===0?fr:pt;};
+  var now=new Date(),y=now.getFullYear(),m=now.getMonth();
+  var rows=(projects||[]).map(function(p){
+    var spent=(expenses||[]).filter(function(e){if(e.project!==p.name)return false;var d=new Date(e.created_at);return d.getFullYear()===y&&d.getMonth()===m;}).reduce(function(a,e){return a+(Number(e.amount)||0);},0);
+    return {name:p.name,spent:spent,budget:getSiteBudget(p.name)};
+  }).filter(function(r){return r.spent>0||r.budget>0;});
+  rows.sort(function(a,b){return b.spent-a.spent;});
+  var h="<div class='fin-card'><div class='fin-card-h'>"+L("Spend vs budget by site","Dépenses vs budget par chantier","Gasto vs. orçamento por canteiro")+"</div><div class='fin-card-sub'>"+L("This month — each construction site against its own budget.","Ce mois-ci — chaque chantier face à son propre budget.","Este mês — cada canteiro em relação ao seu próprio orçamento.")+"</div>";
+  if(!rows.length){h+="<div class='fin-empty'>"+L("No spend or budgets yet — set budgets in Nudges.","Aucune dépense ni budget — définissez-les dans Rappels.","Nenhum gasto ou orçamento ainda — defina em Lembretes.")+"</div></div>";return h;}
+  h+="<div class='fin-sb-list'>";
+  rows.forEach(function(r){
+    var pct=r.budget>0?Math.round(r.spent/r.budget*100):0;
+    var w=r.budget>0?Math.min(pct,100):(r.spent>0?100:0);
+    var color=r.budget<=0?"#6a6a75":pct>100?"#f87171":pct>=90?"#f59e0b":"#0ea5e9";
+    var right=r.budget>0?(financeMoney(r.spent)+" / "+financeMoney(r.budget)+" · "+pct+"%"):(financeMoney(r.spent)+" · "+L("no budget","sans budget","sem orçamento"));
+    h+="<div class='fin-sb-row'><div class='fin-sb-top'><span class='fin-sb-name'>"+escapeHTML(r.name)+"</span><span class='fin-sb-val' style='color:"+(pct>100?"#f87171":"var(--text2)")+";'>"+right+"</span></div><div class='fin-sb-bar'><div class='fin-sb-fill' style='width:"+w+"%;background:"+color+";'></div></div></div>";
+  });
+  h+="</div></div>";
+  return h;
+}
 function renderFinanceIfActive(){var t=document.getElementById("tab-9");if(t&&t.classList.contains("active")){renderFinance();}var t2=document.getElementById("tab-11");if(t2&&t2.classList.contains("active"))renderFinanceAutomations();}
 function renderFinance(){
   var body=document.getElementById("fin-desp-body");if(!body)return;
@@ -6502,10 +6530,15 @@ function renderFinance(){
   h+="<div class='fin-card' style='margin-bottom:0;'><div class='fin-kpi-label'><i class='ti ti-cash' style='color:#0ea5e9;'></i>"+_t3("Costs this month","Coûts ce mois-ci","Custos este mês")+" · <span style='color:#0ea5e9;'>"+escapeHTML(_kpiSite)+"</span></div><div class='fin-kpi-val'>"+financeMoney(monthTotal)+"</div><div class='fin-kpi-sub'>"+(budget>0?(_t3("of","sur","de")+" "+financeMoney(budget)+" "+_t3("budget","de budget","de orçamento")+" · "+Math.round(monthTotal/budget*100)+"%"+(getActiveSite()?"":" · "+_t3("all sites total","total tous chantiers","total de todos"))):_t3("No budget set — set it in Nudges","Aucun budget — définissez-le dans Rappels","Sem orçamento — defina em Lembretes"))+"</div></div>";
   h+="<div class='fin-card' style='margin-bottom:0;'><div class='fin-kpi-label'><i class='ti ti-receipt' style='color:#f59e0b;'></i>"+_t3("Receipts processed (OCR)","Reçus traités (OCR)","Recibos Processados (OCR)")+"</div><div class='fin-kpi-val'>"+ocr+"</div><div class='fin-kpi-sub'>"+pending+" "+_t3("awaiting review","en attente de validation","aguardando revisão")+"</div></div>";
   h+="</div>";
-  // Chart card
-  h+="<div class='fin-card'><div class='fin-card-h'>"+_t3("30-day burn rate vs. budget","Consommation 30 jours vs budget","Consumo em 30 dias vs. orçamento")+"</div><div class='fin-card-sub'>"+_t3("Cumulative spend against your monthly budget projection.","Dépenses cumulées vs projection du budget mensuel.","Gasto acumulado vs. projeção do orçamento mensal.")+"</div>";
-  h+="<div class='fin-chart-wrap'>"+drawBurnChart(_finLast30(),budget)+"</div>";
-  h+="<div class='fin-legend'><span><i style='background:#0ea5e9;'></i>"+_t3("Cumulative spend","Dépenses cumulées","Gasto acumulado")+"</span><span><i style='background:#f59e0b;'></i>"+_t3("Budget projection","Projection budget","Projeção do orçamento")+"</span></div></div>";
+  // Chart: a specific site → 30-day burn vs its budget; "All sites" → per-site
+  // spend-vs-budget breakdown (each canteiro against its own orçamento).
+  if(getActiveSite()){
+    h+="<div class='fin-card'><div class='fin-card-h'>"+_t3("30-day burn rate vs. budget","Consommation 30 jours vs budget","Consumo em 30 dias vs. orçamento")+"</div><div class='fin-card-sub'>"+_t3("Cumulative spend against your monthly budget projection.","Dépenses cumulées vs projection du budget mensuel.","Gasto acumulado vs. projeção do orçamento mensal.")+"</div>";
+    h+="<div class='fin-chart-wrap'>"+drawBurnChart(_finLast30(),budget)+"</div>";
+    h+="<div class='fin-legend'><span><i style='background:#0ea5e9;'></i>"+_t3("Cumulative spend","Dépenses cumulées","Gasto acumulado")+"</span><span><i style='background:#f59e0b;'></i>"+_t3("Budget projection","Projection budget","Projeção do orçamento")+"</span></div></div>";
+  }else{
+    h+=_finSiteBudgetCard();
+  }
   // Ledger
   h+="<div class='fin-card' style='padding:0;overflow:hidden;'>";
   if(!list.length){h+="<div class='fin-empty'><i class='ti ti-receipt-off' style='font-size:30px;display:block;margin-bottom:8px;'></i>"+_t3("No expenses yet. Tap “Registrar Despesa” to add one.","Aucune dépense. Cliquez sur “Saisie Dépense”.","Nenhuma despesa ainda. Toque em “Registrar Despesa”.")+"</div>";}
@@ -10454,8 +10487,21 @@ window.addEventListener('appinstalled',function(){
 // offline, it serves the cached shell so the field team can still open Pillier.
 // Registration failure is swallowed so it can never break the page.
 if('serviceWorker' in navigator&&location.protocol==='https:'){
+  // When a new service worker takes control, the installed PWA is still running
+  // the OLD page code — reload once so the latest logic (sync fixes, etc.) runs.
+  var _swReloaded=false;
+  // Only reload on UPDATE (page already had a controller) — not on first install.
+  if(navigator.serviceWorker.controller){
+    try{navigator.serviceWorker.addEventListener('controllerchange',function(){if(_swReloaded)return;_swReloaded=true;location.reload();});}catch(_){}
+  }
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('/sw.js').catch(function(err){try{plog('sw register failed',err);}catch(_){}});
+    navigator.serviceWorker.register('/sw.js').then(function(reg){
+      try{reg.update();}catch(_){}
+      // Check for a new version whenever the app is brought to the foreground so
+      // the standalone PWA never gets stuck on stale code between navigations.
+      document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'){try{reg.update();}catch(_){}}});
+      window.addEventListener('focus',function(){try{reg.update();}catch(_){}});
+    }).catch(function(err){try{plog('sw register failed',err);}catch(_){}});
   });
 }
 // Drain offline queues on every signal that we might be back online. The 'online'
