@@ -5487,10 +5487,13 @@ async function loadDB(){
   var r=await db.from("captures").select("*").eq("company_id",dbCoId).order("created_at",{ascending:false}).limit(200);
   var dbEntries=(r&&r.data)?r.data.map(function(d){var aiData={};try{aiData=JSON.parse(d.ai_analysis||"{}");}catch(e){aiData={solution:d.ai_analysis||""};}return{id:d.id,title:d.title,project:d.project||"",cat:canonCat(d.category||"Structure"),sev:d.severity||"medium",desc:d.description||"",action:d.action||"",cause:aiData.cause||"",normes:aiData.normes||"",date:new Date(d.created_at).toLocaleDateString("fr-FR"),status:d.status||"open",author:d.uploaded_by||"",photo_url:d.photo_url||null};}):[];
   if(r&&r.error){console.error("loadDB:",r.error);}
-  // Merge: keep local records the DB doesn't have yet (unsynced), then DB records
+  // Merge: keep only genuinely UNSYNCED local records (numeric temp id) that the
+  // DB doesn't have — then the DB records. A local record with a UUID that's
+  // missing from the DB was deleted on another device, so it must NOT be kept
+  // (otherwise deletions made on the web reappear in the app, and vice-versa).
   var dbIds={};dbEntries.forEach(function(e){dbIds[String(e.id)]=1;});
-  var localOnly=local.filter(function(e){return !dbIds[String(e.id)];});
-  entries=(r&&r.error&&!dbEntries.length)?local.slice():localOnly.concat(dbEntries);
+  var localOnly=local.filter(function(e){return /^\d+$/.test(String(e.id))&&!dbIds[String(e.id)];});
+  entries=(r&&r.error)?local.slice():localOnly.concat(dbEntries);
   saveEntriesLocal();
   renderDash();renderKB();renderCounts();
   try{syncPendingAnalyses();}catch(e){} // analyse any photos captured offline
