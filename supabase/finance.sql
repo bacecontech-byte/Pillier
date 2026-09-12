@@ -12,6 +12,7 @@ create table if not exists expenses (
   project      text,
   vendor       text,
   category     text,
+  subcategory  text,
   amount       numeric(14,2) not null default 0,
   currency     text default 'BRL',
   method       text,
@@ -23,6 +24,8 @@ create table if not exists expenses (
   created_at   timestamptz default now(),
   updated_at   timestamptz default now()
 );
+-- If the table already exists from an earlier run, add the new column in place.
+alter table expenses add column if not exists subcategory text;
 create index if not exists expenses_company_created_idx on expenses (company_id, created_at desc);
 create index if not exists expenses_company_status_idx  on expenses (company_id, status);
 
@@ -60,3 +63,18 @@ drop policy if exists finset_update on finance_settings;
 create policy finset_select on finance_settings for select using (is_member(company_id));
 create policy finset_upsert on finance_settings for insert with check (is_member(company_id));
 create policy finset_update on finance_settings for update using (is_member(company_id)) with check (is_member(company_id));
+
+-- ── Receipt image storage ───────────────────────────────────────────────────
+-- Public bucket so receipt_url is a durable link. Files are namespaced by
+-- company id with an unguessable timestamped name. Any signed-in member of the
+-- app can upload; reads are public (needed to render the stored URL).
+insert into storage.buckets (id, name, public)
+  values ('receipts', 'receipts', true)
+  on conflict (id) do nothing;
+
+drop policy if exists receipts_read   on storage.objects;
+drop policy if exists receipts_insert on storage.objects;
+drop policy if exists receipts_update on storage.objects;
+create policy receipts_read   on storage.objects for select using (bucket_id = 'receipts');
+create policy receipts_insert on storage.objects for insert to authenticated with check (bucket_id = 'receipts');
+create policy receipts_update on storage.objects for update to authenticated using (bucket_id = 'receipts') with check (bucket_id = 'receipts');

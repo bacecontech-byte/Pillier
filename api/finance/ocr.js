@@ -12,6 +12,14 @@ import { applyRateLimit } from '../_rate-limit.js';
 // The five categories the modal offers — the model must map to one of these.
 const CATEGORIES = ['Material Básico', 'Mão de Obra', 'Equipamentos', 'Transporte', 'Outros'];
 const METHODS = ['Pix', 'Cartão', 'Dinheiro', 'Boleto', 'Virement'];
+// Dependent sub-categories per category (canonical PT, must match the client).
+const SUBCATS = {
+  'Transporte': ['Combustível', 'Óleo/Manutenção', 'Pedágio', 'Frete/Carreto', 'Outros Transporte'],
+  'Material Básico': ['Cimento', 'Areia/Brita', 'Tijolo/Bloco', 'Aço/Ferragem', 'Madeira', 'Outros Básico'],
+  'Mão de Obra': ['Diária Pedreiro', 'Ajudante', 'Empreiteiro', 'Horas Extras', 'Alimentação Equipe'],
+  'Equipamentos': ['Aluguel Betoneira', 'Andaimes', 'Gerador', 'Ferramentas Elétricas', 'Manutenção'],
+  'Outros': ['Taxas/Cartório', 'EPI/Segurança', 'Limpeza', 'Administrativo', 'Diversos'],
+};
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -37,6 +45,7 @@ export default async function handler(req, res) {
       '(cupons fiscais, notas, faturas) in Portuguese, French or English. ' +
       'Read the image and return ONLY a compact JSON object, no markdown, with exactly these keys: ' +
       '{"vendor": string, "category": one of ' + JSON.stringify(CATEGORIES) + ', ' +
+      '"subcategory": string, ' +
       '"amount": number (the grand total, dot decimal, no thousands separators, no currency symbol), ' +
       '"currency": one of ["BRL","EUR","USD"], ' +
       '"method": one of ' + JSON.stringify(METHODS) + ' or "", ' +
@@ -44,7 +53,11 @@ export default async function handler(req, res) {
       '"items": array of up to 6 {"name":string,"total":number}}. ' +
       'Infer category from the vendor and line items (building materials → "Material Básico", ' +
       'tools/machines → "Equipamentos", freight/fuel → "Transporte", labour/services → "Mão de Obra", ' +
-      'else "Outros"). If a field is unreadable use "" (or 0 for amount). Return JSON only.';
+      'else "Outros"). Then pick "subcategory" as EXACTLY one value from this map for the chosen ' +
+      'category (verbatim, keep accents): ' + JSON.stringify(SUBCATS) + '. ' +
+      'For example a fuel station (Posto, TotalEnergies, Shell, Ipiranga) → category "Transporte", ' +
+      'subcategory "Combustível"; a cement invoice → "Material Básico" / "Cimento". ' +
+      'If a field is unreadable use "" (or 0 for amount). Return JSON only.';
 
     const geminiRes = await fetch(
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + GEMINI_KEY,
@@ -79,16 +92,20 @@ export default async function handler(req, res) {
     if (!parsed) return res.status(200).json({ ok: false, error: 'parse_failed', raw: text.slice(0, 400) });
 
     // Normalize / clamp to the allowed enums so the client can trust the values.
+    const category = CATEGORIES.indexOf(parsed.category) >= 0 ? parsed.category : 'Outros';
+    const subOptions = SUBCATS[category] || [];
+    const subcategory = subOptions.indexOf(parsed.subcategory) >= 0 ? parsed.subcategory : '';
     const out = {
       vendor: str(parsed.vendor).slice(0, 120),
-      category: CATEGORIES.indexOf(parsed.category) >= 0 ? parsed.category : 'Outros',
+      category: category,
+      subcategory: subcategory,
       amount: num(parsed.amount),
       currency: ['BRL', 'EUR', 'USD'].indexOf(parsed.currency) >= 0 ? parsed.currency : '',
       method: METHODS.indexOf(parsed.method) >= 0 ? parsed.method : '',
       date: /^\d{4}-\d{2}-\d{2}$/.test(parsed.date || '') ? parsed.date : '',
       items: Array.isArray(parsed.items) ? parsed.items.slice(0, 6).map((it) => ({ name: str(it && it.name).slice(0, 80), total: num(it && it.total) })) : [],
     };
-    console.log('[finance-ocr] extracted', out.vendor, out.amount, out.currency, out.category);
+    console.log('[finance-ocr] extracted', out.vendor, out.amount, out.currency, out.category, out.subcategory);
     return res.status(200).json({ ok: true, data: out });
   } catch (err) {
     console.error('[finance-ocr] error', err.message);

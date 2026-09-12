@@ -499,6 +499,12 @@ body{font-family:var(--font-b);background:var(--navy);color:var(--text);min-heig
 .fin-pill.pending{color:#f59e0b;background:rgba(245,158,11,.12);}
 .fin-pill.reviewed{color:#4ade80;background:rgba(74,222,128,.12);}
 .fin-catcell{font-size:10px;color:var(--text2);display:block;margin-top:2px;}
+.fin-vendorcell{display:flex;align-items:center;gap:10px;min-width:0;}
+.fin-vendorname{font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fin-thumb{width:34px;height:34px;border-radius:8px;object-fit:cover;flex-shrink:0;cursor:pointer;border:1px solid var(--border2);background:var(--navy3);}
+.fin-thumb:hover{border-color:#0ea5e9;}
+.fin-thumb-empty{display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:15px;cursor:default;}
+.fin-thumb-empty:hover{border-color:var(--border2);}
 .fin-empty{text-align:center;color:var(--text3);font-size:13px;padding:40px 16px;}
 .fin-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:4px;}
 .fin-del:hover{color:#f87171;}
@@ -6153,8 +6159,58 @@ var FIN_METHODS=[
   {v:"Boleto",l:["Boleto","Boleto","Boleto"]},
   {v:"Virement",l:["Transfer","Virement","Transferência"]}
 ];
+// Dependent sub-categories, keyed by the canonical PT category value. Values are
+// canonical PT (match /api/finance/ocr + DB); labels localized [EN,FR,PT].
+var FIN_SUBCATS={
+  "Transporte":[
+    {v:"Combustível",l:["Fuel (Gas/Diesel)","Carburant (Essence/Diesel)","Combustível (Gasolina/Diesel)"]},
+    {v:"Óleo/Manutenção",l:["Oil/Maintenance","Huile/Entretien","Óleo/Manutenção"]},
+    {v:"Pedágio",l:["Toll","Péage","Pedágio"]},
+    {v:"Frete/Carreto",l:["Freight/Haulage","Fret/Transport","Frete/Carreto"]},
+    {v:"Outros Transporte",l:["Other transport","Autre transport","Outros Transporte"]}
+  ],
+  "Material Básico":[
+    {v:"Cimento",l:["Cement","Ciment","Cimento"]},
+    {v:"Areia/Brita",l:["Sand/Gravel","Sable/Gravier","Areia/Brita"]},
+    {v:"Tijolo/Bloco",l:["Brick/Block","Brique/Bloc","Tijolo/Bloco"]},
+    {v:"Aço/Ferragem",l:["Steel/Rebar","Acier/Ferraille","Aço/Ferragem"]},
+    {v:"Madeira",l:["Wood","Bois","Madeira"]},
+    {v:"Outros Básico",l:["Other basic","Autre base","Outros Básico"]}
+  ],
+  "Mão de Obra":[
+    {v:"Diária Pedreiro",l:["Mason day rate","Journée maçon","Diária Pedreiro"]},
+    {v:"Ajudante",l:["Helper","Aide","Ajudante"]},
+    {v:"Empreiteiro",l:["Contractor","Sous-traitant","Empreiteiro"]},
+    {v:"Horas Extras",l:["Overtime","Heures sup.","Horas Extras"]},
+    {v:"Alimentação Equipe",l:["Team meals","Repas équipe","Alimentação Equipe"]}
+  ],
+  "Equipamentos":[
+    {v:"Aluguel Betoneira",l:["Mixer rental","Location bétonnière","Aluguel Betoneira"]},
+    {v:"Andaimes",l:["Scaffolding","Échafaudages","Andaimes"]},
+    {v:"Gerador",l:["Generator","Générateur","Gerador"]},
+    {v:"Ferramentas Elétricas",l:["Power tools","Outils électriques","Ferramentas Elétricas"]},
+    {v:"Manutenção",l:["Maintenance","Entretien","Manutenção"]}
+  ],
+  "Outros":[
+    {v:"Taxas/Cartório",l:["Fees/Notary","Taxes/Notaire","Taxas/Cartório"]},
+    {v:"EPI/Segurança",l:["PPE/Safety","EPI/Sécurité","EPI/Segurança"]},
+    {v:"Limpeza",l:["Cleaning","Nettoyage","Limpeza"]},
+    {v:"Administrativo",l:["Administrative","Administratif","Administrativo"]},
+    {v:"Diversos",l:["Miscellaneous","Divers","Diversos"]}
+  ]
+};
 function _finCatLabel(v){var c=FIN_CATS.filter(function(x){return x.v===v;})[0];return c?_t3(c.l[0],c.l[1],c.l[2]):v;}
 function _finMethodLabel(v){var m=FIN_METHODS.filter(function(x){return x.v===v;})[0];return m?_t3(m.l[0],m.l[1],m.l[2]):v;}
+function _finSubLabel(cat,v){var a=FIN_SUBCATS[cat]||[];var s=a.filter(function(x){return x.v===v;})[0];return s?_t3(s.l[0],s.l[1],s.l[2]):v;}
+// Populate a <select> with the sub-categories of `cat`; keep `selected` if valid.
+function _finFillSubcats(selectId,cat,selected){
+  var sel=document.getElementById(selectId);if(!sel)return;
+  var subs=FIN_SUBCATS[cat]||[];
+  var opts="<option value=''>"+_t3("— optional —","— optionnel —","— opcional —")+"</option>";
+  opts+=subs.map(function(s){var on=(s.v===selected)?" selected":"";return "<option value=\""+s.v+"\""+on+">"+escapeHTML(_t3(s.l[0],s.l[1],s.l[2]))+"</option>";}).join("");
+  sel.innerHTML=opts;
+}
+function onExpenseCategoryChange(){var ec=document.getElementById("exp-cat");if(!ec)return;_finFillSubcats("exp-subcat",ec.value,"");}
 function financeCurrencyCode(){return lang===2?"BRL":lang===0?"EUR":"USD";}
 function financeCurrencySymbol(){return lang===2?"R$":lang===0?"€":"US$";}
 function financeMoney(v){var loc=lang===1?"en-US":lang===0?"fr-FR":"pt-BR";return financeCurrencySymbol()+" "+(Number(v)||0).toLocaleString(loc,{minimumFractionDigits:2,maximumFractionDigits:2});}
@@ -6165,31 +6221,70 @@ function _finParseAmount(s){var n=parseFloat(String(s).replace(/[^0-9.,-]/g,"").
 
 /* ── persistence (offline-first) ─────────────────────────────────────────── */
 function loadExpensesLocal(){try{var r=localStorage.getItem("pillier-expenses-v1");expenses=r?JSON.parse(r):[];}catch(e){expenses=[];}}
-function saveExpensesLocal(){try{localStorage.setItem("pillier-expenses-v1",JSON.stringify(expenses.slice(0,500)));}catch(e){}}
-function _expFromRow(r){return {id:r.id,project:r.project||"",vendor:r.vendor||"",category:r.category||"Outros",amount:Number(r.amount)||0,currency:r.currency||"BRL",method:r.method||"",note:r.note||"",receipt_url:r.receipt_url||null,ocr:!!r.ocr,status:r.status||"pending",created_by:r.created_by||"",created_at:r.created_at||new Date().toISOString()};}
+function saveExpensesLocal(){
+  // Persist a cleaned copy: drop the transient full-res upload blob; keep the
+  // small base64 thumbnail only for the newest 40 rows to stay within quota.
+  var out=expenses.slice(0,500).map(function(e,i){var c={};for(var k in e){if(k==="_pendingReceipt")continue;c[k]=e[k];}if(i>=40)c.receipt_thumb=null;return c;});
+  try{localStorage.setItem("pillier-expenses-v1",JSON.stringify(out));}
+  catch(e){try{localStorage.setItem("pillier-expenses-v1",JSON.stringify(out.map(function(c){c.receipt_thumb=null;return c;})));}catch(_){}}
+}
+function _expFromRow(r){return {id:r.id,project:r.project||"",vendor:r.vendor||"",category:r.category||"Outros",subcategory:r.subcategory||"",amount:Number(r.amount)||0,currency:r.currency||"BRL",method:r.method||"",note:r.note||"",receipt_url:r.receipt_url||null,receipt_thumb:null,ocr:!!r.ocr,status:r.status||"pending",created_by:r.created_by||"",created_at:r.created_at||new Date().toISOString()};}
 async function loadExpenses(){
   loadExpensesLocal();
   if(dbOk&&dbCoId&&db){
     try{
       var r=await db.from("expenses").select("*").eq("company_id",dbCoId).order("created_at",{ascending:false}).limit(500);
       if(r&&!r.error&&r.data){
+        // Preserve any locally-cached receipt thumbnails so previews survive a
+        // reload even when the receipt only exists as a base64 offline copy.
+        var thumbById={};expenses.forEach(function(e){if(e.receipt_thumb)thumbById[String(e.id)]=e.receipt_thumb;});
         var localOnly=expenses.filter(function(e){return /^\d+$/.test(String(e.id));}); // not yet synced
-        expenses=r.data.map(_expFromRow).concat(localOnly);
+        var rows=r.data.map(_expFromRow);
+        rows.forEach(function(e){if(!e.receipt_url&&thumbById[String(e.id)])e.receipt_thumb=thumbById[String(e.id)];});
+        expenses=rows.concat(localOnly);
         saveExpensesLocal();
       }else if(r&&r.error){console.warn("[finance] loadExpenses (using local):",r.error.message);}
     }catch(e){console.warn("[finance] loadExpenses error (using local):",e.message);}
+    try{await syncPendingExpenses();}catch(e){}
   }
   try{loadFinanceSettings();}catch(e){}
   try{renderFinanceIfActive();}catch(e){}
 }
+// Re-insert expenses that were created offline (still carry a numeric temp id).
+async function syncPendingExpenses(){
+  if(!dbOk||!dbCoId||!db)return;
+  var pend=expenses.filter(function(e){return /^\d+$/.test(String(e.id));});
+  for(var i=0;i<pend.length;i++){try{await saveExpenseDB(pend[i]);}catch(e){break;}}
+}
 async function saveExpenseDB(e){
   if(!dbOk||!dbCoId||!db)return;
+  // Upload the receipt image to Storage first so receipt_url is a durable link.
+  if(!(e.receipt_url&&String(e.receipt_url).indexOf("http")===0)){
+    var src=e._pendingReceipt||e.receipt_thumb;
+    if(src){try{var url=await uploadReceipt(src,e.id);if(url){e.receipt_url=url;e._pendingReceipt=null;var li=expenses.findIndex(function(x){return String(x.id)===String(e.id);});if(li>=0){expenses[li].receipt_url=url;saveExpensesLocal();}}}catch(upErr){console.warn("[finance] receipt upload failed (kept local):",upErr.message);}}
+  }
+  var base={company_id:dbCoId,project:e.project,vendor:e.vendor,category:e.category,amount:e.amount,currency:e.currency,method:e.method,note:e.note||"",receipt_url:(e.receipt_url&&String(e.receipt_url).indexOf("http")===0)?e.receipt_url:null,ocr:!!e.ocr,status:e.status||"pending",created_by:(me&&me.name)||""};
+  var payload={};for(var k in base)payload[k]=base[k];payload.subcategory=e.subcategory||"";
   try{
-    var payload={company_id:dbCoId,project:e.project,vendor:e.vendor,category:e.category,amount:e.amount,currency:e.currency,method:e.method,note:e.note||"",receipt_url:(e.receipt_url&&String(e.receipt_url).indexOf("http")===0)?e.receipt_url:null,ocr:!!e.ocr,status:e.status||"pending",created_by:(me&&me.name)||""};
     var r=await db.from("expenses").insert(payload).select();
-    if(r&&!r.error&&r.data&&r.data[0]){var i=expenses.findIndex(function(x){return String(x.id)===String(e.id);});if(i>=0){expenses[i].id=r.data[0].id;saveExpensesLocal();}console.log("[finance] expense synced",r.data[0].id);}
+    // Graceful fallback if the DB hasn't been migrated for `subcategory` yet.
+    if(r&&r.error&&/subcategory/.test(r.error.message||"")){console.warn("[finance] subcategory column missing — run supabase/finance.sql; syncing without it");r=await db.from("expenses").insert(base).select();}
+    if(r&&!r.error&&r.data&&r.data[0]){var idx=expenses.findIndex(function(x){return String(x.id)===String(e.id);});if(idx>=0){expenses[idx].id=r.data[0].id;saveExpensesLocal();}console.log("[finance] expense synced",r.data[0].id);}
     else if(r&&r.error){console.warn("[finance] expense DB save failed (kept local):",r.error.message);}
   }catch(err){console.warn("[finance] expense DB save error (kept local):",err.message);}
+}
+// Upload a data-URL image to the `receipts` Storage bucket → public URL.
+async function uploadReceipt(dataUrl,id){
+  if(!db||!db.storage||!dataUrl||String(dataUrl).indexOf("data:")!==0)return null;
+  var m=String(dataUrl).match(/^data:([^;]+);base64,(.+)$/);if(!m)return null;
+  var mime=m[1],b64=m[2];
+  var bin=atob(b64),len=bin.length,arr=new Uint8Array(len);for(var i=0;i<len;i++)arr[i]=bin.charCodeAt(i);
+  var ext=mime.indexOf("png")>=0?"png":mime.indexOf("webp")>=0?"webp":"jpg";
+  var path=dbCoId+"/"+id+"-"+Date.now()+"."+ext;
+  var up=await db.storage.from("receipts").upload(path,new Blob([arr],{type:mime}),{contentType:mime,upsert:true});
+  if(up&&up.error){throw new Error(up.error.message);}
+  var pub=db.storage.from("receipts").getPublicUrl(path);
+  return (pub&&pub.data&&pub.data.publicUrl)||null;
 }
 function activeSiteExpenses(){var a=getActiveSite();if(!a)return expenses;return expenses.filter(function(e){return e.project===a;});}
 
@@ -6276,12 +6371,18 @@ function renderFinance(){
        "<th>"+_t3("Date","Date","Data")+"</th><th>"+_t3("Vendor","Fournisseur","Fornecedor")+"</th><th>"+_t3("Method","Méthode","Método")+"</th><th style='text-align:right;'>"+_t3("Amount","Montant","Valor")+"</th><th>"+_t3("Status","Statut","Status")+"</th><th></th></tr></thead><tbody>";
     list.forEach(function(e){
       var d=new Date(e.created_at);
+      var idAttr=String(e.id).replace(/'/g,"");
+      var proof=e.receipt_url||e.receipt_thumb;
+      var thumb=proof
+        ?"<img src=\""+escapeHTML(proof)+"\" class='fin-thumb' onclick=\"openReceiptViewer('"+idAttr+"')\" title='"+_t3("View receipt","Voir le reçu","Ver recibo")+"'/>"
+        :"<span class='fin-thumb fin-thumb-empty'><i class='ti ti-photo-off'></i></span>";
+      var catLine=escapeHTML(_finCatLabel(e.category))+(e.subcategory?(" • "+escapeHTML(_finSubLabel(e.category,e.subcategory))):"");
       h+="<tr><td style='white-space:nowrap;color:var(--text3);'>"+_finDayShort(d)+"</td>"+
-         "<td>"+escapeHTML(e.vendor||"—")+(e.ocr?" <i class='ti ti-scan' title='OCR' style='font-size:12px;color:#0ea5e9;vertical-align:-1px;'></i>":"")+"<span class='fin-catcell'>"+escapeHTML(_finCatLabel(e.category))+"</span></td>"+
+         "<td><div class='fin-vendorcell'>"+thumb+"<div style='min-width:0;'><div class='fin-vendorname'>"+escapeHTML(e.vendor||"—")+(e.ocr?" <i class='ti ti-scan' title='OCR' style='font-size:12px;color:#0ea5e9;vertical-align:-1px;'></i>":"")+"</div><span class='fin-catcell'>"+catLine+"</span></div></div></td>"+
          "<td style='color:var(--text2);white-space:nowrap;'>"+escapeHTML(_finMethodLabel(e.method)||"—")+"</td>"+
          "<td class='num'>"+financeMoney(e.amount)+"</td>"+
-         "<td><span class='fin-pill "+(e.status==="reviewed"?"reviewed":"pending")+"' onclick=\"toggleExpenseStatus('"+String(e.id).replace(/'/g,"")+"')\">"+(e.status==="reviewed"?_t3("Reviewed","Validé","Revisado"):_t3("Pending","En attente","Pendente"))+"</span></td>"+
-         "<td style='text-align:right;'><button class='fin-del' onclick=\"deleteExpense('"+String(e.id).replace(/'/g,"")+"')\" title='"+_t3("Delete","Supprimer","Excluir")+"'><i class='ti ti-trash'></i></button></td></tr>";
+         "<td><span class='fin-pill "+(e.status==="reviewed"?"reviewed":"pending")+"' role='button' tabindex='0' title='"+_t3("Click to toggle","Cliquer pour changer","Clique para alternar")+"' onclick=\"toggleExpenseStatus('"+idAttr+"')\">"+(e.status==="reviewed"?("<i class='ti ti-check' style='vertical-align:-1px;margin-right:2px;'></i>"+_t3("Reviewed","Validé","Revisado")):_t3("Pending","En attente","Pendente"))+"</span></td>"+
+         "<td style='text-align:right;'><button class='fin-del' onclick=\"deleteExpense('"+idAttr+"')\" title='"+_t3("Delete","Supprimer","Excluir")+"'><i class='ti ti-trash'></i></button></td></tr>";
     });
     h+="</tbody></table></div>";
   }
@@ -6305,7 +6406,7 @@ var FIN_MATERIALS=[
 function _finMaterialSeries(){
   var series={};FIN_MATERIALS.forEach(function(m){series[m.key]=[];});
   activeSiteExpenses().forEach(function(e){
-    var hay=[e.vendor,e.note,e.category].join(" ");
+    var hay=[e.vendor,e.note,e.category,e.subcategory].join(" ");
     FIN_MATERIALS.forEach(function(m){
       if(m.re.test(hay)&&e.amount>0){series[m.key].push({d:new Date(e.created_at),v:Number(e.amount)});}
     });
@@ -6396,19 +6497,24 @@ function openExpenseModal(){
   var h="<div class='exp-card' onclick='event.stopPropagation()'>";
   h+="<div class='exp-head'><i class='ti ti-cash-banknote' style='font-size:22px;color:#0ea5e9;'></i><div style='font-family:var(--font-d);font-size:17px;font-weight:800;color:var(--text);flex:1;'>"+_t3("Quick Expense AI","Saisie Dépense IA","Registrar Despesa AI")+"</div><i class='ti ti-x' style='font-size:20px;color:var(--text3);cursor:pointer;' onclick='closeExpenseModal()'></i></div>";
   h+="<div class='exp-body'>";
-  // OCR drop-zone
+  // OCR drop-zone (prompt) — swaps to a persistent preview once a photo is set.
   h+="<div class='exp-drop' id='exp-drop' onclick=\"document.getElementById('exp-file').click()\">";
-  h+="<i class='ti ti-camera' style='font-size:26px;color:#0ea5e9;'></i>";
+  h+="<div id='exp-prompt'><i class='ti ti-camera' style='font-size:26px;color:#0ea5e9;'></i>";
   h+="<div style='font-size:13px;color:var(--text);font-weight:600;margin-top:8px;'>"+_t3("Take a photo or Upload (OCR)","Tirar Foto ou Upload (OCR)","Tirar Foto ou Upload (OCR)")+"</div>";
-  h+="<div style='font-size:11px;color:var(--text3);margin-top:3px;'>"+_t3("Receipts, invoices, cupom fiscal","Reçus, factures, cupom fiscal","Cupons fiscais, notas, faturas")+"</div>";
+  h+="<div style='font-size:11px;color:var(--text3);margin-top:3px;'>"+_t3("Receipts, invoices, cupom fiscal","Reçus, factures, cupom fiscal","Cupons fiscais, notas, faturas")+"</div></div>";
   h+="<div id='exp-ocr-status' style='display:none;align-items:center;justify-content:center;gap:8px;margin-top:12px;color:#0ea5e9;font-size:12px;'><i class='ti ti-loader-2' style='animation:spin 1s linear infinite;'></i>"+_t3("Reading receipt…","Lecture du reçu…","Lendo o recibo…")+"</div>";
-  h+="<img id='exp-preview' style='display:none;max-height:120px;border-radius:8px;margin-top:12px;' />";
+  h+="<img id='exp-preview' style='display:none;max-height:150px;border-radius:8px;margin-top:4px;' />";
+  h+="</div>";
+  h+="<div id='exp-receipt-ctrls' style='display:none;gap:8px;margin-top:8px;justify-content:center;'>";
+  h+="<button type='button' class='fin-ghost-btn' style='padding:7px 12px;font-size:12px;' onclick=\"event.stopPropagation();document.getElementById('exp-file').click()\"><i class='ti ti-refresh' style='vertical-align:-2px;margin-right:4px;'></i>"+_t3("Replace photo","Remplacer","Substituir foto")+"</button>";
+  h+="<button type='button' class='fin-ghost-btn' style='padding:7px 12px;font-size:12px;color:#f87171;border-color:rgba(248,113,113,0.4);' onclick=\"event.stopPropagation();clearReceipt()\"><i class='ti ti-trash' style='vertical-align:-2px;margin-right:4px;'></i>"+_t3("Remove","Retirer","Remover")+"</button>";
   h+="</div>";
   h+="<input type='file' id='exp-file' accept='image/*' capture='environment' style='display:none;' onchange='handleReceiptFile(this)'>";
   h+="<div style='height:14px;'></div>";
   // 4-field form
   h+="<div class='exp-field'><label>"+_t3("Vendor","Fournisseur","Fornecedor")+"</label><input id='exp-vendor' placeholder='"+_t3("e.g. Depósito São José","ex. Dépôt São José","ex. Depósito São José")+"'></div>";
-  h+="<div class='exp-field'><label>"+_t3("Category","Catégorie","Categoria")+"</label><select id='exp-cat'>"+catOpts+"</select></div>";
+  h+="<div class='exp-field'><label>"+_t3("Category","Catégorie","Categoria")+"</label><select id='exp-cat' onchange='onExpenseCategoryChange()'>"+catOpts+"</select></div>";
+  h+="<div class='exp-field'><label>"+_t3("Subcategory","Sous-catégorie","Subcategoria")+"</label><select id='exp-subcat'></select></div>";
   h+="<div class='exp-field'><label>"+_t3("Amount","Montant","Valor")+"</label><div class='exp-amount-wrap'><span class='exp-cur'>"+financeCurrencySymbol()+"</span><input id='exp-amount' inputmode='decimal' placeholder='0,00' style='flex:1;'></div></div>";
   h+="<div class='exp-field'><label>"+_t3("Payment method","Méthode de paiement","Método de pagamento")+"</label><div class='exp-methods'>"+methods+"</div></div>";
   h+="</div>";
@@ -6417,6 +6523,7 @@ function openExpenseModal(){
   ov.innerHTML=h;
   ov.onclick=function(e){if(e.target===ov)closeExpenseModal();};
   document.body.appendChild(ov);
+  try{var ec0=document.getElementById("exp-cat");_finFillSubcats("exp-subcat",ec0?ec0.value:(FIN_CATS[0]&&FIN_CATS[0].v),"");}catch(e){}
   // drag & drop
   var dz=document.getElementById("exp-drop");
   if(dz){["dragenter","dragover"].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.add("drag");});});["dragleave","drop"].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.remove("drag");});});
@@ -6428,12 +6535,24 @@ function handleReceiptFile(input){if(input.files&&input.files[0])_readReceipt(in
 function _readReceipt(file){
   if(!/^image\//.test(file.type)){toast(_t3("Please choose an image","Choisissez une image","Escolha uma imagem"));return;}
   var reader=new FileReader();
-  reader.onload=function(ev){
-    var dataUrl=ev.target.result;
-    var pv=document.getElementById("exp-preview");if(pv){pv.src=dataUrl;pv.style.display="inline-block";}
-    runReceiptOCR(dataUrl);
-  };
+  reader.onload=function(ev){var dataUrl=ev.target.result;_expShowReceipt(dataUrl);runReceiptOCR(dataUrl);};
   reader.readAsDataURL(file);
+}
+// Show the captured image as a persistent thumbnail (with Replace/Remove) instead
+// of resetting the drop-zone to blank after analysis.
+function _expShowReceipt(dataUrl){
+  var pv=document.getElementById("exp-preview");if(pv){pv.src=dataUrl;pv.style.display="inline-block";}
+  var pr=document.getElementById("exp-prompt");if(pr)pr.style.display="none";
+  var cl=document.getElementById("exp-receipt-ctrls");if(cl)cl.style.display="flex";
+  var dz=document.getElementById("exp-drop");if(dz)dz.style.cursor="default";
+}
+function clearReceipt(){
+  _expReceiptData=null;
+  var pv=document.getElementById("exp-preview");if(pv){pv.src="";pv.style.display="none";}
+  var pr=document.getElementById("exp-prompt");if(pr)pr.style.display="";
+  var cl=document.getElementById("exp-receipt-ctrls");if(cl)cl.style.display="none";
+  var dz=document.getElementById("exp-drop");if(dz)dz.style.cursor="pointer";
+  var f=document.getElementById("exp-file");if(f)f.value="";
 }
 async function runReceiptOCR(dataUrl){
   var sp=document.getElementById("exp-ocr-status");if(sp)sp.style.display="flex";
@@ -6445,10 +6564,13 @@ async function runReceiptOCR(dataUrl){
     if(d&&d.ok&&d.data){
       var x=d.data;
       if(x.vendor){var ev1=document.getElementById("exp-vendor");if(ev1)ev1.value=x.vendor;}
-      if(x.category){var ec=document.getElementById("exp-cat");if(ec)ec.value=x.category;}
+      var ec=document.getElementById("exp-cat");
+      if(x.category&&ec)ec.value=x.category;
+      // Refill dependent subcategories for the (possibly new) category, then apply.
+      _finFillSubcats("exp-subcat",ec?ec.value:x.category,x.subcategory||"");
       if(x.amount){var ea=document.getElementById("exp-amount");if(ea)ea.value=String(x.amount).replace(".",lang===1?".":",");}
       if(x.method){selectExpMethod(null,x.method);}
-      console.log("[finance] OCR parsed",x.vendor,x.amount,x.category);
+      console.log("[finance] OCR parsed",x.vendor,x.amount,x.category,x.subcategory||"");
       toast("✅ "+_t3("Receipt read — check the fields","Reçu analysé — vérifiez","Recibo lido — confira os campos"));
     }else{
       console.warn("[finance] OCR failed",d&&d.error);
@@ -6457,21 +6579,39 @@ async function runReceiptOCR(dataUrl){
   }catch(e){console.error("[finance] OCR error",e);toast("⚠️ "+_t3("OCR error — fill in manually","Erreur OCR — saisie manuelle","Erro no OCR — preencha manualmente"));}
   if(sp)sp.style.display="none";
 }
-function submitExpense(){
-  var vendorEl=document.getElementById("exp-vendor"),catEl=document.getElementById("exp-cat"),amtEl=document.getElementById("exp-amount");
+async function submitExpense(){
+  var vendorEl=document.getElementById("exp-vendor"),catEl=document.getElementById("exp-cat"),subEl=document.getElementById("exp-subcat"),amtEl=document.getElementById("exp-amount");
   var vendor=vendorEl?vendorEl.value.trim():"";
   var cat=catEl?catEl.value:"Outros";
+  var sub=subEl?subEl.value:"";
   var amount=_finParseAmount(amtEl?amtEl.value:"");
   if(!vendor){toast(_t3("Enter the vendor","Saisissez le fournisseur","Informe o fornecedor"));return;}
   if(!amount||amount<=0){toast(_t3("Enter a valid amount","Montant invalide","Informe um valor válido"));return;}
-  var e={id:Date.now(),project:getActiveSite()||((projects[0]&&projects[0].name)||""),vendor:vendor,category:cat,amount:amount,currency:financeCurrencyCode(),method:_expMethod||"",note:"",receipt_url:_expReceiptData||null,ocr:!!_expReceiptData,status:"pending",created_by:(me&&me.name)||"",created_at:new Date().toISOString()};
+  // A small thumbnail is kept locally (survives offline); the full image is
+  // uploaded to Storage on sync. receipt_url holds the durable link once up.
+  var thumb=null;if(_expReceiptData){try{thumb=await compressPhoto(_expReceiptData,480,0.6);}catch(_){thumb=_expReceiptData;}}
+  var e={id:Date.now(),project:getActiveSite()||((projects[0]&&projects[0].name)||""),vendor:vendor,category:cat,subcategory:sub,amount:amount,currency:financeCurrencyCode(),method:_expMethod||"",note:"",receipt_url:null,receipt_thumb:thumb,_pendingReceipt:_expReceiptData||null,ocr:!!_expReceiptData,status:"pending",created_by:(me&&me.name)||"",created_at:new Date().toISOString()};
   expenses.unshift(e);saveExpensesLocal();
-  saveExpenseDB(e);
+  saveExpenseDB(e); // uploads receipt + inserts row (best-effort; stays local if offline)
   closeExpenseModal();
   toast("✅ "+_t3("Cost saved","Coût enregistré","Custo salvo"));
   // Live-update KPIs + chart + ledger (acceptance #3) by opening the ledger tab.
   var link=document.querySelector('.fin-acc-body .sidebar-link[onclick*="showTab(9"]');
   showTab(9,link||null);
+}
+/* ── Receipt lightbox viewer ─────────────────────────────────────────────── */
+function openReceiptViewer(id){
+  var e=expenses.filter(function(x){return String(x.id)===String(id);})[0];if(!e)return;
+  var src=e.receipt_url||e.receipt_thumb;if(!src){toast(_t3("No receipt image","Aucune image","Sem imagem do recibo"));return;}
+  var ov=document.createElement("div");ov.className="exp-overlay";ov.id="receipt-viewer";ov.style.zIndex="10001";
+  var h="<div style='position:relative;max-width:94vw;max-height:92vh;' onclick='event.stopPropagation()'>";
+  h+="<img src=\""+escapeHTML(src)+"\" style='max-width:94vw;max-height:82vh;border-radius:12px;display:block;box-shadow:0 12px 40px rgba(0,0,0,0.5);'/>";
+  h+="<div style='display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;color:var(--text2);font-size:12px;'><span>"+escapeHTML(e.vendor||"")+" · "+financeMoney(e.amount)+"</span>";
+  if(e.receipt_url)h+="<a href=\""+escapeHTML(e.receipt_url)+"\" target='_blank' rel='noopener' style='color:#0ea5e9;text-decoration:none;'><i class='ti ti-external-link' style='vertical-align:-2px;'></i> "+_t3("Open original","Ouvrir l'original","Abrir original")+"</a>";
+  h+="</div></div>";
+  ov.innerHTML=h;
+  ov.onclick=function(){ov.remove();};
+  document.body.appendChild(ov);
 }
 
 /* ── i18n for the finance sidebar + tab headers ──────────────────────────── */
