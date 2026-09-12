@@ -2048,7 +2048,7 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
       <div class="fin-acc" id="fin-acc">
         <div class="fin-acc-head" onclick="toggleFinanceAccordion()"><i class="ti ti-cash-banknote fin-acc-lead"></i><span id="nav-fin">Financeiro</span><i class="ti ti-chevron-right fin-acc-cd"></i></div>
         <div class="fin-acc-body">
-          <div class="sidebar-link fin-sub" onclick="openExpenseModal()"><i class="ti ti-sparkles fin-sub-accent"></i><span id="nav-fin-capture" class="fin-sub-accent">Registrar Despesa AI</span></div>
+          <div class="sidebar-link fin-sub" onclick="openExpenseModal()"><i class="ti ti-sparkles fin-sub-accent"></i><span id="nav-fin-capture" class="fin-sub-accent">Registrar Despesa</span></div>
           <div class="sidebar-link fin-sub" onclick="showTab(9,this)"><i class="ti ti-receipt"></i><span id="nav-fin-desp">Custos e Despesas</span></div>
           <div class="sidebar-link fin-sub" onclick="showTab(10,this)"><i class="ti ti-trending-up"></i><span id="nav-fin-prices">Histórico de Preços</span></div>
           <div class="sidebar-link fin-sub" onclick="showTab(11,this)"><i class="ti ti-bell-ringing"></i><span id="nav-fin-auto">Lembretes & Fechamento</span></div>
@@ -2423,7 +2423,7 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
         <div id="tab-9" class="tab">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap;">
             <div><div style="font-family:var(--font-d);font-size:20px;font-weight:800;color:var(--text);" id="fin-desp-title">Custos e Despesas</div><div style="font-size:12px;color:var(--text3);" id="fin-desp-sub">Registro itemizado de transações</div></div>
-            <button class="fin-primary-btn" onclick="openExpenseModal()"><i class="ti ti-plus" style="vertical-align:-2px;margin-right:4px;"></i><span id="fin-desp-add">Registrar Despesa AI</span></button>
+            <button class="fin-primary-btn" onclick="openExpenseModal()"><i class="ti ti-plus" style="vertical-align:-2px;margin-right:4px;"></i><span id="fin-desp-add">Registrar Despesa</span></button>
           </div>
           <div id="fin-desp-body"></div>
         </div>
@@ -6452,7 +6452,7 @@ function renderFinance(){
   h+="<div class='fin-legend'><span><i style='background:#0ea5e9;'></i>"+_t3("Cumulative spend","Dépenses cumulées","Gasto acumulado")+"</span><span><i style='background:#f59e0b;'></i>"+_t3("Budget projection","Projection budget","Projeção do orçamento")+"</span></div></div>";
   // Ledger
   h+="<div class='fin-card' style='padding:0;overflow:hidden;'>";
-  if(!list.length){h+="<div class='fin-empty'><i class='ti ti-receipt-off' style='font-size:30px;display:block;margin-bottom:8px;'></i>"+_t3("No expenses yet. Tap “Registrar Despesa AI” to add one.","Aucune dépense. Cliquez sur “Saisie Dépense IA”.","Nenhuma despesa ainda. Toque em “Registrar Despesa AI”.")+"</div>";}
+  if(!list.length){h+="<div class='fin-empty'><i class='ti ti-receipt-off' style='font-size:30px;display:block;margin-bottom:8px;'></i>"+_t3("No expenses yet. Tap “Registrar Despesa” to add one.","Aucune dépense. Cliquez sur “Saisie Dépense”.","Nenhuma despesa ainda. Toque em “Registrar Despesa”.")+"</div>";}
   else{
     h+="<div style='overflow-x:auto;'><table class='fin-ledger'><thead><tr>"+
        "<th>"+_t3("Date","Date","Data")+"</th><th>"+_t3("Vendor","Fournisseur","Fornecedor")+"</th><th>"+_t3("Method","Méthode","Método")+"</th><th style='text-align:right;'>"+_t3("Amount","Montant","Valor")+"</th><th>"+_t3("Status","Statut","Status")+"</th><th></th></tr></thead><tbody>";
@@ -6604,7 +6604,7 @@ function openExpenseModal(){
   var catOpts=FIN_CATS.map(function(c){return "<option value=\""+c.v+"\">"+escapeHTML(_finCatLabel(c.v))+"</option>";}).join("");
   var methods=FIN_METHODS.map(function(m){return "<div class='exp-method' data-m=\""+m.v+"\" onclick=\"selectExpMethod(this,'"+m.v+"')\">"+escapeHTML(_finMethodLabel(m.v))+"</div>";}).join("");
   var h="<div class='exp-card' onclick='event.stopPropagation()'>";
-  h+="<div class='exp-head'><i class='ti ti-cash-banknote' style='font-size:22px;color:#0ea5e9;'></i><div style='font-family:var(--font-d);font-size:17px;font-weight:800;color:var(--text);flex:1;'>"+_t3("Quick Expense AI","Saisie Dépense IA","Registrar Despesa AI")+"</div><i class='ti ti-x' style='font-size:20px;color:var(--text3);cursor:pointer;' onclick='closeExpenseModal()'></i></div>";
+  h+="<div class='exp-head'><i class='ti ti-cash-banknote' style='font-size:22px;color:#0ea5e9;'></i><div style='font-family:var(--font-d);font-size:17px;font-weight:800;color:var(--text);flex:1;'>"+_t3("Quick Expense","Saisie Dépense","Registrar Despesa")+"</div><i class='ti ti-x' style='font-size:20px;color:var(--text3);cursor:pointer;' onclick='closeExpenseModal()'></i></div>";
   h+="<div class='exp-body'>";
   // OCR drop-zone (prompt) — swaps to a persistent preview once a photo is set.
   h+="<div class='exp-drop' id='exp-drop' onclick=\"document.getElementById('exp-file').click()\">";
@@ -6752,13 +6752,13 @@ async function openReceiptViewer(id){
 function applyFinanceLang(){
   var set=function(id,v){var el=document.getElementById(id);if(el)el.textContent=v;};
   set("nav-fin",_t3("Financial","Financier","Financeiro"));
-  set("nav-fin-capture",_t3("Quick Expense AI","Saisie Dépense IA","Registrar Despesa AI"));
+  set("nav-fin-capture",_t3("Quick Expense","Saisie Dépense","Registrar Despesa"));
   set("nav-fin-desp",_t3("Expenses","Dépenses","Custos e Despesas"));
   set("nav-fin-prices",_t3("Price Trends","Historique des Prix","Histórico de Preços"));
   set("nav-fin-auto",_t3("Daily Nudges","Rappels","Lembretes & Fechamento"));
   set("fin-desp-title",_t3("Expenses","Dépenses","Custos e Despesas"));
   set("fin-desp-sub",_t3("Itemized transaction ledger","Registre des transactions","Registro itemizado de transações"));
-  set("fin-desp-add",_t3("Quick Expense AI","Saisie Dépense IA","Registrar Despesa AI"));
+  set("fin-desp-add",_t3("Quick Expense","Saisie Dépense","Registrar Despesa"));
   set("fin-prices-title",_t3("Price Trends","Historique des Prix","Histórico de Preços"));
   set("fin-prices-sub",_t3("Unit cost evolution of key materials","Évolution du coût unitaire des matériaux clés","Evolução do custo unitário dos principais materiais"));
   set("fin-auto-title",_t3("Daily Nudges & Close","Rappels & Clôture","Lembretes & Fechamento"));
