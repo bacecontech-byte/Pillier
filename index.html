@@ -6392,6 +6392,7 @@ function activeSiteExpenses(){var a=getActiveSite();if(!a)return expenses;return
 
 /* ── budget + nudge settings ─────────────────────────────────────────────── */
 function getBudget(){try{return Number(localStorage.getItem("pillier-fin-budget"))||0;}catch(e){return 0;}}
+function _finLastSite(){try{var s=localStorage.getItem("pillier-fin-last-site")||"";return (projects||[]).some(function(p){return p.name===s;})?s:"";}catch(e){return "";}}
 function getNudge(){try{return JSON.parse(localStorage.getItem("pillier-fin-nudge")||'{"enabled":false,"time":"17:30"}');}catch(e){return {enabled:false,time:"17:30"};}}
 function _persistFinanceSettings(){
   if(dbOk&&dbCoId&&db){try{var n=getNudge();db.from("finance_settings").upsert({company_id:dbCoId,budget_monthly:getBudget(),nudge_enabled:!!n.enabled,nudge_time:n.time||"17:30",updated_at:new Date().toISOString()},{onConflict:"company_id"}).then(function(r){if(r&&r.error)console.warn("[finance] settings sync:",r.error.message);});}catch(e){}}
@@ -6483,7 +6484,7 @@ function renderFinance(){
       } else {
         thumb="<span class='fin-thumb fin-thumb-empty'><i class='ti ti-photo-off'></i></span>";
       }
-      var catLine=escapeHTML(_finCatLabel(e.category))+(e.subcategory?(" • "+escapeHTML(_finSubLabel(e.category,e.subcategory))):"");
+      var catLine=escapeHTML(_finCatLabel(e.category))+(e.subcategory?(" • "+escapeHTML(_finSubLabel(e.category,e.subcategory))):"")+((!getActiveSite()&&e.project)?(" · <span style='color:#0ea5e9;'>"+escapeHTML(e.project)+"</span>"):"");
       h+="<tr><td style='white-space:nowrap;color:var(--text3);'>"+_finDayShort(d)+"</td>"+
          "<td><div class='fin-vendorcell'>"+thumb+"<div style='min-width:0;'><div class='fin-vendorname'>"+escapeHTML(e.vendor||"—")+(e.ocr?" <i class='ti ti-scan' title='OCR' style='font-size:12px;color:#0ea5e9;vertical-align:-1px;'></i>":"")+"</div><span class='fin-catcell'>"+catLine+"</span></div></div></td>"+
          "<td style='color:var(--text2);white-space:nowrap;'>"+escapeHTML(_finMethodLabel(e.method)||"—")+"</td>"+
@@ -6729,6 +6730,12 @@ function openExpenseModal(){
   h+="</div>";
   h+="<input type='file' id='exp-file' accept='image/*' capture='environment' style='display:none;' onchange='handleReceiptFile(this)'>";
   h+="<div style='height:14px;'></div>";
+  // Site selector — every expense is filed to ONE construction site, so unit
+  // prices are attributed correctly even when "All sites" is the active view.
+  var _defSite=getActiveSite()||_finLastSite()||((projects[0]&&projects[0].name)||"");
+  var _siteOpts=(projects||[]).map(function(p){var on=(p.name===_defSite)?" selected":"";return "<option value=\""+escapeHTML(p.name)+"\""+on+">"+escapeHTML(p.name)+"</option>";}).join("");
+  if(!projects||!projects.length)_siteOpts="<option value=''>"+_t3("No site — add one in My projects","Aucun chantier — ajoutez-en un","Nenhum canteiro — cadastre em Meus projetos")+"</option>";
+  h+="<div class='exp-field'><label>"+_t3("Construction site","Chantier","Canteiro / Obra")+"</label><select id='exp-site'>"+_siteOpts+"</select></div>";
   // 4-field form
   h+="<div class='exp-field'><label>"+_t3("Vendor","Fournisseur","Fornecedor")+"</label><input id='exp-vendor' placeholder='"+_t3("e.g. Depósito São José","ex. Dépôt São José","ex. Depósito São José")+"'></div>";
   h+="<div class='exp-field'><label>"+_t3("Category","Catégorie","Categoria")+"</label><select id='exp-cat' onchange='onExpenseCategoryChange()'>"+catOpts+"</select></div>";
@@ -6799,13 +6806,16 @@ async function runReceiptOCR(dataUrl){
   if(sp)sp.style.display="none";
 }
 async function submitExpense(){
-  var vendorEl=document.getElementById("exp-vendor"),catEl=document.getElementById("exp-cat"),subEl=document.getElementById("exp-subcat"),amtEl=document.getElementById("exp-amount");
+  var vendorEl=document.getElementById("exp-vendor"),catEl=document.getElementById("exp-cat"),subEl=document.getElementById("exp-subcat"),amtEl=document.getElementById("exp-amount"),siteEl=document.getElementById("exp-site");
   var vendor=vendorEl?vendorEl.value.trim():"";
   var cat=catEl?catEl.value:"Outros";
   var sub=subEl?subEl.value:"";
+  var site=siteEl?siteEl.value:(getActiveSite()||"");
   var amount=_finParseAmount(amtEl?amtEl.value:"");
+  if(projects&&projects.length&&!site){toast(_t3("Select the construction site","Sélectionnez le chantier","Selecione o canteiro"));return;}
   if(!vendor){toast(_t3("Enter the vendor","Saisissez le fournisseur","Informe o fornecedor"));return;}
   if(!amount||amount<=0){toast(_t3("Enter a valid amount","Montant invalide","Informe um valor válido"));return;}
+  try{if(site)localStorage.setItem("pillier-fin-last-site",site);}catch(_){} // remember for next time
   // A small thumbnail is kept locally (survives offline); the full image is
   // uploaded to Storage on sync. receipt_url holds the durable link once up.
   var thumb=null;if(_expReceiptData){try{thumb=await compressPhoto(_expReceiptData,480,0.6);}catch(_){thumb=_expReceiptData;}}
@@ -6813,7 +6823,7 @@ async function submitExpense(){
   // lands in that day's diary; otherwise use now.
   var createdAt=new Date().toISOString();
   if(_expFromRDO&&_expForcedDay){try{createdAt=new Date(_expForcedDay+"T12:00:00").toISOString();}catch(_){}}
-  var e={id:Date.now(),project:getActiveSite()||((projects[0]&&projects[0].name)||""),vendor:vendor,category:cat,subcategory:sub,amount:amount,currency:financeCurrencyCode(),method:_expMethod||"",note:"",items:(_expOcrItems&&_expOcrItems.length?_expOcrItems:null),receipt_url:null,receipt_thumb:thumb,_pendingReceipt:_expReceiptData||null,ocr:!!_expReceiptData,status:"pending",created_by:(me&&me.name)||"",created_at:createdAt};
+  var e={id:Date.now(),project:site||getActiveSite()||((projects[0]&&projects[0].name)||""),vendor:vendor,category:cat,subcategory:sub,amount:amount,currency:financeCurrencyCode(),method:_expMethod||"",note:"",items:(_expOcrItems&&_expOcrItems.length?_expOcrItems:null),receipt_url:null,receipt_thumb:thumb,_pendingReceipt:_expReceiptData||null,ocr:!!_expReceiptData,status:"pending",created_by:(me&&me.name)||"",created_at:createdAt};
   try{_expClearTomb(_expSig(e));}catch(_){} // a deliberate (re)add un-hides this signature
   expenses.unshift(e);saveExpensesLocal();
   saveExpenseDB(e); // uploads receipt + inserts row (best-effort; stays local if offline)
