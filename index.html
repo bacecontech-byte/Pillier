@@ -923,6 +923,11 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
 .chat-header-name{font-family:var(--font-d);font-size:15px;font-weight:700;color:var(--white);}
 .chat-header-status{font-size:11px;color:var(--green);}
 .chat-messages{flex:1;overflow-y:auto;padding:4px 0;display:flex;flex-direction:column;gap:12px;}
+.chat-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.chat-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(14,165,233,0.1);border:1px solid rgba(14,165,233,0.38);color:#0ea5e9;border-radius:20px;padding:7px 13px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .12s;}
+.chat-chip:hover{background:rgba(14,165,233,0.2);}
+.chat-chip i{font-size:15px;}
+.chat-actions-msg .msg-bubble{display:none;}
 .msg{display:flex;gap:10px;max-width:80%;}
 .msg.user{align-self:flex-end;flex-direction:row-reverse;}
 .msg.bot{align-self:flex-start;}
@@ -8798,6 +8803,75 @@ function addUserImage(dataUrl){
 function showTyping(){var wrap=document.getElementById("chat-messages");var div=document.createElement("div");div.className="msg bot";div.id="typing-ind";div.innerHTML="<div class='msg-av'>&#x1F477;</div><div class='msg-bubble'><div class='typing-indicator'><div class='typing-dot'></div><div class='typing-dot'></div><div class='typing-dot'></div></div></div>";wrap.appendChild(div);wrap.scrollTop=wrap.scrollHeight;}
 function removeTyping(){var el=document.getElementById("typing-ind");if(el)el.remove();}
 
+/* ── Pillier IA ⇄ Financeiro: capabilities, live context & quick actions ─────── */
+// Tell the assistant the Financial Module exists natively (stops it from
+// hallucinating that Pillier lacks cost tracking / suggesting Primavera or SAP).
+function _finCapabilities(){
+  var L=function(en,fr,pt){return lang===1?en:lang===0?fr:pt;};
+  return "\n\n"+L(
+    "PILLIER FINANCIAL MODULE (native — Pillier DOES track costs; never tell the user to use external tools like Primavera P6, MS Project or SAP ERP for expense/cost tracking — everything below is built in and you can act on it):\n"+
+    "- Custos e Despesas: itemized expenses ledger with payment methods (Pix, Cartão, Dinheiro, Boleto, Virement) and receipt validation status (Pendente / Revisado).\n"+
+    "- Captura com OCR: snap a receipt photo and Pillier extracts supplier, amount and category/subcategory automatically.\n"+
+    "- Histórico de Preços: unit-price tracking for materials (cement, steel, sand), rentals, day labor and freight.\n"+
+    "- RDO integration: the day's expenses & receipts are auto-aggregated into the Daily Site Diary (Diário de Obra).\n"+
+    "When asked where to do something, tell them it's in the Financeiro tab and that action buttons appear below your reply.",
+    "MODULE FINANCIER PILLIER (natif — Pillier SUIT bien les coûts ; ne dis JAMAIS d'utiliser des outils externes comme Primavera P6, MS Project ou SAP ERP pour le suivi des dépenses/coûts — tout est intégré et tu peux agir dessus) :\n"+
+    "- Custos e Despesas : registre détaillé des dépenses avec moyens de paiement (Pix, Carte, Espèces, Boleto, Virement) et validation des reçus (En attente / Validé).\n"+
+    "- Capture OCR : photographie un reçu et Pillier extrait automatiquement le fournisseur, le montant et la catégorie/sous-catégorie.\n"+
+    "- Historique des Prix : suivi du prix unitaire des matériaux (ciment, acier, sable), locations, main-d'œuvre et fret.\n"+
+    "- Intégration RDO : les dépenses & reçus du jour sont agrégés automatiquement dans le Journal de chantier (Diário de Obra).\n"+
+    "Quand on te demande où faire quelque chose, indique l'onglet Financeiro ; des boutons d'action apparaissent sous ta réponse.",
+    "MÓDULO FINANCEIRO PILLIER (nativo — a Pillier CONTROLA custos; NUNCA diga para o usuário usar ferramentas externas como Primavera P6, MS Project ou SAP ERP para controle de despesas/custos — tudo abaixo é integrado e você pode agir):\n"+
+    "- Custos e Despesas: livro-razão itemizado de despesas com formas de pagamento (Pix, Cartão, Dinheiro, Boleto) e status de validação do recibo (Pendente / Revisado).\n"+
+    "- Captura com OCR: fotografe o cupom/nota e a Pillier extrai fornecedor, valor e categoria/subcategoria automaticamente.\n"+
+    "- Histórico de Preços: acompanhamento do preço unitário de materiais (cimento, aço, areia), locações, diárias e frete.\n"+
+    "- Integração com o RDO: as despesas e recibos do dia são agregados automaticamente no Diário de Obra.\n"+
+    "Quando perguntarem onde fazer algo, informe a aba Financeiro; botões de ação aparecem abaixo da sua resposta."
+  );
+}
+// Real-time financial aggregates for the active site, injected so money questions
+// are answered from live data (Supabase-backed, mirrored in localStorage).
+function _finChatContext(){
+  if(typeof expenses==="undefined")return "";
+  var L=function(en,fr,pt){return lang===1?en:lang===0?fr:pt;};
+  var site=(typeof getActiveSite==="function")?getActiveSite():"";
+  var scope=(typeof activeSiteExpenses==="function")?activeSiteExpenses():expenses;
+  var month=(typeof _finMonthTotal==="function")?_finMonthTotal():0;
+  var budget=(typeof getBudget==="function")?getBudget():0;
+  var pending=(typeof _finPendingCount==="function")?_finPendingCount():0;
+  var recent=(scope||[]).slice(0,8).map(function(e){
+    var d="";try{d=_finDayShort(new Date(e.created_at));}catch(_){}
+    return "- "+d+" · "+(e.vendor||"—")+" · "+_finCatLabel(e.category)+(e.subcategory?(" / "+_finSubLabel(e.category,e.subcategory)):"")+" · "+financeMoney(e.amount)+" · "+(e.method||"—")+" · "+(e.status==="reviewed"?L("reviewed","validé","revisado"):L("pending","en attente","pendente"));
+  }).join("\n");
+  var prices="";
+  try{var s=_finMaterialSeries();FIN_MATERIALS.forEach(function(m){var arr=s[m.key]||[];if(arr.length){var last=arr[arr.length-1];prices+="\n- "+_t3(m.l[0],m.l[1],m.l[2])+": "+financeMoney(last.v)+" ("+_finDayShort(last.d)+")";}});}catch(_){}
+  var scopeTxt=site?site:L("all sites","tous les chantiers","todos os canteiros");
+  var out="\n\n"+L("LIVE FINANCIAL DATA","DONNÉES FINANCIÈRES EN DIRECT","DADOS FINANCEIROS AO VIVO")+" ("+scopeTxt+") — "+L("answer money questions directly from these","réponds aux questions d'argent directement à partir de ceci","responda perguntas de dinheiro diretamente com base nisto")+":\n";
+  out+=L("Spent this month","Dépensé ce mois","Gasto este mês")+": "+financeMoney(month)+(budget>0?(" / "+financeMoney(budget)+" "+L("budget","budget","orçamento")+" ("+Math.round(month/budget*100)+"%)"):"")+"\n";
+  out+=L("Pending receipts awaiting review","Reçus en attente de validation","Recibos pendentes de revisão")+": "+pending+"\n";
+  if(prices)out+=L("Latest unit prices","Derniers prix unitaires","Últimos preços unitários")+":"+prices+"\n";
+  out+=recent?(L("Recent expenses","Dépenses récentes","Despesas recentes")+":\n"+recent):L("No expenses logged yet.","Aucune dépense enregistrée.","Nenhuma despesa registrada ainda.");
+  return out;
+}
+// Does the question/answer touch money? → show quick-navigation chips.
+function _isFinanceQuery(t){
+  if(!t)return false;
+  return /custo|despesa|gasto|gastam|or[çc]ament|recibo|comprovante|pre[çc]o|cimento|a[çc]o|areia|financ|fornecedor|pagament|nota fiscal|cupom|expense|cost|budget|spend|spent|receipt|invoice|price|supplier|d[ée]pense|co[ûu]t|re[çc]u|facture|fournisseur|prix/i.test(t);
+}
+// Quick-nav handlers used by the chat action chips.
+function finGoDespesas(){try{if(window.innerWidth<=768&&document.querySelector(".sidebar.open")&&typeof toggleSidebar==="function")toggleSidebar();}catch(_){}var l=document.querySelector('.fin-acc-body .sidebar-link[onclick*="showTab(9"]');showTab(9,l||null);}
+function finGoPrecos(){try{if(window.innerWidth<=768&&document.querySelector(".sidebar.open")&&typeof toggleSidebar==="function")toggleSidebar();}catch(_){}var l=document.querySelector('.fin-acc-body .sidebar-link[onclick*="showTab(10"]');showTab(10,l||null);}
+// Append a row of clickable finance action chips under the latest bot reply.
+function _addChatFinanceActions(){
+  var wrap=document.getElementById("chat-messages");if(!wrap)return;
+  var div=document.createElement("div");div.className="msg bot chat-actions-msg";
+  div.innerHTML="<div class='msg-av'>&#x1F477;</div><div class='chat-actions'>"+
+    "<button class='chat-chip' onclick='finGoDespesas()'><i class='ti ti-cash-banknote'></i>"+_t3("Open Financials","Ouvrir Financier","Abrir Financeiro")+"</button>"+
+    "<button class='chat-chip' onclick='openExpenseModal()'><i class='ti ti-plus'></i>"+_t3("Log expense","Saisir dépense","Registrar Despesa")+"</button>"+
+    "<button class='chat-chip' onclick='finGoPrecos()'><i class='ti ti-trending-up'></i>"+_t3("Price history","Historique des prix","Ver Histórico de Preços")+"</button>"+
+    "</div>";
+  wrap.appendChild(div);wrap.scrollTop=wrap.scrollHeight;
+}
 async function sendChat(){
   var input=document.getElementById("chat-input");
   var val=input.value.trim();
@@ -8846,6 +8920,7 @@ async function sendChat(){
     pt:"Você é a Pillier IA, assistente especialista em engenharia civil e gestão de canteiros para "+me.co+". Você conhece as normas do BRASIL (ABNT NBR 6118, NBR 5410, NBR 5626, NBR 9050, NBR 14432, NBR 8160, NR-18, NR-35, PBQP-H), FRANÇA (DTU, Eurocodes, NF EN) e EUROPA (EN Eurocodes). Projetos ativos: "+projList+". Base de conhecimento ("+_chatEntries.length+" incidentes):\\n"+kb+docCtxStr+"\\nResponda em português, exceto se o usuário escrever em outro idioma. Seja conciso e prático. Sempre cite as normas aplicáveis."+_style.pt
   };
   var sysPrompt=_sp[lang===1?"en":lang===2?"pt":"fr"];
+  try{sysPrompt+=_finCapabilities()+_finChatContext();}catch(e){} // native Financial Module + live data
   var messages=[{role:"system",content:sysPrompt}].concat(chatHistory.slice(-10));
   try{
     var chatModel="openai/gpt-oss-120b";
@@ -8903,6 +8978,7 @@ async function sendChat(){
     saveChat();
     try{_maybeGenerateTitle();}catch(e){} // auto-name the conversation from its content
     addMsg("bot",reply);
+    try{if(_isFinanceQuery(val)||_isFinanceQuery(reply))_addChatFinanceActions();}catch(e){} // finance quick-nav chips
   }catch(e){
     console.error("sendChat exception:",e);
     removeTyping();
