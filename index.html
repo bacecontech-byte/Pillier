@@ -6886,7 +6886,9 @@ function startRealtime(){
       var d=payload.new;
       if(d.user_name===me.name)return;
       var aiRT={};try{aiRT=JSON.parse(d.ai_analysis||"{}");}catch(ex){aiRT={solution:d.ai_analysis||""};}
+      if(entries.some(function(e){return String(e.id)===String(d.id);}))return; // dedupe
       entries.unshift({id:d.id,title:d.title,project:d.project||"",cat:canonCat(d.category||"Structure"),sev:d.severity||"medium",desc:d.description||"",action:d.action||"",cause:aiRT.cause||"",normes:aiRT.normes||"",date:new Date(d.created_at).toLocaleDateString("fr-FR"),status:d.status||"open",author:d.user_name||"",photo_url:d.photo_url||null});
+      try{saveEntriesLocal();}catch(_){}
       renderDash();renderKB();renderCounts();
       addNotif("<strong>"+escapeHTML(d.user_name||"Equipe")+"</strong> "+(STRINGS[lang].notifCaptured||"capturou")+": "+escapeHTML(d.title||""));
       toast(d.user_name+" : "+d.title);
@@ -6895,6 +6897,7 @@ function startRealtime(){
       var id=payload.old&&payload.old.id;
       if(!id)return;
       entries=entries.filter(function(e){return String(e.id)!==String(id);});
+      try{saveEntriesLocal();}catch(_){}
       renderDash();renderKB();renderCounts();
     })
     .on("postgres_changes",{event:"UPDATE",schema:"public",table:"captures",filter:"company_id=eq."+dbCoId},function(payload){
@@ -6902,6 +6905,7 @@ function startRealtime(){
       var idx=entries.findIndex(function(e){return String(e.id)===String(d.id);});
       var aiUP={};try{aiUP=JSON.parse(d.ai_analysis||"{}");}catch(ex){aiUP={solution:d.ai_analysis||""};}
       if(idx>=0){entries[idx]={id:d.id,title:d.title,project:d.project||"",cat:canonCat(d.category||"Structure"),sev:d.severity||"medium",desc:d.description||"",action:d.action||"",cause:aiUP.cause||"",normes:aiUP.normes||"",date:entries[idx].date,status:d.status||"open",author:d.user_name||"",photo_url:d.photo_url||null};}
+      try{saveEntriesLocal();}catch(_){}
       renderDash();renderKB();renderCounts();
     })
     .on("postgres_changes",{event:"INSERT",schema:"public",table:"community_posts",filter:"company_id=eq."+dbCoId},function(payload){
@@ -6925,6 +6929,45 @@ function startRealtime(){
     })
     .subscribe();
 }
+// Re-establish the realtime channel (its WebSocket is dropped by mobile OSes when
+// the app is backgrounded, so events made while away never arrive).
+function reconnectRealtime(){
+  try{
+    var st=rtChannel&&rtChannel.state;
+    if(st==="joined"||st==="joining")return; // still healthy
+    if(rtChannel&&db&&db.removeChannel){try{db.removeChannel(rtChannel);}catch(_){}}
+    rtChannel=null;
+    startRealtime();
+  }catch(e){}
+}
+// Single authoritative "catch up with the server" pass. This is what makes the
+// mobile app the reliable source of truth: on every foreground / focus / network
+// return, and periodically while open, it re-pulls captures, expenses and
+// projects and reconciles deletions — so changes made anywhere show up here
+// within a few seconds, whether or not a live realtime event was received.
+var _pillierLastRefresh=0,_pillierRefreshing=false;
+async function _pillierRefreshData(force){
+  if(!dbOk||!dbCoId||!db)return;
+  var now=Date.now();
+  if(!force&&(now-_pillierLastRefresh<4000))return; // throttle event bursts
+  if(_pillierRefreshing)return;
+  _pillierRefreshing=true;_pillierLastRefresh=now;
+  try{reconnectRealtime();}catch(_){}
+  try{await loadDB();}catch(_){}                         // captures (reconciles deletes)
+  try{if(typeof loadExpenses==="function")await loadExpenses();}catch(_){}
+  try{if(typeof loadProjects==="function")await loadProjects();}catch(_){}
+  _pillierRefreshing=false;
+}
+(function _wirePillierAutoRefresh(){
+  try{
+    document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")_pillierRefreshData();});
+    window.addEventListener("focus",function(){_pillierRefreshData();});
+    window.addEventListener("pageshow",function(){_pillierRefreshData();});       // BFCache restore (mobile)
+    window.addEventListener("online",function(){_pillierRefreshData(true);});
+    // Safety net for long-open sessions where a realtime event was missed.
+    setInterval(function(){if(document.visibilityState==="visible")_pillierRefreshData();},60000);
+  }catch(e){}
+})();
 // True when the given community text @mentions the current user
 function commMentionsMe(content){
   if(!content||!me||!me.name)return false;
