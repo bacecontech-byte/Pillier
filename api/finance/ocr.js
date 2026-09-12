@@ -50,7 +50,10 @@ export default async function handler(req, res) {
       '"currency": one of ["BRL","EUR","USD"], ' +
       '"method": one of ' + JSON.stringify(METHODS) + ' or "", ' +
       '"date": "YYYY-MM-DD" or "", ' +
-      '"items": array of up to 6 {"name":string,"total":number}}. ' +
+      '"items": array of up to 10 line items, each {"name":string (the product/service, e.g. "Cimento CP-II 50kg", "Diária pedreiro", "Aluguel betoneira", "Diesel S10"), ' +
+      '"quantity":number, "unit":string (saco, m3, m2, un, kg, L, diária, semana, hora, etc.), ' +
+      '"unit_price":number (price per unit), "total":number}}. ' +
+      'Extract unit_price and unit for EVERY line whenever the receipt shows them; if only a total is legible, set unit_price to total/quantity (or the total when quantity is 1). ' +
       'Infer category from the vendor and line items (building materials → "Material Básico", ' +
       'tools/machines → "Equipamentos", freight/fuel → "Transporte", labour/services → "Mão de Obra", ' +
       'else "Outros"). Then pick "subcategory" as EXACTLY one value from this map for the chosen ' +
@@ -103,7 +106,13 @@ export default async function handler(req, res) {
       currency: ['BRL', 'EUR', 'USD'].indexOf(parsed.currency) >= 0 ? parsed.currency : '',
       method: METHODS.indexOf(parsed.method) >= 0 ? parsed.method : '',
       date: /^\d{4}-\d{2}-\d{2}$/.test(parsed.date || '') ? parsed.date : '',
-      items: Array.isArray(parsed.items) ? parsed.items.slice(0, 6).map((it) => ({ name: str(it && it.name).slice(0, 80), total: num(it && it.total) })) : [],
+      items: Array.isArray(parsed.items) ? parsed.items.slice(0, 10).map((it) => {
+        const qty = num(it && it.quantity);
+        const total = num(it && it.total);
+        let unit_price = num(it && it.unit_price);
+        if (!(unit_price > 0)) unit_price = qty > 0 ? +(total / qty).toFixed(2) : total;
+        return { name: str(it && it.name).slice(0, 80), quantity: qty, unit: str(it && it.unit).slice(0, 16), unit_price: unit_price, total: total };
+      }).filter((it) => it.name || it.total || it.unit_price) : [],
     };
     console.log('[finance-ocr] extracted', out.vendor, out.amount, out.currency, out.category, out.subcategory);
     return res.status(200).json({ ok: true, data: out });

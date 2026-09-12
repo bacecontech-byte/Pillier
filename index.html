@@ -490,6 +490,12 @@ body{font-family:var(--font-b);background:var(--navy);color:var(--text);min-heig
 .fin-card-sub{font-size:11px;color:var(--text3);margin-bottom:12px;}
 .fin-chart-wrap{overflow-x:auto;}
 .fin-legend{display:flex;gap:16px;font-size:11px;color:var(--text2);margin-top:8px;flex-wrap:wrap;}
+.fin-fchips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.fin-fchip{display:inline-flex;align-items:center;gap:6px;background:var(--navy2);border:1px solid var(--border2);color:var(--text2);border-radius:20px;padding:7px 13px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .12s;}
+.fin-fchip:hover{border-color:#0ea5e9;color:var(--text);}
+.fin-fchip.on{background:rgba(14,165,233,0.12);border-color:#0ea5e9;color:#0ea5e9;}
+.fin-fchip-n{font-size:10px;font-weight:700;background:rgba(255,255,255,0.08);border-radius:20px;padding:0 6px;min-width:16px;text-align:center;}
+.fin-fchip.on .fin-fchip-n{background:rgba(14,165,233,0.25);}
 .fin-legend i{width:11px;height:11px;border-radius:3px;display:inline-block;margin-right:6px;vertical-align:middle;}
 .fin-ledger{width:100%;border-collapse:collapse;}
 .fin-ledger th{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);white-space:nowrap;}
@@ -2434,7 +2440,7 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
         </div>
         <!-- FINANCEIRO — Histórico de Preços -->
         <div id="tab-10" class="tab">
-          <div style="margin-bottom:18px;"><div style="font-family:var(--font-d);font-size:20px;font-weight:800;color:var(--text);" id="fin-prices-title">Histórico de Preços</div><div style="font-size:12px;color:var(--text3);" id="fin-prices-sub">Evolução do custo unitário dos principais materiais</div></div>
+          <div style="margin-bottom:18px;"><div style="font-family:var(--font-d);font-size:20px;font-weight:800;color:var(--text);" id="fin-prices-title">Histórico de Preços</div><div style="font-size:12px;color:var(--text3);" id="fin-prices-sub">Evolução e comparativo de preços unitários de materiais, locações e serviços da obra</div></div>
           <div id="fin-prices-body"></div>
         </div>
         <!-- FINANCEIRO — Lembretes & Fechamento -->
@@ -6174,6 +6180,7 @@ document.addEventListener("click",function(e){
 var expenses=[];
 var _expMethod="",_expReceiptData=null;   // modal transient state
 var _expFromRDO=false,_expForcedDay=null; // set when the modal is opened from the RDO
+var _expOcrItems=null;                     // line items extracted by OCR (unit prices)
 
 // PT categories are canonical (match /api/finance/ocr + DB); labels are localized.
 var FIN_CATS=[
@@ -6259,7 +6266,7 @@ function saveExpensesLocal(){
   try{localStorage.setItem("pillier-expenses-v1",JSON.stringify(out));}
   catch(e){try{localStorage.setItem("pillier-expenses-v1",JSON.stringify(out.map(function(c){c.receipt_thumb=null;return c;})));}catch(_){}}
 }
-function _expFromRow(r){return {id:r.id,project:r.project||"",vendor:r.vendor||"",category:r.category||"Outros",subcategory:r.subcategory||"",amount:Number(r.amount)||0,currency:r.currency||"BRL",method:r.method||"",note:r.note||"",receipt_url:r.receipt_url||null,receipt_thumb:null,ocr:!!r.ocr,status:r.status||"pending",created_by:r.created_by||"",created_at:r.created_at||new Date().toISOString()};}
+function _expFromRow(r){return {id:r.id,project:r.project||"",vendor:r.vendor||"",category:r.category||"Outros",subcategory:r.subcategory||"",amount:Number(r.amount)||0,currency:r.currency||"BRL",method:r.method||"",note:r.note||"",items:(Array.isArray(r.items)?r.items:null),receipt_url:r.receipt_url||null,receipt_thumb:null,ocr:!!r.ocr,status:r.status||"pending",created_by:r.created_by||"",created_at:r.created_at||new Date().toISOString()};}
 // Ids currently being inserted — prevents saveExpenseDB + the sync sweep from
 // double-inserting the same expense (which produced duplicate ledger rows).
 var _expSyncing={};
@@ -6338,11 +6345,11 @@ async function saveExpenseDB(e){
   }
   var _rc=e.receipt_url&&String(e.receipt_url).indexOf("data:")!==0?e.receipt_url:null; // path only, never base64
   var base={company_id:dbCoId,project:e.project,vendor:e.vendor,category:e.category,amount:e.amount,currency:e.currency,method:e.method,note:e.note||"",receipt_url:_rc,ocr:!!e.ocr,status:e.status||"pending",created_by:(me&&me.name)||""};
-  var payload={};for(var k in base)payload[k]=base[k];payload.subcategory=e.subcategory||"";
+  var payload={};for(var k in base)payload[k]=base[k];payload.subcategory=e.subcategory||"";if(e.items&&e.items.length)payload.items=e.items;
   try{
     var r=await db.from("expenses").insert(payload).select();
-    // Graceful fallback if the DB hasn't been migrated for `subcategory` yet.
-    if(r&&r.error&&/subcategory/.test(r.error.message||"")){console.warn("[finance] subcategory column missing — run supabase/finance.sql; syncing without it");r=await db.from("expenses").insert(base).select();}
+    // Graceful fallback if the DB hasn't been migrated for `subcategory`/`items` yet.
+    if(r&&r.error&&/subcategory|items|column|schema cache|PGRST204/i.test(r.error.message||"")){console.warn("[finance] new column missing — run supabase/finance.sql; syncing base fields only");r=await db.from("expenses").insert(base).select();}
     if(r&&!r.error&&r.data&&r.data[0]){var idx=expenses.findIndex(function(x){return String(x.id)===_oid;});if(idx>=0){expenses[idx].id=r.data[0].id;saveExpensesLocal();}console.log("[finance] expense synced",r.data[0].id);}
     else if(r&&r.error){console.warn("[finance] expense DB save failed (kept local):",r.error.message);}
   }catch(err){console.warn("[finance] expense DB save error (kept local):",err.message);}
@@ -6528,9 +6535,69 @@ function _finMaterialSeries(){
   Object.keys(series).forEach(function(k){series[k].sort(function(a,b){return a.d-b.d;});});
   return series;
 }
-function drawPriceChart(series){
+/* ── Banco de Preços Unitários: every site unit cost, not just materials ───── */
+// Filter groups (chips). Each maps one or more expense categories to a bucket.
+var FIN_PRICE_GROUPS=[
+  {id:"all",l:["All","Tous","Todos"],cats:null},
+  {id:"materiais",l:["Materials","Matériaux","Materiais"],cats:["Material Básico"]},
+  {id:"locacoes",l:["Equipment / Rentals","Équipements / Locations","Equipamentos / Locações"],cats:["Equipamentos"]},
+  {id:"labor",l:["Labor / Day rates","Main-d'œuvre / Journées","Mão de Obra / Diárias"],cats:["Mão de Obra"]},
+  {id:"outros",l:["Logistics & Supplies","Logistique & Divers","Transporte & Outros"],cats:["Transporte","Outros"]}
+];
+function _finCatGroup(cat){
+  for(var i=1;i<FIN_PRICE_GROUPS.length;i++){if(FIN_PRICE_GROUPS[i].cats&&FIN_PRICE_GROUPS[i].cats.indexOf(cat)>=0)return FIN_PRICE_GROUPS[i].id;}
+  return "outros";
+}
+var _finPriceFilter="all";
+function setPriceFilter(id){_finPriceFilter=id;renderPriceTrends();}
+// Build the flat list of unit-price points from every expense. Uses OCR line
+// items (item_name/unit_price/quantity/unit) when present; otherwise the whole
+// expense as one point keyed by its subcategory/category.
+function _finPriceBank(){
+  var pts=[];
+  (activeSiteExpenses()||[]).forEach(function(e){
+    var grp=_finCatGroup(e.category);var d=new Date(e.created_at);var vendor=e.vendor||"";
+    var items=Array.isArray(e.items)?e.items:[];
+    var used=false;
+    items.forEach(function(it){
+      if(!it)return;
+      var price=Number(it.unit_price)||0;var qty=Number(it.quantity)||0;var total=Number(it.total)||0;
+      if(!(price>0))price=qty>0?(total/qty):total;
+      var name=(it.name||"").trim();
+      if(!name||!(price>0))return;
+      pts.push({label:name,group:grp,vendor:vendor,unit:(it.unit||"un").trim()||"un",price:price,date:d});
+      used=true;
+    });
+    if(!used&&e.amount>0){
+      var lbl=e.subcategory?_finSubLabel(e.category,e.subcategory):_finCatLabel(e.category);
+      pts.push({label:lbl,group:grp,vendor:vendor,unit:"un",price:Number(e.amount)||0,date:d});
+    }
+  });
+  return pts;
+}
+// Group points by normalized item label → benchmark stats + a time series.
+function _finPriceItems(pts){
+  var by={};
+  pts.forEach(function(p){var k=p.label.toLowerCase()+"|"+p.unit.toLowerCase();(by[k]=by[k]||{label:p.label,unit:p.unit,group:p.group,pts:[]}).pts.push(p);});
+  var items=Object.keys(by).map(function(k){
+    var o=by[k];o.pts.sort(function(a,b){return a.date-b.date;});
+    var vals=o.pts.map(function(p){return p.price;});
+    var last=o.pts[o.pts.length-1];
+    o.latest=last.price;o.vendor=last.vendor;o.date=last.date;
+    o.min=Math.min.apply(null,vals);o.max=Math.max.apply(null,vals);
+    o.avg=vals.reduce(function(a,b){return a+b;},0)/vals.length;o.count=o.pts.length;
+    o.prev=o.pts.length>1?o.pts[o.pts.length-2].price:null;
+    o.trend=(o.prev==null)?0:(last.price>o.prev?1:last.price<o.prev?-1:0);
+    o.pct=(o.prev&&o.prev>0)?Math.round((last.price-o.prev)/o.prev*100):0;
+    return o;
+  });
+  items.sort(function(a,b){return b.count-a.count||b.date-a.date;});
+  return items;
+}
+// Generic multi-series line chart. seriesArr: [{label,color,pts:[{d,v}]}].
+function _finDrawSeries(seriesArr){
   var W=680,H=220,padL=48,padR=14,padT=14,padB=24,iw=W-padL-padR,ih=H-padT-padB;
-  var all=[];FIN_MATERIALS.forEach(function(m){(series[m.key]||[]).forEach(function(p){all.push(p);});});
+  var all=[];seriesArr.forEach(function(s){s.pts.forEach(function(p){all.push(p);});});
   if(!all.length)return "";
   var minT=Math.min.apply(null,all.map(function(p){return p.d.getTime();}));
   var maxT=Math.max.apply(null,all.map(function(p){return p.d.getTime();}));
@@ -6539,28 +6606,62 @@ function drawPriceChart(series){
   function Y(v){return padT+ih-(ih*(v/maxV));}
   var svg='<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="'+H+'" preserveAspectRatio="xMidYMid meet" font-family="var(--font-b)">';
   [0,0.5,1].forEach(function(f){var yy=padT+ih-ih*f;svg+='<line x1="'+padL+'" y1="'+yy.toFixed(1)+'" x2="'+(W-padR)+'" y2="'+yy.toFixed(1)+'" stroke="var(--border)" stroke-width="1"/>';svg+='<text x="'+(padL-6)+'" y="'+(yy+3).toFixed(1)+'" text-anchor="end" font-size="9" fill="var(--text3)">'+_finShortMoney(maxV*f)+'</text>';});
-  FIN_MATERIALS.forEach(function(m){
-    var pts=series[m.key]||[];if(!pts.length)return;
-    var path="";pts.forEach(function(p,i){path+=(i?" L":"M")+X(p.d.getTime()).toFixed(1)+","+Y(p.v).toFixed(1);});
-    svg+='<path d="'+path+'" fill="none" stroke="'+m.c+'" stroke-width="2.5" stroke-linejoin="round"/>';
-    pts.forEach(function(p){svg+='<circle cx="'+X(p.d.getTime()).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="3" fill="'+m.c+'"/>';});
+  seriesArr.forEach(function(s){
+    if(!s.pts.length)return;
+    if(s.pts.length===1){svg+='<circle cx="'+X(s.pts[0].d.getTime()).toFixed(1)+'" cy="'+Y(s.pts[0].v).toFixed(1)+'" r="4" fill="'+s.color+'"/>';return;}
+    var path="";s.pts.forEach(function(p,i){path+=(i?" L":"M")+X(p.d.getTime()).toFixed(1)+","+Y(p.v).toFixed(1);});
+    svg+='<path d="'+path+'" fill="none" stroke="'+s.color+'" stroke-width="2.5" stroke-linejoin="round"/>';
+    s.pts.forEach(function(p){svg+='<circle cx="'+X(p.d.getTime()).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="2.5" fill="'+s.color+'"/>';});
   });
   svg+='</svg>';
   return svg;
 }
+var _FIN_SERIES_COLORS=["#0ea5e9","#f59e0b","#4ade80","#a78bfa","#f472b6","#38bdf8"];
 function renderPriceTrends(){
   var body=document.getElementById("fin-prices-body");if(!body)return;
-  var series=_finMaterialSeries();
-  var total=FIN_MATERIALS.reduce(function(a,m){return a+(series[m.key]||[]).length;},0);
-  var h="<div class='fin-card'>";
-  if(!total){
-    h+="<div class='fin-empty'><i class='ti ti-chart-line' style='font-size:30px;display:block;margin-bottom:8px;'></i>"+_t3("Price points appear here as you capture receipts for cement, steel and sand.","Les prix apparaissent ici au fur et à mesure des reçus (ciment, acier, sable).","Os preços aparecem aqui conforme você captura recibos de cimento, aço e areia.")+"</div>";
-  }else{
-    h+="<div class='fin-card-h'>"+_t3("Unit cost evolution","Évolution du coût unitaire","Evolução do custo unitário")+"</div><div class='fin-card-sub'>"+_t3("Detected from your captured receipts.","Détecté à partir de vos reçus.","Detectado a partir dos seus recibos.")+"</div>";
-    h+="<div class='fin-chart-wrap'>"+drawPriceChart(series)+"</div>";
-    h+="<div class='fin-legend'>"+FIN_MATERIALS.map(function(m){return (series[m.key]||[]).length?("<span><i style='background:"+m.c+";'></i>"+_t3(m.l[0],m.l[1],m.l[2])+"</span>"):"";}).join("")+"</div>";
+  var bank=_finPriceBank();
+  // Filter chips
+  var chips="<div class='fin-fchips'>"+FIN_PRICE_GROUPS.map(function(g){
+    var n=g.id==="all"?bank.length:bank.filter(function(p){return p.group===g.id;}).length;
+    var on=_finPriceFilter===g.id;
+    return "<button class='fin-fchip"+(on?" on":"")+"' onclick=\"setPriceFilter('"+g.id+"')\">"+_t3(g.l[0],g.l[1],g.l[2])+(n?" <span class='fin-fchip-n'>"+n+"</span>":"")+"</button>";
+  }).join("")+"</div>";
+  if(!bank.length){
+    body.innerHTML=chips+"<div class='fin-card'><div class='fin-empty'><i class='ti ti-chart-line' style='font-size:30px;display:block;margin-bottom:8px;'></i>"+_t3("Unit prices will appear here automatically as you log receipts for supplies, equipment rentals, materials, and service rates.","Les prix unitaires s'afficheront automatiquement au fur et à mesure que vous enregistrez les reçus de fournitures, locations et prestations.","Os preços unitários aparecerão aqui automaticamente conforme você capturar recibos de materiais, diárias de serviços, locações de equipamentos e suprimentos.")+"</div></div>";
+    return;
   }
+  var filtered=_finPriceFilter==="all"?bank:bank.filter(function(p){return p.group===_finPriceFilter;});
+  var items=_finPriceItems(filtered);
+  var h=chips;
+  if(!items.length){
+    h+="<div class='fin-card'><div class='fin-empty'>"+_t3("No prices in this category yet.","Aucun prix dans cette catégorie.","Nenhum preço nesta categoria ainda.")+"</div></div>";
+    body.innerHTML=h;return;
+  }
+  // Chart: top items by data-point count, colored
+  var chartItems=items.filter(function(o){return o.count>=1;}).slice(0,6);
+  var seriesArr=chartItems.map(function(o,i){return {label:o.label,color:_FIN_SERIES_COLORS[i%_FIN_SERIES_COLORS.length],pts:o.pts.map(function(p){return {d:p.date,v:p.price};})};});
+  var multi=chartItems.some(function(o){return o.count>1;});
+  h+="<div class='fin-card'><div class='fin-card-h'>"+_t3("Unit price evolution","Évolution du prix unitaire","Evolução do preço unitário")+"</div><div class='fin-card-sub'>"+_t3("Detected from your captured receipts.","Détecté à partir de vos reçus.","Detectado a partir dos seus recibos.")+"</div>";
+  if(multi){h+="<div class='fin-chart-wrap'>"+_finDrawSeries(seriesArr)+"</div>";h+="<div class='fin-legend'>"+seriesArr.map(function(s){return "<span><i style='background:"+s.color+";'></i>"+escapeHTML(s.label)+"</span>";}).join("")+"</div>";}
+  else{h+="<div class='fin-card-sub' style='margin:0'>"+_t3("Capture the same item twice to see its price trend line.","Capturez le même article deux fois pour voir sa tendance.","Capture o mesmo item duas vezes para ver a linha de tendência.")+"</div>";}
   h+="</div>";
+  // Benchmark table (the Banco de Preços)
+  h+="<div class='fin-card' style='padding:0;overflow:hidden;'>";
+  h+="<div style='overflow-x:auto;'><table class='fin-ledger'><thead><tr>"+
+     "<th>"+_t3("Item","Article","Item")+"</th>"+
+     "<th>"+_t3("Unit","Unité","Un.")+"</th>"+
+     "<th style='text-align:right;'>"+_t3("Latest","Dernier","Último")+"</th>"+
+     "<th style='text-align:right;'>"+_t3("Min–Max","Min–Max","Mín–Máx")+"</th>"+
+     "<th>"+_t3("Supplier","Fournisseur","Fornecedor")+"</th></tr></thead><tbody>";
+  items.forEach(function(o){
+    var arrow=o.trend>0?"<span style='color:#f87171'>▲ "+Math.abs(o.pct)+"%</span>":o.trend<0?"<span style='color:#4ade80'>▼ "+Math.abs(o.pct)+"%</span>":"<span style='color:var(--text3)'>—</span>";
+    h+="<tr><td><div class='fin-vendorname'>"+escapeHTML(o.label)+"</div><span class='fin-catcell'>"+o.count+" "+_t3("record(s)","relevé(s)","registro(s)")+" · "+_finDayShort(o.date)+"</span></td>"+
+       "<td style='color:var(--text2);white-space:nowrap;'>"+escapeHTML(o.unit)+"</td>"+
+       "<td class='num'>"+financeMoney(o.latest)+"<div style='font-size:10px;font-weight:400;margin-top:2px;'>"+arrow+"</div></td>"+
+       "<td style='text-align:right;white-space:nowrap;color:var(--text2);font-variant-numeric:tabular-nums;'>"+financeMoney(o.min)+"<br>"+financeMoney(o.max)+"</td>"+
+       "<td style='color:var(--text2);'>"+escapeHTML(o.vendor||"—")+"</td></tr>";
+  });
+  h+="</tbody></table></div></div>";
   body.innerHTML=h;
 }
 
@@ -6603,7 +6704,7 @@ async function sendNudgeTest(){
 /* ── Expense capture modal ───────────────────────────────────────────────── */
 function openExpenseModal(){
   if(!dbCoId&&!dbOk){/* still allow offline entry */}
-  _expMethod="";_expReceiptData=null;_expFromRDO=false;_expForcedDay=null;
+  _expMethod="";_expReceiptData=null;_expFromRDO=false;_expForcedDay=null;_expOcrItems=null;
   try{closeSiteMenu();}catch(e){}
   var ov=document.createElement("div");ov.className="exp-overlay";ov.id="exp-overlay";
   var catOpts=FIN_CATS.map(function(c){return "<option value=\""+c.v+"\">"+escapeHTML(_finCatLabel(c.v))+"</option>";}).join("");
@@ -6661,7 +6762,7 @@ function _expShowReceipt(dataUrl){
   var dz=document.getElementById("exp-drop");if(dz)dz.style.cursor="default";
 }
 function clearReceipt(){
-  _expReceiptData=null;
+  _expReceiptData=null;_expOcrItems=null;
   var pv=document.getElementById("exp-preview");if(pv){pv.src="";pv.style.display="none";}
   var pr=document.getElementById("exp-prompt");if(pr)pr.style.display="";
   var cl=document.getElementById("exp-receipt-ctrls");if(cl)cl.style.display="none";
@@ -6684,7 +6785,8 @@ async function runReceiptOCR(dataUrl){
       _finFillSubcats("exp-subcat",ec?ec.value:x.category,x.subcategory||"");
       if(x.amount){var ea=document.getElementById("exp-amount");if(ea)ea.value=String(x.amount).replace(".",lang===1?".":",");}
       if(x.method){selectExpMethod(null,x.method);}
-      console.log("[finance] OCR parsed",x.vendor,x.amount,x.category,x.subcategory||"");
+      _expOcrItems=Array.isArray(x.items)?x.items:null; // keep line-item unit prices for the price bank
+      console.log("[finance] OCR parsed",x.vendor,x.amount,x.category,x.subcategory||"",(_expOcrItems?_expOcrItems.length+" items":""));
       toast("✅ "+_t3("Receipt read — check the fields","Reçu analysé — vérifiez","Recibo lido — confira os campos"));
     }else{
       console.warn("[finance] OCR failed",d&&d.error);
@@ -6708,7 +6810,7 @@ async function submitExpense(){
   // lands in that day's diary; otherwise use now.
   var createdAt=new Date().toISOString();
   if(_expFromRDO&&_expForcedDay){try{createdAt=new Date(_expForcedDay+"T12:00:00").toISOString();}catch(_){}}
-  var e={id:Date.now(),project:getActiveSite()||((projects[0]&&projects[0].name)||""),vendor:vendor,category:cat,subcategory:sub,amount:amount,currency:financeCurrencyCode(),method:_expMethod||"",note:"",receipt_url:null,receipt_thumb:thumb,_pendingReceipt:_expReceiptData||null,ocr:!!_expReceiptData,status:"pending",created_by:(me&&me.name)||"",created_at:createdAt};
+  var e={id:Date.now(),project:getActiveSite()||((projects[0]&&projects[0].name)||""),vendor:vendor,category:cat,subcategory:sub,amount:amount,currency:financeCurrencyCode(),method:_expMethod||"",note:"",items:(_expOcrItems&&_expOcrItems.length?_expOcrItems:null),receipt_url:null,receipt_thumb:thumb,_pendingReceipt:_expReceiptData||null,ocr:!!_expReceiptData,status:"pending",created_by:(me&&me.name)||"",created_at:createdAt};
   try{_expClearTomb(_expSig(e));}catch(_){} // a deliberate (re)add un-hides this signature
   expenses.unshift(e);saveExpensesLocal();
   saveExpenseDB(e); // uploads receipt + inserts row (best-effort; stays local if offline)
@@ -6765,7 +6867,7 @@ function applyFinanceLang(){
   set("fin-desp-sub",_t3("Itemized transaction ledger","Registre des transactions","Registro itemizado de transações"));
   set("fin-desp-add",_t3("Quick Expense","Saisie Dépense","Registrar Despesa"));
   set("fin-prices-title",_t3("Price Trends","Historique des Prix","Histórico de Preços"));
-  set("fin-prices-sub",_t3("Unit cost evolution of key materials","Évolution du coût unitaire des matériaux clés","Evolução do custo unitário dos principais materiais"));
+  set("fin-prices-sub",_t3("Unit price trends and supplier benchmarks for materials, equipment, and labor","Évolution et benchmark des prix unitaires des matériaux, locations et main-d'œuvre","Evolução e comparativo de preços unitários de materiais, locações e serviços da obra"));
   set("fin-auto-title",_t3("Daily Nudges & Close","Rappels & Clôture","Lembretes & Fechamento"));
   set("fin-auto-sub",_t3("Automated end-of-day cost check-in","Check-in automatique des coûts en fin de journée","Check-in automático de custos no fim do dia"));
   // Re-render whichever finance tab is open so its content follows the language.

@@ -17,6 +17,7 @@ create table if not exists expenses (
   currency     text default 'BRL',
   method       text,
   note         text,
+  items        jsonb,                        -- OCR line items: [{name,quantity,unit,unit_price,total}]
   receipt_url  text,
   ocr          boolean default false,
   status       text default 'pending',      -- 'pending' | 'reviewed'
@@ -24,8 +25,9 @@ create table if not exists expenses (
   created_at   timestamptz default now(),
   updated_at   timestamptz default now()
 );
--- If the table already exists from an earlier run, add the new column in place.
+-- If the table already exists from an earlier run, add the new columns in place.
 alter table expenses add column if not exists subcategory text;
+alter table expenses add column if not exists items jsonb;
 create index if not exists expenses_company_created_idx on expenses (company_id, created_at desc);
 create index if not exists expenses_company_status_idx  on expenses (company_id, status);
 
