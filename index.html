@@ -505,6 +505,8 @@ body{font-family:var(--font-b);background:var(--navy);color:var(--text);min-heig
 .fin-thumb:hover{border-color:#0ea5e9;}
 .fin-thumb-empty{display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:15px;cursor:default;}
 .fin-thumb-empty:hover{border-color:var(--border2);}
+.fin-thumb-icon{display:flex;align-items:center;justify-content:center;color:#0ea5e9;font-size:17px;cursor:pointer;}
+.fin-thumb-icon:hover{border-color:#0ea5e9;background:rgba(14,165,233,0.08);}
 .fin-empty{text-align:center;color:var(--text3);font-size:13px;padding:40px 16px;}
 .fin-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:4px;}
 .fin-del:hover{color:#f87171;}
@@ -6258,12 +6260,14 @@ async function syncPendingExpenses(){
 }
 async function saveExpenseDB(e){
   if(!dbOk||!dbCoId||!db)return;
-  // Upload the receipt image to Storage first so receipt_url is a durable link.
-  if(!(e.receipt_url&&String(e.receipt_url).indexOf("http")===0)){
+  // Upload the receipt image to the private bucket first; store its object path.
+  var _stored=e.receipt_url&&String(e.receipt_url).indexOf("data:")!==0;
+  if(!_stored){
     var src=e._pendingReceipt||e.receipt_thumb;
-    if(src){try{var url=await uploadReceipt(src,e.id);if(url){e.receipt_url=url;e._pendingReceipt=null;var li=expenses.findIndex(function(x){return String(x.id)===String(e.id);});if(li>=0){expenses[li].receipt_url=url;saveExpensesLocal();}}}catch(upErr){console.warn("[finance] receipt upload failed (kept local):",upErr.message);}}
+    if(src){try{var pth=await uploadReceipt(src,e.id);if(pth){e.receipt_url=pth;e._pendingReceipt=null;var li=expenses.findIndex(function(x){return String(x.id)===String(e.id);});if(li>=0){expenses[li].receipt_url=pth;saveExpensesLocal();}}}catch(upErr){console.warn("[finance] receipt upload failed (kept local):",upErr.message);}}
   }
-  var base={company_id:dbCoId,project:e.project,vendor:e.vendor,category:e.category,amount:e.amount,currency:e.currency,method:e.method,note:e.note||"",receipt_url:(e.receipt_url&&String(e.receipt_url).indexOf("http")===0)?e.receipt_url:null,ocr:!!e.ocr,status:e.status||"pending",created_by:(me&&me.name)||""};
+  var _rc=e.receipt_url&&String(e.receipt_url).indexOf("data:")!==0?e.receipt_url:null; // path only, never base64
+  var base={company_id:dbCoId,project:e.project,vendor:e.vendor,category:e.category,amount:e.amount,currency:e.currency,method:e.method,note:e.note||"",receipt_url:_rc,ocr:!!e.ocr,status:e.status||"pending",created_by:(me&&me.name)||""};
   var payload={};for(var k in base)payload[k]=base[k];payload.subcategory=e.subcategory||"";
   try{
     var r=await db.from("expenses").insert(payload).select();
@@ -6273,7 +6277,9 @@ async function saveExpenseDB(e){
     else if(r&&r.error){console.warn("[finance] expense DB save failed (kept local):",r.error.message);}
   }catch(err){console.warn("[finance] expense DB save error (kept local):",err.message);}
 }
-// Upload a data-URL image to the `receipts` Storage bucket → public URL.
+// Upload a data-URL image to the PRIVATE `receipts` bucket → returns the object
+// PATH (not a URL). The path is stored in receipt_url and later resolved to a
+// short-lived signed URL for viewing, so receipts are never publicly readable.
 async function uploadReceipt(dataUrl,id){
   if(!db||!db.storage||!dataUrl||String(dataUrl).indexOf("data:")!==0)return null;
   var m=String(dataUrl).match(/^data:([^;]+);base64,(.+)$/);if(!m)return null;
@@ -6283,8 +6289,23 @@ async function uploadReceipt(dataUrl,id){
   var path=dbCoId+"/"+id+"-"+Date.now()+"."+ext;
   var up=await db.storage.from("receipts").upload(path,new Blob([arr],{type:mime}),{contentType:mime,upsert:true});
   if(up&&up.error){throw new Error(up.error.message);}
-  var pub=db.storage.from("receipts").getPublicUrl(path);
-  return (pub&&pub.data&&pub.data.publicUrl)||null;
+  return path;
+}
+// Extract the object path from a stored receipt_url (bare path, or legacy public
+// URL) so we can sign it. Returns null for data: URLs or unknown externals.
+function _receiptObjectPath(u){
+  if(!u)return null;u=String(u);
+  if(u.indexOf("data:")===0)return null;
+  var i=u.indexOf("/receipts/");if(i>=0)return u.slice(i+"/receipts/".length).split("?")[0];
+  if(u.indexOf("http")===0)return null;
+  return u; // already a bare object path
+}
+// Resolve a stored receipt to a temporary signed URL (1h). null if unavailable.
+async function _receiptSignedUrl(receiptUrl){
+  var path=_receiptObjectPath(receiptUrl);if(!path)return null;
+  if(!(db&&db.storage))return null;
+  try{var r=await db.storage.from("receipts").createSignedUrl(path,3600);return (r&&r.data&&r.data.signedUrl)||null;}
+  catch(e){console.warn("[finance] signed url failed",e.message);return null;}
 }
 function activeSiteExpenses(){var a=getActiveSite();if(!a)return expenses;return expenses.filter(function(e){return e.project===a;});}
 
@@ -6372,10 +6393,15 @@ function renderFinance(){
     list.forEach(function(e){
       var d=new Date(e.created_at);
       var idAttr=String(e.id).replace(/'/g,"");
-      var proof=e.receipt_url||e.receipt_thumb;
-      var thumb=proof
-        ?"<img src=\""+escapeHTML(proof)+"\" class='fin-thumb' onclick=\"openReceiptViewer('"+idAttr+"')\" title='"+_t3("View receipt","Voir le reçu","Ver recibo")+"'/>"
-        :"<span class='fin-thumb fin-thumb-empty'><i class='ti ti-photo-off'></i></span>";
+      var hasStored=!!_receiptObjectPath(e.receipt_url); // private path on the server
+      var thumb;
+      if(e.receipt_thumb){ // local cached copy — private to this browser, instant
+        thumb="<img src=\""+escapeHTML(e.receipt_thumb)+"\" class='fin-thumb' onclick=\"openReceiptViewer('"+idAttr+"')\" title='"+_t3("View receipt","Voir le reçu","Ver recibo")+"'/>";
+      } else if(hasStored){ // stored privately — resolve via signed URL on click
+        thumb="<span class='fin-thumb fin-thumb-icon' onclick=\"openReceiptViewer('"+idAttr+"')\" title='"+_t3("View receipt","Voir le reçu","Ver recibo")+"'><i class='ti ti-file-invoice'></i></span>";
+      } else {
+        thumb="<span class='fin-thumb fin-thumb-empty'><i class='ti ti-photo-off'></i></span>";
+      }
       var catLine=escapeHTML(_finCatLabel(e.category))+(e.subcategory?(" • "+escapeHTML(_finSubLabel(e.category,e.subcategory))):"");
       h+="<tr><td style='white-space:nowrap;color:var(--text3);'>"+_finDayShort(d)+"</td>"+
          "<td><div class='fin-vendorcell'>"+thumb+"<div style='min-width:0;'><div class='fin-vendorname'>"+escapeHTML(e.vendor||"—")+(e.ocr?" <i class='ti ti-scan' title='OCR' style='font-size:12px;color:#0ea5e9;vertical-align:-1px;'></i>":"")+"</div><span class='fin-catcell'>"+catLine+"</span></div></div></td>"+
@@ -6600,18 +6626,31 @@ async function submitExpense(){
   showTab(9,link||null);
 }
 /* ── Receipt lightbox viewer ─────────────────────────────────────────────── */
-function openReceiptViewer(id){
+async function openReceiptViewer(id){
   var e=expenses.filter(function(x){return String(x.id)===String(id);})[0];if(!e)return;
-  var src=e.receipt_url||e.receipt_thumb;if(!src){toast(_t3("No receipt image","Aucune image","Sem imagem do recibo"));return;}
+  // Build the overlay immediately (with the local thumb if we have one), then
+  // swap in the signed full-resolution original once it resolves.
   var ov=document.createElement("div");ov.className="exp-overlay";ov.id="receipt-viewer";ov.style.zIndex="10001";
+  var initial=e.receipt_thumb||"";
   var h="<div style='position:relative;max-width:94vw;max-height:92vh;' onclick='event.stopPropagation()'>";
-  h+="<img src=\""+escapeHTML(src)+"\" style='max-width:94vw;max-height:82vh;border-radius:12px;display:block;box-shadow:0 12px 40px rgba(0,0,0,0.5);'/>";
-  h+="<div style='display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;color:var(--text2);font-size:12px;'><span>"+escapeHTML(e.vendor||"")+" · "+financeMoney(e.amount)+"</span>";
-  if(e.receipt_url)h+="<a href=\""+escapeHTML(e.receipt_url)+"\" target='_blank' rel='noopener' style='color:#0ea5e9;text-decoration:none;'><i class='ti ti-external-link' style='vertical-align:-2px;'></i> "+_t3("Open original","Ouvrir l'original","Abrir original")+"</a>";
-  h+="</div></div>";
-  ov.innerHTML=h;
-  ov.onclick=function(){ov.remove();};
-  document.body.appendChild(ov);
+  h+="<div id='rv-imgwrap' style='min-width:220px;min-height:160px;display:flex;align-items:center;justify-content:center;background:var(--navy3);border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,0.5);'>";
+  h+= initial?("<img id='rv-img' src=\""+escapeHTML(initial)+"\" style='max-width:94vw;max-height:82vh;border-radius:12px;display:block;'/>")
+            :("<span style='color:var(--text3);font-size:12px;padding:40px;'><i class='ti ti-loader-2' style='animation:spin 1s linear infinite;'></i></span>");
+  h+="</div>";
+  h+="<div id='rv-meta' style='display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;color:var(--text2);font-size:12px;'><span>"+escapeHTML(e.vendor||"")+" · "+financeMoney(e.amount)+"</span></div>";
+  h+="</div>";
+  ov.innerHTML=h;ov.onclick=function(){ov.remove();};document.body.appendChild(ov);
+  // Resolve the private original via a short-lived signed URL.
+  var signed=await _receiptSignedUrl(e.receipt_url);
+  if(!document.getElementById("receipt-viewer"))return; // closed while loading
+  var wrap=document.getElementById("rv-imgwrap");
+  if(signed){
+    if(wrap)wrap.innerHTML="<img src=\""+escapeHTML(signed)+"\" style='max-width:94vw;max-height:82vh;border-radius:12px;display:block;'/>";
+    var meta=document.getElementById("rv-meta");
+    if(meta)meta.innerHTML+="<a href=\""+escapeHTML(signed)+"\" target='_blank' rel='noopener' style='color:#0ea5e9;text-decoration:none;'><i class='ti ti-external-link' style='vertical-align:-2px;'></i> "+_t3("Open original","Ouvrir l'original","Abrir original")+"</a>";
+  } else if(!initial){
+    if(wrap)wrap.innerHTML="<span style='color:var(--text3);font-size:12px;padding:40px;'>"+_t3("Receipt unavailable","Reçu indisponible","Recibo indisponível")+"</span>";
+  }
 }
 
 /* ── i18n for the finance sidebar + tab headers ──────────────────────────── */

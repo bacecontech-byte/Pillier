@@ -64,17 +64,31 @@ create policy finset_select on finance_settings for select using (is_member(comp
 create policy finset_upsert on finance_settings for insert with check (is_member(company_id));
 create policy finset_update on finance_settings for update using (is_member(company_id)) with check (is_member(company_id));
 
--- ── Receipt image storage ───────────────────────────────────────────────────
--- Public bucket so receipt_url is a durable link. Files are namespaced by
--- company id with an unguessable timestamped name. Any signed-in member of the
--- app can upload; reads are public (needed to render the stored URL).
+-- ── Receipt image storage (PRIVATE) ─────────────────────────────────────────
+-- Private bucket: files are never publicly readable. The client stores the
+-- object PATH in expenses.receipt_url and renders it through a short-lived
+-- signed URL. Files are namespaced by company id ("<company_id>/<file>"), and
+-- every operation is restricted to members of that company (first path folder).
 insert into storage.buckets (id, name, public)
-  values ('receipts', 'receipts', true)
-  on conflict (id) do nothing;
+  values ('receipts', 'receipts', false)
+  on conflict (id) do update set public = false;
+
+-- Helper: the company id encoded as the first folder of the object path.
+create or replace function receipts_company(objname text) returns uuid
+language sql immutable as $$
+  select nullif((string_to_array(objname, '/'))[1], '')::uuid;
+$$;
 
 drop policy if exists receipts_read   on storage.objects;
 drop policy if exists receipts_insert on storage.objects;
 drop policy if exists receipts_update on storage.objects;
-create policy receipts_read   on storage.objects for select using (bucket_id = 'receipts');
-create policy receipts_insert on storage.objects for insert to authenticated with check (bucket_id = 'receipts');
-create policy receipts_update on storage.objects for update to authenticated using (bucket_id = 'receipts') with check (bucket_id = 'receipts');
+drop policy if exists receipts_delete on storage.objects;
+create policy receipts_read   on storage.objects for select to authenticated
+  using (bucket_id = 'receipts' and is_member(receipts_company(name)));
+create policy receipts_insert on storage.objects for insert to authenticated
+  with check (bucket_id = 'receipts' and is_member(receipts_company(name)));
+create policy receipts_update on storage.objects for update to authenticated
+  using (bucket_id = 'receipts' and is_member(receipts_company(name)))
+  with check (bucket_id = 'receipts' and is_member(receipts_company(name)));
+create policy receipts_delete on storage.objects for delete to authenticated
+  using (bucket_id = 'receipts' and is_member(receipts_company(name)));
