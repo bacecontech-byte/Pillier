@@ -865,6 +865,27 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
 #rdo-doc .rdo-sign{margin-top:34px;display:flex;justify-content:space-between;gap:30px;}
 #rdo-doc .rdo-sign div{flex:1;border-top:1px solid #14202a;padding-top:6px;font-size:12px;text-align:center;color:#5b6f77;}
 #rdo-doc .rdo-empty{color:#5b6f77;font-size:13px;font-style:italic;}
+#rdo-doc .rdo-cost-sum{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+#rdo-doc .rdo-cost-sum>div{flex:1;min-width:130px;background:#f2f8f9;border:1px solid #d8e3e5;border-radius:8px;padding:9px 12px;}
+#rdo-doc .rdo-cost-sum span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:#5b6f77;margin-bottom:3px;}
+#rdo-doc .rdo-cost-sum b{font-size:15px;color:#0c4651;}
+#rdo-doc .rdo-cost-add{background:#0ea5e9;color:#fff;border:none;border-radius:8px;padding:8px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
+#rdo-doc .rdo-cost-tbl{width:100%;border-collapse:collapse;font-size:12px;}
+#rdo-doc .rdo-cost-tbl th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:#5b6f77;border-bottom:1px solid #d8e3e5;padding:6px 8px;}
+#rdo-doc .rdo-cost-tbl td{border-bottom:1px solid #eef3f4;padding:7px 8px;color:#14202a;vertical-align:middle;}
+#rdo-doc .rdo-cost-cat{color:#5b6f77;font-size:11px;}
+#rdo-doc .rdo-cost-thumb{width:34px;height:34px;object-fit:cover;border-radius:6px;border:1px solid #d8e3e5;cursor:pointer;}
+#rdo-doc .rdo-cost-reclink{color:#178fbe;cursor:pointer;font-weight:600;}
+#rdo-doc .rdo-cost-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;cursor:pointer;white-space:nowrap;}
+#rdo-doc .rdo-cost-badge.pend{color:#b45309;background:#fef3c7;}
+#rdo-doc .rdo-cost-badge.rev{color:#15803d;background:#dcfce7;}
+#rdo-doc .rdo-cost-break{font-size:12px;color:#2d3d45;margin-top:10px;padding:8px 10px;background:#f7fafb;border-radius:6px;}
+#rdo-doc .rdo-cost-appendix{display:none;margin-top:14px;border-top:1px dashed #c5d5d8;padding-top:10px;}
+#rdo-doc .rdo-cost-appendix-h{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#0c4651;font-weight:700;margin-bottom:8px;}
+#rdo-doc .rdo-cost-appendix-grid{display:flex;flex-wrap:wrap;gap:10px;}
+#rdo-doc .rdo-cost-proof{width:120px;font-size:10px;color:#5b6f77;}
+#rdo-doc .rdo-cost-proof img{width:120px;height:150px;object-fit:cover;border-radius:6px;border:1px solid #d8e3e5;display:block;margin-bottom:3px;}
+#rdo-doc .rdo-cost-proof-ref .rdo-cost-proof-icon{font-size:26px;color:#c5d5d8;}
 @media print{
   body *{visibility:hidden !important;}
   #rdo-overlay,#rdo-overlay *{visibility:visible !important;}
@@ -874,6 +895,8 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
   .no-print{display:none !important;}
   .rdo-print-only{display:inline !important;}
   #rdo-doc .rdo-in{border:none !important;padding-left:0 !important;}
+  #rdo-doc .rdo-cost-appendix{display:block !important;}
+  #rdo-doc .rdo-cost-badge{cursor:default !important;}
 }
 #ai-p-solution,#ai-v-solution,#imd-action{white-space:pre-line;}
 .chat-sidebar-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:0 4px;}
@@ -6145,6 +6168,7 @@ document.addEventListener("click",function(e){
  * UI, Supabase (table `expenses`) is best-effort sync. i18n via _t3/plL. ──────*/
 var expenses=[];
 var _expMethod="",_expReceiptData=null;   // modal transient state
+var _expFromRDO=false,_expForcedDay=null; // set when the modal is opened from the RDO
 
 // PT categories are canonical (match /api/finance/ocr + DB); labels are localized.
 var FIN_CATS=[
@@ -6415,7 +6439,7 @@ function renderFinance(){
   h+="</div>";
   body.innerHTML=h;
 }
-function toggleExpenseStatus(id){var e=expenses.filter(function(x){return String(x.id)===String(id);})[0];if(!e)return;e.status=(e.status==="reviewed")?"pending":"reviewed";saveExpensesLocal();if(dbOk&&dbCoId&&db&&!/^\d+$/.test(String(id))){try{db.from("expenses").update({status:e.status,updated_at:new Date().toISOString()}).eq("id",id);}catch(_){}}renderFinance();}
+function toggleExpenseStatus(id){var e=expenses.filter(function(x){return String(x.id)===String(id);})[0];if(!e)return;e.status=(e.status==="reviewed")?"pending":"reviewed";saveExpensesLocal();if(dbOk&&dbCoId&&db&&!/^\d+$/.test(String(id))){try{db.from("expenses").update({status:e.status,updated_at:new Date().toISOString()}).eq("id",id);}catch(_){}}try{if(document.getElementById("tab-9")&&document.getElementById("tab-9").classList.contains("active"))renderFinance();}catch(_){}try{var ro=document.getElementById("rdo-overlay");if(ro&&ro.classList.contains("open"))renderRDOCosts();}catch(_){}}
 function deleteExpense(id){
   if(!window.confirm(_t3("Delete this expense?","Supprimer cette dépense ?","Excluir esta despesa?")))return;
   expenses=expenses.filter(function(x){return String(x.id)!==String(id);});saveExpensesLocal();
@@ -6515,7 +6539,7 @@ async function sendNudgeTest(){
 /* ── Expense capture modal ───────────────────────────────────────────────── */
 function openExpenseModal(){
   if(!dbCoId&&!dbOk){/* still allow offline entry */}
-  _expMethod="";_expReceiptData=null;
+  _expMethod="";_expReceiptData=null;_expFromRDO=false;_expForcedDay=null;
   try{closeSiteMenu();}catch(e){}
   var ov=document.createElement("div");ov.className="exp-overlay";ov.id="exp-overlay";
   var catOpts=FIN_CATS.map(function(c){return "<option value=\""+c.v+"\">"+escapeHTML(_finCatLabel(c.v))+"</option>";}).join("");
@@ -6616,11 +6640,22 @@ async function submitExpense(){
   // A small thumbnail is kept locally (survives offline); the full image is
   // uploaded to Storage on sync. receipt_url holds the durable link once up.
   var thumb=null;if(_expReceiptData){try{thumb=await compressPhoto(_expReceiptData,480,0.6);}catch(_){thumb=_expReceiptData;}}
-  var e={id:Date.now(),project:getActiveSite()||((projects[0]&&projects[0].name)||""),vendor:vendor,category:cat,subcategory:sub,amount:amount,currency:financeCurrencyCode(),method:_expMethod||"",note:"",receipt_url:null,receipt_thumb:thumb,_pendingReceipt:_expReceiptData||null,ocr:!!_expReceiptData,status:"pending",created_by:(me&&me.name)||"",created_at:new Date().toISOString()};
+  // When added from the RDO, stamp the expense with the RDO's selected day so it
+  // lands in that day's diary; otherwise use now.
+  var createdAt=new Date().toISOString();
+  if(_expFromRDO&&_expForcedDay){try{createdAt=new Date(_expForcedDay+"T12:00:00").toISOString();}catch(_){}}
+  var e={id:Date.now(),project:getActiveSite()||((projects[0]&&projects[0].name)||""),vendor:vendor,category:cat,subcategory:sub,amount:amount,currency:financeCurrencyCode(),method:_expMethod||"",note:"",receipt_url:null,receipt_thumb:thumb,_pendingReceipt:_expReceiptData||null,ocr:!!_expReceiptData,status:"pending",created_by:(me&&me.name)||"",created_at:createdAt};
   expenses.unshift(e);saveExpensesLocal();
   saveExpenseDB(e); // uploads receipt + inserts row (best-effort; stays local if offline)
+  var fromRDO=_expFromRDO;_expFromRDO=false;_expForcedDay=null;
   closeExpenseModal();
   toast("✅ "+_t3("Cost saved","Coût enregistré","Custo salvo"));
+  if(fromRDO){
+    // Fold the new cost straight into the open RDO without resetting the draft.
+    try{renderRDOCosts();}catch(_){}
+    try{if(document.getElementById("tab-9")&&document.getElementById("tab-9").classList.contains("active"))renderFinance();}catch(_){}
+    return;
+  }
   // Live-update KPIs + chart + ledger (acceptance #3) by opening the ledger tab.
   var link=document.querySelector('.fin-acc-body .sidebar-link[onclick*="showTab(9"]');
   showTab(9,link||null);
@@ -6965,6 +7000,93 @@ function renderRDODay(){
   var sec=document.getElementById("rdo-occ-sec");
   if(sec)sec.innerHTML="<h3>"+L("Occurrences","Occurrences","Ocorrências")+" ("+built.count+")</h3>"+built.html;
   var dl=document.getElementById("rdo-date-lbl");if(dl)dl.textContent=_rdoDayLabel(dayIso);
+  try{renderRDOCosts();}catch(e){}
+}
+/* ── RDO ⇄ Financeiro: the day's expenses & receipts inside the site diary ───── */
+// Aggregate the expenses for the RDO's site + day into totals, breakdown and HTML.
+function _rdoBuildCosts(dayIso){
+  var L=function(fr,en,pt){return lang===0?fr:lang===2?pt:en;};
+  var site=getActiveSite();
+  var list=(typeof expenses!=="undefined"?expenses:[]).filter(function(e){
+    if(site&&e.project!==site)return false;
+    if(dayIso){var k="";try{k=_finIsoDay(new Date(e.created_at));}catch(_){}if(k!==dayIso)return false;}
+    return true;
+  });
+  var total=0,reviewed=0,pending=0,receipts=0,byCat={};
+  list.forEach(function(e){
+    total+=Number(e.amount)||0;
+    if(e.status==="reviewed")reviewed++;else pending++;
+    if(e.receipt_thumb||_receiptObjectPath(e.receipt_url))receipts++;
+    var c=e.category||"Outros";byCat[c]=(byCat[c]||0)+(Number(e.amount)||0);
+  });
+  // Summary bar
+  var h="<div class='rdo-cost-sum'>"+
+    "<div><span>"+L("Total dépensé","Total spent","Total Gasto no Dia")+"</span><b>"+financeMoney(total)+"</b></div>"+
+    "<div><span>"+L("Reçus joints","Receipts attached","Recibos Anexados")+"</span><b>"+receipts+"</b></div>"+
+    "<div><span>"+L("Statut","Status","Status")+"</span><b>"+reviewed+" "+L("validés","reviewed","Revisados")+" • "+pending+" "+L("en attente","pending","Pendentes")+"</b></div>"+
+    "</div>";
+  h+="<div class='no-print' style='margin:2px 0 10px'><button class='rdo-cost-add' onclick='addExpenseFromRDO()'>+ "+L("Ajouter un coût au RDO","Add a cost to the RDO","Adicionar Custo ao RDO")+"</button></div>";
+  if(!list.length){
+    h+="<div class='rdo-empty'>"+L("Aucun coût enregistré ce jour.","No costs logged on this day.","Nenhum custo lançado neste dia.")+"</div>";
+    return {count:0,total:0,reviewed:0,pending:0,receipts:0,byCat:{},html:h};
+  }
+  // Itemized table
+  h+="<table class='rdo-cost-tbl'><thead><tr>"+
+     "<th>"+L("Fournisseur","Vendor","Fornecedor")+"</th>"+
+     "<th>"+L("Catégorie","Category","Categoria")+"</th>"+
+     "<th style='text-align:right'>"+L("Valeur","Amount","Valor")+"</th>"+
+     "<th>"+L("Paiement","Payment","Pagamento")+"</th>"+
+     "<th>"+L("Reçu","Receipt","Comprovante")+"</th>"+
+     "<th>"+L("Statut","Status","Status")+"</th></tr></thead><tbody>";
+  list.forEach(function(e){
+    var idAttr=String(e.id).replace(/'/g,"");
+    var catLine=escapeHTML(_finCatLabel(e.category))+(e.subcategory?(" · "+escapeHTML(_finSubLabel(e.category,e.subcategory))):"");
+    var rec;
+    if(e.receipt_thumb){rec="<img class='rdo-cost-thumb' src=\""+escapeHTML(e.receipt_thumb)+"\" onclick=\"openReceiptViewer('"+idAttr+"')\">";}
+    else if(_receiptObjectPath(e.receipt_url)){rec="<a class='rdo-cost-reclink no-print' onclick=\"openReceiptViewer('"+idAttr+"')\">"+L("Voir","View","Ver")+"</a><span class='rdo-print-only'>"+L("Joint","Attached","Anexado")+"</span>";}
+    else{rec="—";}
+    var isRev=e.status==="reviewed";
+    var badge="<span class='rdo-cost-badge "+(isRev?"rev":"pend")+"' onclick=\"toggleExpenseStatus('"+idAttr+"')\" title='"+L("Cliquer pour valider","Click to review","Clique para revisar")+"'>"+(isRev?("✓ "+L("Validé","Reviewed","Revisado")):L("En attente","Pending","Pendente"))+"</span>";
+    h+="<tr><td>"+escapeHTML(e.vendor||"—")+"</td>"+
+       "<td class='rdo-cost-cat'>"+catLine+"</td>"+
+       "<td style='text-align:right;white-space:nowrap;font-weight:700'>"+financeMoney(e.amount)+"</td>"+
+       "<td>"+escapeHTML(_finMethodLabel(e.method)||"—")+"</td>"+
+       "<td>"+rec+"</td>"+
+       "<td>"+badge+"</td></tr>";
+  });
+  h+="</tbody></table>";
+  // Category breakdown (prints in the body + appendix)
+  var breakParts=Object.keys(byCat).map(function(c){return escapeHTML(_finCatLabel(c))+": "+financeMoney(byCat[c]);});
+  h+="<div class='rdo-cost-break'><b>"+L("Répartition","Breakdown","Resumo por categoria")+":</b> "+breakParts.join("  |  ")+"</div>";
+  // Print-only appendix: receipt proof thumbnails / references
+  var proofs=list.filter(function(e){return e.receipt_thumb||_receiptObjectPath(e.receipt_url);});
+  if(proofs.length){
+    h+="<div class='rdo-cost-appendix'><div class='rdo-cost-appendix-h'>"+L("Comprovantes joints","Attached receipts","Comprovantes anexados")+"</div><div class='rdo-cost-appendix-grid'>";
+    h+=proofs.map(function(e){
+      var cap=escapeHTML((e.vendor||"")+" · "+financeMoney(e.amount));
+      if(e.receipt_thumb)return "<div class='rdo-cost-proof'><img src=\""+escapeHTML(e.receipt_thumb)+"\"><div>"+cap+"</div></div>";
+      return "<div class='rdo-cost-proof rdo-cost-proof-ref'><div class='rdo-cost-proof-icon'>▣</div><div>"+cap+" — "+L("reçu archivé","receipt on file","recibo arquivado")+"</div></div>";
+    }).join("");
+    h+="</div></div>";
+  }
+  return {count:list.length,total:total,reviewed:reviewed,pending:pending,receipts:receipts,byCat:byCat,html:h};
+}
+// Rebuild only the costs section (keeps typed RDO fields intact).
+function renderRDOCosts(){
+  var sec=document.getElementById("rdo-costs-sec");if(!sec)return;
+  var L=function(fr,en,pt){return lang===0?fr:lang===2?pt:en;};
+  var di=document.getElementById("rdo-date");
+  var dayIso=di?di.value:_rdoIsoDay(new Date());
+  var built=_rdoBuildCosts(dayIso);
+  sec.innerHTML="<h3>"+L("Dépenses & Reçus du Jour","Daily Expenses & Receipts","Custos e Despesas do Dia")+" ("+built.count+")</h3>"+built.html;
+}
+// Inline quick entry: open the ExpenseCaptureModal pre-scoped to the RDO day/site,
+// then fold the new expense straight back into the open RDO without resetting it.
+function addExpenseFromRDO(){
+  var di=document.getElementById("rdo-date");
+  openExpenseModal();
+  _expFromRDO=true;
+  _expForcedDay=di?di.value:_rdoIsoDay(new Date());
 }
 function openRDO(){
   var L=function(fr,en,pt){return lang===0?fr:lang===2?pt:en;};
@@ -6999,6 +7121,8 @@ function openRDO(){
     "<div><b>"+L("Température","Temperature","Temperatura")+":</b> <input class='rdo-in' placeholder='°C'></div>"+
     "<div><b>"+L("Effectif","Workforce","Efetivo")+":</b> <input class='rdo-in' placeholder='"+L("ex : 12 ouvriers","e.g. 12 workers","ex: 12 trabalhadores")+"'></div></div></div>";
   h+="<div class='rdo-sec' id='rdo-occ-sec'><h3>"+L("Occurrences","Occurrences","Ocorrências")+" ("+built.count+")</h3>"+built.html+"</div>";
+  var costs=_rdoBuildCosts(todayIso);
+  h+="<div class='rdo-sec' id='rdo-costs-sec'><h3>"+L("Dépenses & Reçus du Jour","Daily Expenses & Receipts","Custos e Despesas do Dia")+" ("+costs.count+")</h3>"+costs.html+"</div>";
   h+="<div class='rdo-sec'><h3>"+L("Observations","Observations","Observações")+"</h3><textarea class='rdo-in' placeholder='"+L("Notes additionnelles…","Additional notes…","Observações adicionais…")+"'></textarea></div>";
   h+="<div class='rdo-sign'><div>"+escapeHTML(proj.owner||me.name||"")+"<br>"+L("Responsable","Site manager","Responsável")+"</div><div>&nbsp;<br>"+L("Visa client","Client sign-off","Visto do cliente")+"</div></div>";
   document.getElementById("rdo-doc").innerHTML=h;
