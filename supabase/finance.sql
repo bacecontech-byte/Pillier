@@ -34,11 +34,14 @@ create index if not exists expenses_company_status_idx  on expenses (company_id,
 -- ── Per-company finance settings (budget + nudge automation) ────────────────
 create table if not exists finance_settings (
   company_id     uuid primary key references companies(id) on delete cascade,
-  budget_monthly numeric(14,2) default 0,
+  budget_monthly numeric(14,2) default 0,        -- portfolio total (sum of per-site budgets)
+  budgets        jsonb,                          -- per-site budgets: {"<site name>": amount}
   nudge_enabled  boolean default false,
   nudge_time     text default '17:30',
   updated_at     timestamptz default now()
 );
+-- If finance_settings already exists from an earlier run, add the new column.
+alter table finance_settings add column if not exists budgets jsonb;
 
 alter table expenses         enable row level security;
 alter table finance_settings enable row level security;

@@ -6390,14 +6390,50 @@ async function _receiptSignedUrl(receiptUrl){
 }
 function activeSiteExpenses(){var a=getActiveSite();if(!a)return expenses;return expenses.filter(function(e){return e.project===a;});}
 
-/* ── budget + nudge settings ─────────────────────────────────────────────── */
-function getBudget(){try{return Number(localStorage.getItem("pillier-fin-budget"))||0;}catch(e){return 0;}}
+/* ── budget (per-site) + nudge settings ──────────────────────────────────── */
 function _finLastSite(){try{var s=localStorage.getItem("pillier-fin-last-site")||"";return (projects||[]).some(function(p){return p.name===s;})?s:"";}catch(e){return "";}}
-function getNudge(){try{return JSON.parse(localStorage.getItem("pillier-fin-nudge")||'{"enabled":false,"time":"17:30"}');}catch(e){return {enabled:false,time:"17:30"};}}
-function _persistFinanceSettings(){
-  if(dbOk&&dbCoId&&db){try{var n=getNudge();db.from("finance_settings").upsert({company_id:dbCoId,budget_monthly:getBudget(),nudge_enabled:!!n.enabled,nudge_time:n.time||"17:30",updated_at:new Date().toISOString()},{onConflict:"company_id"}).then(function(r){if(r&&r.error)console.warn("[finance] settings sync:",r.error.message);});}catch(e){}}
+// Per-site monthly budgets, keyed by site name. Legacy single value is the
+// fallback for a site that has no budget of its own yet (non-destructive).
+function _finBudgets(){try{return JSON.parse(localStorage.getItem("pillier-fin-budgets")||"{}");}catch(e){return {};}}
+function _finLegacyBudget(){try{return Number(localStorage.getItem("pillier-fin-budget"))||0;}catch(e){return 0;}}
+function getSiteBudget(site){var m=_finBudgets();if(site&&m[site]!=null)return Number(m[site])||0;return site?_finLegacyBudget():0;}
+// Budget for the CURRENT view: a specific site → its budget; "All sites" → the
+// sum of every per-site budget (portfolio), falling back to the legacy value.
+function getBudget(){
+  var site=getActiveSite();var m=_finBudgets();
+  if(site)return (m[site]!=null)?(Number(m[site])||0):_finLegacyBudget();
+  var keys=Object.keys(m);
+  if(keys.length){var sum=0;keys.forEach(function(k){sum+=Number(m[k])||0;});return sum;}
+  return _finLegacyBudget();
 }
-function setBudgetFromInput(){var el=document.getElementById("fin-budget-input");if(!el)return;var v=_finParseAmount(el.value);try{localStorage.setItem("pillier-fin-budget",String(v));}catch(e){}_persistFinanceSettings();toast("✅ "+_t3("Budget saved","Budget enregistré","Orçamento salvo"));renderFinanceIfActive();}
+function setSiteBudget(site,v){if(!site)return;var m=_finBudgets();m[site]=Number(v)||0;try{localStorage.setItem("pillier-fin-budgets",JSON.stringify(m));}catch(e){}_persistFinanceSettings();}
+function getNudge(){try{return JSON.parse(localStorage.getItem("pillier-fin-nudge")||'{"enabled":false,"time":"17:30"}');}catch(e){return {enabled:false,time:"17:30"};}}
+async function _persistFinanceSettings(){
+  if(!(dbOk&&dbCoId&&db))return;
+  var n=getNudge();var m=_finBudgets();
+  // budget_monthly kept as the portfolio sum (used by the cron); per-site map in budgets.
+  var sum=0;Object.keys(m).forEach(function(k){sum+=Number(m[k])||0;});
+  var base={company_id:dbCoId,budget_monthly:sum||_finLegacyBudget(),nudge_enabled:!!n.enabled,nudge_time:n.time||"17:30",updated_at:new Date().toISOString()};
+  try{
+    var full={};for(var k in base)full[k]=base[k];full.budgets=m;
+    var r=await db.from("finance_settings").upsert(full,{onConflict:"company_id"});
+    if(r&&r.error&&/budgets|column|schema cache|PGRST204/i.test(r.error.message||"")){await db.from("finance_settings").upsert(base,{onConflict:"company_id"});}
+    else if(r&&r.error)console.warn("[finance] settings sync:",r.error.message);
+  }catch(e){}
+}
+// Save the budget for the site chosen in the automations panel.
+function setBudgetFromInput(){
+  var el=document.getElementById("fin-budget-input"),siteEl=document.getElementById("fin-budget-site");
+  if(!el)return;
+  var site=siteEl?siteEl.value:(getActiveSite()||_finLastSite());
+  if(projects&&projects.length&&!site){toast(_t3("Select the construction site","Sélectionnez le chantier","Selecione o canteiro"));return;}
+  var v=_finParseAmount(el.value);
+  if(site)setSiteBudget(site,v);else{try{localStorage.setItem("pillier-fin-budget",String(v));}catch(e){}}
+  toast("✅ "+_t3("Budget saved for ","Budget enregistré pour ","Orçamento salvo para ")+(site||_t3("all sites","tous les chantiers","todos os canteiros")));
+  renderFinanceIfActive();
+}
+// Site dropdown in the budget card → load that site's budget into the input.
+function onBudgetSiteChange(){var siteEl=document.getElementById("fin-budget-site"),el=document.getElementById("fin-budget-input");if(!siteEl||!el)return;el.value=getSiteBudget(siteEl.value)||"";}
 function toggleNudge(){var n=getNudge();n.enabled=!n.enabled;try{localStorage.setItem("pillier-fin-nudge",JSON.stringify(n));}catch(e){}_persistFinanceSettings();renderFinanceAutomations();}
 function setNudgeTime(v){var n=getNudge();n.time=v||"17:30";try{localStorage.setItem("pillier-fin-nudge",JSON.stringify(n));}catch(e){}_persistFinanceSettings();}
 async function loadFinanceSettings(){
@@ -6405,6 +6441,7 @@ async function loadFinanceSettings(){
   try{var r=await db.from("finance_settings").select("*").eq("company_id",dbCoId).maybeSingle();
     if(r&&!r.error&&r.data){
       if(r.data.budget_monthly!=null){try{localStorage.setItem("pillier-fin-budget",String(Number(r.data.budget_monthly)||0));}catch(e){}}
+      if(r.data.budgets&&typeof r.data.budgets==="object"){try{localStorage.setItem("pillier-fin-budgets",JSON.stringify(r.data.budgets));}catch(e){}}
       try{localStorage.setItem("pillier-fin-nudge",JSON.stringify({enabled:!!r.data.nudge_enabled,time:r.data.nudge_time||"17:30"}));}catch(e){}
     }
   }catch(e){}
@@ -6459,7 +6496,8 @@ function renderFinance(){
   var h="";
   // KPI row
   h+="<div class='fin-kpi-grid'>";
-  h+="<div class='fin-card' style='margin-bottom:0;'><div class='fin-kpi-label'><i class='ti ti-cash' style='color:#0ea5e9;'></i>"+_t3("Costs this month","Coûts ce mois-ci","Custos este mês")+"</div><div class='fin-kpi-val'>"+financeMoney(monthTotal)+"</div><div class='fin-kpi-sub'>"+(budget>0?(_t3("of","sur","de")+" "+financeMoney(budget)+" "+_t3("budget","de budget","de orçamento")+" · "+Math.round(monthTotal/budget*100)+"%"):_t3("No budget set","Aucun budget défini","Sem orçamento definido"))+"</div></div>";
+  var _kpiSite=getActiveSite()||_t3("all sites","tous les chantiers","todos os canteiros");
+  h+="<div class='fin-card' style='margin-bottom:0;'><div class='fin-kpi-label'><i class='ti ti-cash' style='color:#0ea5e9;'></i>"+_t3("Costs this month","Coûts ce mois-ci","Custos este mês")+" · <span style='color:#0ea5e9;'>"+escapeHTML(_kpiSite)+"</span></div><div class='fin-kpi-val'>"+financeMoney(monthTotal)+"</div><div class='fin-kpi-sub'>"+(budget>0?(_t3("of","sur","de")+" "+financeMoney(budget)+" "+_t3("budget","de budget","de orçamento")+" · "+Math.round(monthTotal/budget*100)+"%"+(getActiveSite()?"":" · "+_t3("all sites total","total tous chantiers","total de todos"))):_t3("No budget set — set it in Nudges","Aucun budget — définissez-le dans Rappels","Sem orçamento — defina em Lembretes"))+"</div></div>";
   h+="<div class='fin-card' style='margin-bottom:0;'><div class='fin-kpi-label'><i class='ti ti-receipt' style='color:#f59e0b;'></i>"+_t3("Receipts processed (OCR)","Reçus traités (OCR)","Recibos Processados (OCR)")+"</div><div class='fin-kpi-val'>"+ocr+"</div><div class='fin-kpi-sub'>"+pending+" "+_t3("awaiting review","en attente de validation","aguardando revisão")+"</div></div>";
   h+="</div>";
   // Chart card
@@ -6680,9 +6718,13 @@ function renderFinanceAutomations(){
     "Bonjour ! Vous avez "+pend+" reçu(s)/dépense(s) en attente ("+financeMoney(amt)+") pour la clôture du jour sur "+obra+". Cliquez pour valider.",
     "Olá! Você tem "+pend+" recibo(s) e despesa(s) pendentes ("+financeMoney(amt)+") para o fechamento do dia na "+obra+". Clique para validar.");
   var h="";
-  // Budget card
-  h+="<div class='fin-card'><div class='fin-card-h'>"+_t3("Monthly budget","Budget mensuel","Orçamento mensal")+"</div><div class='fin-card-sub'>"+_t3("Used for the burn-rate chart and nudge context.","Utilisé pour le graphique et les rappels.","Usado no gráfico de consumo e nos lembretes.")+"</div>";
-  h+="<div style='display:flex;gap:8px;align-items:center;flex-wrap:wrap;'><span style='font-weight:700;color:var(--text2);'>"+financeCurrencySymbol()+"</span><input id='fin-budget-input' class='fin-inline-input' style='flex:1;min-width:140px;' inputmode='decimal' value='"+(budget||"")+"' placeholder='0,00'><button class='fin-primary-btn' onclick='setBudgetFromInput()'>"+_t3("Save","Enregistrer","Salvar")+"</button></div></div>";
+  // Budget card — per construction site (each canteiro can have its own budget)
+  var _bSite=getActiveSite()||_finLastSite()||((projects[0]&&projects[0].name)||"");
+  var _bOpts=(projects||[]).map(function(p){var on=(p.name===_bSite)?" selected":"";return "<option value=\""+escapeHTML(p.name)+"\""+on+">"+escapeHTML(p.name)+"</option>";}).join("");
+  if(!projects||!projects.length)_bOpts="<option value=''>"+_t3("No site — add one in My projects","Aucun chantier","Nenhum canteiro")+"</option>";
+  h+="<div class='fin-card'><div class='fin-card-h'>"+_t3("Monthly budget per site","Budget mensuel par chantier","Orçamento mensal por canteiro")+"</div><div class='fin-card-sub'>"+_t3("Each construction site has its own budget — used by the chart and nudges.","Chaque chantier a son propre budget — utilisé par le graphique et les rappels.","Cada canteiro tem seu próprio orçamento — usado no gráfico e nos lembretes.")+"</div>";
+  h+="<div class='exp-field' style='margin-bottom:10px;'><label>"+_t3("Construction site","Chantier","Canteiro / Obra")+"</label><select id='fin-budget-site' class='fin-inline-input' style='width:100%;' onchange='onBudgetSiteChange()'>"+_bOpts+"</select></div>";
+  h+="<div style='display:flex;gap:8px;align-items:center;flex-wrap:wrap;'><span style='font-weight:700;color:var(--text2);'>"+financeCurrencySymbol()+"</span><input id='fin-budget-input' class='fin-inline-input' style='flex:1;min-width:140px;' inputmode='decimal' value='"+(getSiteBudget(_bSite)||"")+"' placeholder='0,00'><button class='fin-primary-btn' onclick='setBudgetFromInput()'>"+_t3("Save","Enregistrer","Salvar")+"</button></div></div>";
   // Nudge card
   h+="<div class='fin-card'><div style='display:flex;align-items:center;justify-content:space-between;gap:12px;'><div><div class='fin-card-h'>"+_t3("Daily end-of-day nudge","Rappel de fin de journée","Lembrete de fim de dia")+"</div><div class='fin-card-sub' style='margin-bottom:0;'>"+_t3("Sends a check-in to your connected apps.","Envoie un rappel à vos apps connectées.","Envia um check-in para seus apps conectados.")+"</div></div><div class='fin-toggle "+(n.enabled?"on":"")+"' onclick='toggleNudge()'></div></div>";
   h+="<div style='display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap;'><label style='font-size:12px;color:var(--text2);'>"+_t3("Time","Heure","Horário")+"</label><input type='time' class='fin-inline-input' style='width:120px;' value='"+(n.time||"17:30")+"' onchange='setNudgeTime(this.value)'><span style='font-size:11px;color:var(--text3);'>"+_t3("site local time","heure locale du chantier","horário local da obra")+"</span></div>";
