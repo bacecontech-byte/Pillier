@@ -517,6 +517,13 @@ body{font-family:var(--font-b);background:var(--navy);color:var(--text);min-heig
 .fin-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:4px;}
 .fin-del:hover{color:#f87171;}
 .fin-inline-input{background:var(--navy3);border:1px solid var(--border);border-radius:9px;color:var(--white);font-size:14px;padding:9px 11px;font-family:inherit;box-sizing:border-box;}
+.fin-budget-list{display:flex;flex-direction:column;gap:8px;}
+.fin-budget-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
+.fin-budget-row:last-child{border-bottom:none;}
+.fin-budget-name{flex:1;min-width:0;display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fin-budget-cell{width:150px;flex-shrink:0;text-align:right;font-variant-numeric:tabular-nums;}
+.fin-budget-cell:focus{border-color:#0ea5e9;outline:none;}
+@media(max-width:600px){.fin-budget-cell{width:120px;}}
 .fin-toggle{position:relative;width:44px;height:24px;border-radius:14px;background:var(--navy3);border:1px solid var(--border2);cursor:pointer;transition:background .15s;flex-shrink:0;}
 .fin-toggle.on{background:#0ea5e9;border-color:#0ea5e9;}
 .fin-toggle::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .15s;}
@@ -6421,19 +6428,14 @@ async function _persistFinanceSettings(){
     else if(r&&r.error)console.warn("[finance] settings sync:",r.error.message);
   }catch(e){}
 }
-// Save the budget for the site chosen in the automations panel.
-function setBudgetFromInput(){
-  var el=document.getElementById("fin-budget-input"),siteEl=document.getElementById("fin-budget-site");
+// Save one site's budget from its inline row input (auto-saves on change).
+function saveSiteBudgetInput(el){
   if(!el)return;
-  var site=siteEl?siteEl.value:(getActiveSite()||_finLastSite());
-  if(projects&&projects.length&&!site){toast(_t3("Select the construction site","Sélectionnez le chantier","Selecione o canteiro"));return;}
-  var v=_finParseAmount(el.value);
-  if(site)setSiteBudget(site,v);else{try{localStorage.setItem("pillier-fin-budget",String(v));}catch(e){}}
-  toast("✅ "+_t3("Budget saved for ","Budget enregistré pour ","Orçamento salvo para ")+(site||_t3("all sites","tous les chantiers","todos os canteiros")));
-  renderFinanceIfActive();
+  var site=el.getAttribute("data-site");if(!site)return;
+  setSiteBudget(site,_finParseAmount(el.value));
+  toast("✅ "+_t3("Budget saved for ","Budget enregistré pour ","Orçamento salvo para ")+site);
+  try{if(getActiveSite()===site||!getActiveSite())renderFinanceIfActive();}catch(_){}
 }
-// Site dropdown in the budget card → load that site's budget into the input.
-function onBudgetSiteChange(){var siteEl=document.getElementById("fin-budget-site"),el=document.getElementById("fin-budget-input");if(!siteEl||!el)return;el.value=getSiteBudget(siteEl.value)||"";}
 function toggleNudge(){var n=getNudge();n.enabled=!n.enabled;try{localStorage.setItem("pillier-fin-nudge",JSON.stringify(n));}catch(e){}_persistFinanceSettings();renderFinanceAutomations();}
 function setNudgeTime(v){var n=getNudge();n.time=v||"17:30";try{localStorage.setItem("pillier-fin-nudge",JSON.stringify(n));}catch(e){}_persistFinanceSettings();}
 async function loadFinanceSettings(){
@@ -6718,13 +6720,21 @@ function renderFinanceAutomations(){
     "Bonjour ! Vous avez "+pend+" reçu(s)/dépense(s) en attente ("+financeMoney(amt)+") pour la clôture du jour sur "+obra+". Cliquez pour valider.",
     "Olá! Você tem "+pend+" recibo(s) e despesa(s) pendentes ("+financeMoney(amt)+") para o fechamento do dia na "+obra+". Clique para validar.");
   var h="";
-  // Budget card — per construction site (each canteiro can have its own budget)
-  var _bSite=getActiveSite()||_finLastSite()||((projects[0]&&projects[0].name)||"");
-  var _bOpts=(projects||[]).map(function(p){var on=(p.name===_bSite)?" selected":"";return "<option value=\""+escapeHTML(p.name)+"\""+on+">"+escapeHTML(p.name)+"</option>";}).join("");
-  if(!projects||!projects.length)_bOpts="<option value=''>"+_t3("No site — add one in My projects","Aucun chantier","Nenhum canteiro")+"</option>";
-  h+="<div class='fin-card'><div class='fin-card-h'>"+_t3("Monthly budget per site","Budget mensuel par chantier","Orçamento mensal por canteiro")+"</div><div class='fin-card-sub'>"+_t3("Each construction site has its own budget — used by the chart and nudges.","Chaque chantier a son propre budget — utilisé par le graphique et les rappels.","Cada canteiro tem seu próprio orçamento — usado no gráfico e nos lembretes.")+"</div>";
-  h+="<div class='exp-field' style='margin-bottom:10px;'><label>"+_t3("Construction site","Chantier","Canteiro / Obra")+"</label><select id='fin-budget-site' class='fin-inline-input' style='width:100%;' onchange='onBudgetSiteChange()'>"+_bOpts+"</select></div>";
-  h+="<div style='display:flex;gap:8px;align-items:center;flex-wrap:wrap;'><span style='font-weight:700;color:var(--text2);'>"+financeCurrencySymbol()+"</span><input id='fin-budget-input' class='fin-inline-input' style='flex:1;min-width:140px;' inputmode='decimal' value='"+(getSiteBudget(_bSite)||"")+"' placeholder='0,00'><button class='fin-primary-btn' onclick='setBudgetFromInput()'>"+_t3("Save","Enregistrer","Salvar")+"</button></div></div>";
+  // Budget card — one budget line PER construction site, all visible at once.
+  var _sym=financeCurrencySymbol();
+  h+="<div class='fin-card'><div class='fin-card-h'>"+_t3("Monthly budget per site","Budget mensuel par chantier","Orçamento mensal por canteiro")+"</div><div class='fin-card-sub'>"+_t3("Set a budget for each construction site — used by the chart and nudges. Saved automatically.","Définissez un budget par chantier — utilisé par le graphique et les rappels. Enregistré automatiquement.","Defina um orçamento para cada canteiro — usado no gráfico e nos lembretes. Salvo automaticamente.")+"</div>";
+  if(!projects||!projects.length){
+    h+="<div class='fin-empty' style='padding:20px 8px;'>"+_t3("Add a construction site first in My projects.","Ajoutez d'abord un chantier dans Mes projets.","Cadastre um canteiro primeiro em Meus projetos.")+"</div>";
+  }else{
+    h+="<div class='fin-budget-list'>";
+    projects.forEach(function(p){
+      h+="<div class='fin-budget-row'><div class='fin-budget-name'><i class='ti ti-building' style='color:#0ea5e9;font-size:15px;'></i>"+escapeHTML(p.name)+"</div>"+
+         "<span style='color:var(--text2);font-weight:700;font-size:13px;'>"+_sym+"</span>"+
+         "<input class='fin-inline-input fin-budget-cell' inputmode='decimal' data-site=\""+escapeHTML(p.name)+"\" value='"+(getSiteBudget(p.name)||"")+"' placeholder='0,00' onchange='saveSiteBudgetInput(this)'></div>";
+    });
+    h+="</div>";
+  }
+  h+="</div>";
   // Nudge card
   h+="<div class='fin-card'><div style='display:flex;align-items:center;justify-content:space-between;gap:12px;'><div><div class='fin-card-h'>"+_t3("Daily end-of-day nudge","Rappel de fin de journée","Lembrete de fim de dia")+"</div><div class='fin-card-sub' style='margin-bottom:0;'>"+_t3("Sends a check-in to your connected apps.","Envoie un rappel à vos apps connectées.","Envia um check-in para seus apps conectados.")+"</div></div><div class='fin-toggle "+(n.enabled?"on":"")+"' onclick='toggleNudge()'></div></div>";
   h+="<div style='display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap;'><label style='font-size:12px;color:var(--text2);'>"+_t3("Time","Heure","Horário")+"</label><input type='time' class='fin-inline-input' style='width:120px;' value='"+(n.time||"17:30")+"' onchange='setNudgeTime(this.value)'><span style='font-size:11px;color:var(--text3);'>"+_t3("site local time","heure locale du chantier","horário local da obra")+"</span></div>";
