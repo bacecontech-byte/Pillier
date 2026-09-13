@@ -9,7 +9,8 @@
     { "source": "/auth/verify-code", "destination": "/index.html" },
     { "source": "/reset-password", "destination": "/index.html" },
     { "source": "/financeiro", "destination": "/index.html" },
-    { "source": "/financeiro/(.*)", "destination": "/index.html" }
+    { "source": "/financeiro/(.*)", "destination": "/index.html" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "headers": [
     {

@@ -3742,6 +3742,20 @@ document.addEventListener('click',function(e){
   if(wrap&&menu&&!wrap.contains(e.target))menu.style.display='none';
 });
 
+/* ── Landing tab ⇄ URL routing (clean paths + deep links + back/forward) ───── */
+var _suppressUrlPush=false;
+function _landPaths(){return ['/','/solucoes','/planos','/recursos'];}
+function _landPathToTab(p){
+  p=String(p||'/').toLowerCase().replace(/\/{2,}/g,'/').replace(/\/+$/,'');if(!p)p='/';
+  var m={'/':0,'/home':0,'/solucoes':1,'/solucao':1,'/solutions':1,
+         '/planos':2,'/plans':2,'/pricing':2,
+         '/recursos':3,'/resources':3,'/ressources':3};
+  return (p in m)?m[p]:-1;
+}
+function _syncLandingUrl(idx){
+  if(_suppressUrlPush)return;
+  try{var p=_landPaths()[idx]||'/';if(location.pathname!==p)history.pushState(null,'',p);}catch(e){}
+}
 function showContentPage(tabIdx){
   document.getElementById('s-login').classList.remove('active');
   document.getElementById('s-app').classList.remove('active');
@@ -3766,6 +3780,16 @@ function showAuthPage(){
 (function(){
   var wasLoggedIn=localStorage.getItem('pillier_logged_in')==='1';
   var currentPage=localStorage.getItem('pillier_current_page');
+  // Deep link: a visitor landing directly on /solucoes, /planos or /recursos
+  // opens that marketing tab (takes precedence over the stored last-page).
+  var urlTab=_landPathToTab(location.pathname);
+  if(!wasLoggedIn&&urlTab>=0){
+    var scd=document.getElementById('s-content'),sld=document.getElementById('s-login');
+    if(scd&&sld){sld.classList.remove('active');scd.classList.add('active');}
+    _suppressUrlPush=true;try{showContentTab(urlTab);}catch(e){}_suppressUrlPush=false;
+    try{history.replaceState(null,'',_landPaths()[urlTab]);}catch(e){}
+    return;
+  }
   if(wasLoggedIn){
     var sc=document.getElementById('s-content');
     var sa=document.getElementById('s-app');
@@ -3789,6 +3813,17 @@ function showAuthPage(){
     },100);
   }
 })();
+// Back / Forward buttons switch the visible marketing tab (ignored while in the app).
+window.addEventListener('popstate',function(){
+  try{
+    var sa=document.getElementById('s-app');
+    if(sa&&sa.classList.contains('active'))return; // don't hijack the logged-in app
+    var t=_landPathToTab(location.pathname);if(t<0)return;
+    var sc=document.getElementById('s-content'),sl=document.getElementById('s-login');
+    if(sc){if(sl)sl.classList.remove('active');sc.classList.add('active');}
+    _suppressUrlPush=true;showContentTab(t);_suppressUrlPush=false;
+  }catch(e){}
+});
 function showContentTab(idx){
   for(var i=0;i<4;i++){
     var p=document.getElementById('content-panel-'+i);if(p)p.style.display=i===idx?'block':'none';
@@ -3796,6 +3831,7 @@ function showContentTab(idx){
   }
   localStorage.setItem('pillier_current_page','content');
   localStorage.setItem('pillier_current_tab',idx);
+  _syncLandingUrl(idx); // reflect the active tab in the address bar (/, /solucoes, /planos, /recursos)
 }
 
 function renderSolSections(){
