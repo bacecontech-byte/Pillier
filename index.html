@@ -529,6 +529,10 @@ body{font-family:var(--font-b);background:var(--navy);color:var(--text);min-heig
 .fin-sb-val{font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap;}
 .fin-sb-bar{height:8px;border-radius:6px;background:var(--navy3);overflow:hidden;}
 .fin-sb-fill{height:100%;border-radius:6px;transition:width .3s ease;min-width:2px;}
+.fin-syncbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;}
+.fin-sync-txt{font-size:11.5px;color:var(--text3);}
+.fin-sync-btn{display:inline-flex;align-items:center;background:var(--navy2);border:1px solid var(--border2);color:var(--text2);border-radius:20px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;}
+.fin-sync-btn:hover{border-color:#0ea5e9;color:#0ea5e9;}
 @media(max-width:600px){.fin-budget-cell{width:120px;}}
 .fin-toggle{position:relative;width:44px;height:24px;border-radius:14px;background:var(--navy3);border:1px solid var(--border2);cursor:pointer;transition:background .15s;flex-shrink:0;}
 .fin-toggle.on{background:#0ea5e9;border-color:#0ea5e9;}
@@ -6337,6 +6341,7 @@ async function loadExpenses(){
     try{await syncPendingExpenses();}catch(e){}
   }
   try{loadFinanceSettings();}catch(e){}
+  try{if(dbOk&&dbCoId&&typeof _pillierLastRefresh!=="undefined")_pillierLastRefresh=Date.now();}catch(e){}
   try{renderFinanceIfActive();}catch(e){}
 }
 // Re-insert expenses that were created offline (still carry a numeric temp id).
@@ -6519,11 +6524,27 @@ function _finSiteBudgetCard(){
   return h;
 }
 function renderFinanceIfActive(){var t=document.getElementById("tab-9");if(t&&t.classList.contains("active")){renderFinance();}var t2=document.getElementById("tab-11");if(t2&&t2.classList.contains("active"))renderFinanceAutomations();}
+// Human "last synced" label + a force-refresh the user can trust.
+function _finSyncLabel(){
+  var t=(typeof _pillierLastRefresh!=="undefined")?_pillierLastRefresh:0;
+  if(!t)return _t3("tap to sync","toucher pour sync","toque para sincronizar");
+  var s=Math.max(0,Math.round((Date.now()-t)/1000));
+  var ago=s<12?_t3("just now","à l'instant","agora"):s<60?(s+"s"):Math.round(s/60)+"min";
+  return _t3("Synced ","Sync ","Sincronizado ")+ago;
+}
+async function finRefreshNow(){
+  toast(_t3("Syncing…","Synchronisation…","Sincronizando…"));
+  try{await _pillierRefreshData(true);}catch(_){}
+  try{renderFinance();}catch(_){}
+  toast("✅ "+_t3("Up to date","À jour","Atualizado"));
+}
 function renderFinance(){
   var body=document.getElementById("fin-desp-body");if(!body)return;
   var monthTotal=_finMonthTotal(),ocr=_finOcrCount(),pending=_finPendingCount(),budget=getBudget();
   var list=activeSiteExpenses().slice(0,60);
   var h="";
+  // Sync bar — force a fresh pull from the server and show when it last synced.
+  h+="<div class='fin-syncbar'><span class='fin-sync-txt'><i class='ti ti-cloud-check' style='font-size:14px;vertical-align:-2px;margin-right:4px;color:#0ea5e9;'></i>"+_finSyncLabel()+"</span><button class='fin-sync-btn' onclick='finRefreshNow()'><i class='ti ti-refresh' style='vertical-align:-2px;margin-right:4px;'></i>"+_t3("Refresh","Actualiser","Atualizar")+"</button></div>";
   // KPI row
   h+="<div class='fin-kpi-grid'>";
   var _kpiSite=getActiveSite()||_t3("all sites","tous les chantiers","todos os canteiros");
@@ -10490,10 +10511,12 @@ if('serviceWorker' in navigator&&location.protocol==='https:'){
   // When a new service worker takes control, the installed PWA is still running
   // the OLD page code — reload once so the latest logic (sync fixes, etc.) runs.
   var _swReloaded=false;
+  function _swReloadOnce(){if(_swReloaded)return;_swReloaded=true;location.reload();}
   // Only reload on UPDATE (page already had a controller) — not on first install.
   if(navigator.serviceWorker.controller){
-    try{navigator.serviceWorker.addEventListener('controllerchange',function(){if(_swReloaded)return;_swReloaded=true;location.reload();});}catch(_){}
+    try{navigator.serviceWorker.addEventListener('controllerchange',_swReloadOnce);}catch(_){}
   }
+  try{navigator.serviceWorker.addEventListener('message',function(ev){if(ev&&ev.data&&ev.data.type==='pillier-reload'&&navigator.serviceWorker.controller)_swReloadOnce();});}catch(_){}
   window.addEventListener('load',function(){
     navigator.serviceWorker.register('/sw.js').then(function(reg){
       try{reg.update();}catch(_){}

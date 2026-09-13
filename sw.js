@@ -11,7 +11,7 @@
  *  - Non-GET requests are never touched.
  *  Bumping VERSION invalidates every old cache on activate.
  */
-var VERSION = 'pillier-v5';
+var VERSION = 'pillier-v6';
 var SHELL   = VERSION + '-shell';
 var RUNTIME = VERSION + '-runtime';
 
@@ -52,6 +52,13 @@ self.addEventListener('activate', function (e) {
         if (k.indexOf(VERSION) !== 0) return caches.delete(k);
       }));
     }).then(function () { return self.clients.claim(); })
+     .then(function () {
+       // Tell every open tab/PWA to reload so they run the new app code at once
+       // (belt-and-suspenders with the page's controllerchange handler).
+       return self.clients.matchAll({ type: 'window' }).then(function (cs) {
+         cs.forEach(function (c) { try { c.postMessage({ type: 'pillier-reload' }); } catch (e) {} });
+       });
+     })
   );
 });
 
