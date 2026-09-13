@@ -3743,8 +3743,14 @@ document.addEventListener('click',function(e){
 });
 
 /* ── Landing tab ⇄ URL routing (clean paths + deep links + back/forward) ───── */
-var _suppressUrlPush=false;
-function _landPaths(){return ['/','/solucoes','/planos','/recursos'];}
+var _suppressUrlPush=false,_curContentTab=0;
+// Localized clean slugs per language: EN /solutions /plans /resources,
+// FR /solutions /plans /ressources, PT /solucoes /planos /recursos (Home is "/").
+function _landPaths(){
+  if(lang===1)return ['/','/solutions','/plans','/resources'];   // EN
+  if(lang===0)return ['/','/solutions','/plans','/ressources'];  // FR
+  return ['/','/solucoes','/planos','/recursos'];                 // PT
+}
 function _landPathToTab(p){
   p=String(p||'/').toLowerCase().replace(/\/{2,}/g,'/').replace(/\/+$/,'');if(!p)p='/';
   var m={'/':0,'/home':0,'/solucoes':1,'/solucao':1,'/solutions':1,
@@ -3829,9 +3835,10 @@ function showContentTab(idx){
     var p=document.getElementById('content-panel-'+i);if(p)p.style.display=i===idx?'block':'none';
     var t=document.getElementById('ctab-'+i);if(t)t.classList.toggle('active',i===idx);
   }
+  _curContentTab=idx;
   localStorage.setItem('pillier_current_page','content');
   localStorage.setItem('pillier_current_tab',idx);
-  _syncLandingUrl(idx); // reflect the active tab in the address bar (/, /solucoes, /planos, /recursos)
+  _syncLandingUrl(idx); // reflect the active tab in the address bar (localized slug)
 }
 
 function renderSolSections(){
@@ -4265,6 +4272,9 @@ function changeLang(i){
 function applyLang(){
   translateNav();
   syncLangSelects();
+  // Re-localize the marketing URL to the new language (e.g. /recursos → /resources)
+  // when a content tab is showing — replaceState so it doesn't add history.
+  try{var _sc=document.getElementById("s-content");if(_sc&&_sc.classList.contains("active")){var _p=_landPaths()[_curContentTab]||"/";if(location.pathname!==_p)history.replaceState(null,"",_p);}}catch(e){}
   try{var _cb=document.getElementById("sb-cap-lbl");if(_cb)_cb.textContent=plL("Capturer un incident","Capture incident","Capturar incidente");}catch(e){}
   // Mobile profile panel labels (were hardcoded PT)
   try{var _ml=document.getElementById("mob-lang-label");if(_ml)_ml.textContent=plL("Langue","Language","Idioma");}catch(e){}
