@@ -6269,10 +6269,24 @@ function _finFillSubcats(selectId,cat,selected){
   sel.innerHTML=opts;
 }
 function onExpenseCategoryChange(){var ec=document.getElementById("exp-cat");if(!ec)return;_finFillSubcats("exp-subcat",ec.value,"");}
-function financeCurrencyCode(){return lang===2?"BRL":lang===0?"EUR":"USD";}
-function financeCurrencySymbol(){return lang===2?"R$":lang===0?"€":"US$";}
-function financeMoney(v){var loc=lang===1?"en-US":lang===0?"fr-FR":"pt-BR";return financeCurrencySymbol()+" "+(Number(v)||0).toLocaleString(loc,{minimumFractionDigits:2,maximumFractionDigits:2});}
-function _finShortMoney(v){v=Number(v)||0;if(v>=1000000)return financeCurrencySymbol()+(v/1000000).toFixed(1)+"M";if(v>=1000)return financeCurrencySymbol()+Math.round(v/1000)+"k";return financeCurrencySymbol()+Math.round(v);}
+function _finCurSym(code){return code==="EUR"?"€":code==="USD"?"US$":"R$";}
+function _finCurLoc(code){return code==="EUR"?"fr-FR":code==="USD"?"en-US":"pt-BR";}
+// Format an amount in an EXPLICIT currency (used per-row with each expense's own
+// stored currency) — so an amount recorded in R$ always reads R$, regardless of
+// the interface language.
+function _finFmt(v,code){code=(code==="EUR"||code==="USD"||code==="BRL")?code:financeCurrencyCode();return _finCurSym(code)+" "+(Number(v)||0).toLocaleString(_finCurLoc(code),{minimumFractionDigits:2,maximumFractionDigits:2});}
+// The company's finance currency is a property of the DATA, not the UI language:
+// a saved preference → else the currency of existing expenses → else the UI
+// language only for a brand-new account. Switching FR/EN/PT changes labels and
+// number formatting, but never re-labels the money's currency.
+function financeCurrencyCode(){
+  try{var c=localStorage.getItem("pillier-fin-currency");if(c==="BRL"||c==="EUR"||c==="USD")return c;}catch(e){}
+  try{if(typeof expenses!=="undefined"&&expenses&&expenses.length&&expenses[0]&&expenses[0].currency)return expenses[0].currency;}catch(e){}
+  return lang===2?"BRL":lang===0?"EUR":"USD";
+}
+function financeCurrencySymbol(){return _finCurSym(financeCurrencyCode());}
+function financeMoney(v){return _finFmt(v,financeCurrencyCode());}
+function _finShortMoney(v){v=Number(v)||0;var s=financeCurrencySymbol();if(v>=1000000)return s+(v/1000000).toFixed(1)+"M";if(v>=1000)return s+Math.round(v/1000)+"k";return s+Math.round(v);}
 function _finIsoDay(d){function p(n){return (n<10?"0":"")+n;}return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate());}
 function _finDayShort(d){function p(n){return (n<10?"0":"")+n;}return p(d.getDate())+"/"+p(d.getMonth()+1);}
 function _finParseAmount(s){var n=parseFloat(String(s).replace(/[^0-9.,-]/g,"").replace(/\.(?=\d{3}\b)/g,"").replace(",",".") );return isFinite(n)?n:0;}
@@ -6582,7 +6596,7 @@ function renderFinance(){
       h+="<tr><td style='white-space:nowrap;color:var(--text3);'>"+_finDayShort(d)+"</td>"+
          "<td><div class='fin-vendorcell'>"+thumb+"<div style='min-width:0;'><div class='fin-vendorname'>"+escapeHTML(e.vendor||"—")+(e.ocr?" <i class='ti ti-scan' title='OCR' style='font-size:12px;color:#0ea5e9;vertical-align:-1px;'></i>":"")+"</div><span class='fin-catcell'>"+catLine+"</span></div></div></td>"+
          "<td style='color:var(--text2);white-space:nowrap;'>"+escapeHTML(_finMethodLabel(e.method)||"—")+"</td>"+
-         "<td class='num'>"+financeMoney(e.amount)+"</td>"+
+         "<td class='num'>"+_finFmt(e.amount,e.currency)+"</td>"+
          "<td><span class='fin-pill "+(e.status==="reviewed"?"reviewed":"pending")+"' role='button' tabindex='0' title='"+_t3("Click to toggle","Cliquer pour changer","Clique para alternar")+"' onclick=\"toggleExpenseStatus('"+idAttr+"')\">"+(e.status==="reviewed"?("<i class='ti ti-check' style='vertical-align:-1px;margin-right:2px;'></i>"+_t3("Reviewed","Validé","Revisado")):_t3("Pending","En attente","Pendente"))+"</span></td>"+
          "<td style='text-align:right;'><button class='fin-del' onclick=\"deleteExpense('"+idAttr+"')\" title='"+_t3("Delete","Supprimer","Excluir")+"'><i class='ti ti-trash'></i></button></td></tr>";
     });
@@ -6822,19 +6836,27 @@ function openExpenseModal(){
   var h="<div class='exp-card' onclick='event.stopPropagation()'>";
   h+="<div class='exp-head'><i class='ti ti-cash-banknote' style='font-size:22px;color:#0ea5e9;'></i><div style='font-family:var(--font-d);font-size:17px;font-weight:800;color:var(--text);flex:1;'>"+_t3("Quick Expense","Saisie Dépense","Registrar Despesa")+"</div><i class='ti ti-x' style='font-size:20px;color:var(--text3);cursor:pointer;' onclick='closeExpenseModal()'></i></div>";
   h+="<div class='exp-body'>";
-  // OCR drop-zone (prompt) — swaps to a persistent preview once a photo is set.
-  h+="<div class='exp-drop' id='exp-drop' onclick=\"document.getElementById('exp-file').click()\">";
-  h+="<div id='exp-prompt'><i class='ti ti-camera' style='font-size:26px;color:#0ea5e9;'></i>";
-  h+="<div style='font-size:13px;color:var(--text);font-weight:600;margin-top:8px;'>"+_t3("Take a photo or Upload (OCR)","Tirar Foto ou Upload (OCR)","Tirar Foto ou Upload (OCR)")+"</div>";
-  h+="<div style='font-size:11px;color:var(--text3);margin-top:3px;'>"+_t3("Receipts, invoices, cupom fiscal","Reçus, factures, cupom fiscal","Cupons fiscais, notas, faturas")+"</div></div>";
+  // OCR drop-zone (prompt) — two explicit choices: take a photo OR upload from
+  // the gallery/files. The generic input has NO `capture`, so it offers camera,
+  // gallery and files; the camera input forces the camera for a quick snap.
+  h+="<div class='exp-drop' id='exp-drop'>";
+  h+="<div id='exp-prompt'><i class='ti ti-receipt-2' style='font-size:26px;color:#0ea5e9;'></i>";
+  h+="<div style='font-size:13px;color:var(--text);font-weight:600;margin-top:8px;'>"+_t3("Add a receipt (OCR)","Ajouter un reçu (OCR)","Adicionar recibo (OCR)")+"</div>";
+  h+="<div style='font-size:11px;color:var(--text3);margin-top:3px;margin-bottom:12px;'>"+_t3("Receipts, invoices, cupom fiscal","Reçus, factures, cupom fiscal","Cupons fiscais, notas, faturas")+"</div>";
+  h+="<div style='display:flex;gap:8px;justify-content:center;flex-wrap:wrap;'>";
+  h+="<button type='button' class='fin-primary-btn' style='padding:9px 14px;font-size:13px;' onclick=\"event.stopPropagation();document.getElementById('exp-file-cam').click()\"><i class='ti ti-camera' style='vertical-align:-2px;margin-right:5px;'></i>"+_t3("Take photo","Prendre une photo","Tirar foto")+"</button>";
+  h+="<button type='button' class='fin-ghost-btn' style='padding:9px 14px;font-size:13px;' onclick=\"event.stopPropagation();document.getElementById('exp-file').click()\"><i class='ti ti-upload' style='vertical-align:-2px;margin-right:5px;'></i>"+_t3("Upload / gallery","Importer / galerie","Enviar / galeria")+"</button>";
+  h+="</div></div>";
   h+="<div id='exp-ocr-status' style='display:none;align-items:center;justify-content:center;gap:8px;margin-top:12px;color:#0ea5e9;font-size:12px;'><i class='ti ti-loader-2' style='animation:spin 1s linear infinite;'></i>"+_t3("Reading receipt…","Lecture du reçu…","Lendo o recibo…")+"</div>";
   h+="<img id='exp-preview' style='display:none;max-height:150px;border-radius:8px;margin-top:4px;' />";
   h+="</div>";
-  h+="<div id='exp-receipt-ctrls' style='display:none;gap:8px;margin-top:8px;justify-content:center;'>";
-  h+="<button type='button' class='fin-ghost-btn' style='padding:7px 12px;font-size:12px;' onclick=\"event.stopPropagation();document.getElementById('exp-file').click()\"><i class='ti ti-refresh' style='vertical-align:-2px;margin-right:4px;'></i>"+_t3("Replace photo","Remplacer","Substituir foto")+"</button>";
+  h+="<div id='exp-receipt-ctrls' style='display:none;gap:8px;margin-top:8px;justify-content:center;flex-wrap:wrap;'>";
+  h+="<button type='button' class='fin-ghost-btn' style='padding:7px 12px;font-size:12px;' onclick=\"event.stopPropagation();document.getElementById('exp-file-cam').click()\"><i class='ti ti-camera' style='vertical-align:-2px;margin-right:4px;'></i>"+_t3("Camera","Photo","Câmera")+"</button>";
+  h+="<button type='button' class='fin-ghost-btn' style='padding:7px 12px;font-size:12px;' onclick=\"event.stopPropagation();document.getElementById('exp-file').click()\"><i class='ti ti-upload' style='vertical-align:-2px;margin-right:4px;'></i>"+_t3("Replace","Remplacer","Substituir")+"</button>";
   h+="<button type='button' class='fin-ghost-btn' style='padding:7px 12px;font-size:12px;color:#f87171;border-color:rgba(248,113,113,0.4);' onclick=\"event.stopPropagation();clearReceipt()\"><i class='ti ti-trash' style='vertical-align:-2px;margin-right:4px;'></i>"+_t3("Remove","Retirer","Remover")+"</button>";
   h+="</div>";
-  h+="<input type='file' id='exp-file' accept='image/*' capture='environment' style='display:none;' onchange='handleReceiptFile(this)'>";
+  h+="<input type='file' id='exp-file' accept='image/*' style='display:none;' onchange='handleReceiptFile(this)'>";
+  h+="<input type='file' id='exp-file-cam' accept='image/*' capture='environment' style='display:none;' onchange='handleReceiptFile(this)'>";
   h+="<div style='height:14px;'></div>";
   // Site selector — every expense is filed to ONE construction site, so unit
   // prices are attributed correctly even when "All sites" is the active view.
@@ -6862,7 +6884,7 @@ function openExpenseModal(){
 }
 function closeExpenseModal(){var ov=document.getElementById("exp-overlay");if(ov)ov.remove();}
 function selectExpMethod(el,v){_expMethod=v;document.querySelectorAll(".exp-method").forEach(function(x){x.classList.toggle("on",x.getAttribute("data-m")===v);});}
-function handleReceiptFile(input){if(input.files&&input.files[0])_readReceipt(input.files[0]);}
+function handleReceiptFile(input){if(input.files&&input.files[0])_readReceipt(input.files[0]);try{input.value="";}catch(_){}}
 function _readReceipt(file){
   if(!/^image\//.test(file.type)){toast(_t3("Please choose an image","Choisissez une image","Escolha uma imagem"));return;}
   var reader=new FileReader();
@@ -6883,7 +6905,7 @@ function clearReceipt(){
   var pr=document.getElementById("exp-prompt");if(pr)pr.style.display="";
   var cl=document.getElementById("exp-receipt-ctrls");if(cl)cl.style.display="none";
   var dz=document.getElementById("exp-drop");if(dz)dz.style.cursor="pointer";
-  var f=document.getElementById("exp-file");if(f)f.value="";
+  var f=document.getElementById("exp-file");if(f)f.value="";var fc=document.getElementById("exp-file-cam");if(fc)fc.value="";
 }
 async function runReceiptOCR(dataUrl){
   var sp=document.getElementById("exp-ocr-status");if(sp)sp.style.display="flex";
@@ -6930,6 +6952,7 @@ async function submitExpense(){
   var createdAt=new Date().toISOString();
   if(_expFromRDO&&_expForcedDay){try{createdAt=new Date(_expForcedDay+"T12:00:00").toISOString();}catch(_){}}
   var e={id:Date.now(),project:site||getActiveSite()||((projects[0]&&projects[0].name)||""),vendor:vendor,category:cat,subcategory:sub,amount:amount,currency:financeCurrencyCode(),method:_expMethod||"",note:"",items:(_expOcrItems&&_expOcrItems.length?_expOcrItems:null),receipt_url:null,receipt_thumb:thumb,_pendingReceipt:_expReceiptData||null,ocr:!!_expReceiptData,status:"pending",created_by:(me&&me.name)||"",created_at:createdAt};
+  try{if(e.currency&&!localStorage.getItem("pillier-fin-currency"))localStorage.setItem("pillier-fin-currency",e.currency);}catch(_){} // lock the company currency from the first capture
   try{_expClearTomb(_expSig(e));}catch(_){} // a deliberate (re)add un-hides this signature
   expenses.unshift(e);saveExpensesLocal();
   saveExpenseDB(e); // uploads receipt + inserts row (best-effort; stays local if offline)
@@ -6958,7 +6981,7 @@ async function openReceiptViewer(id){
   h+= initial?("<img id='rv-img' src=\""+escapeHTML(initial)+"\" style='max-width:94vw;max-height:82vh;border-radius:12px;display:block;'/>")
             :("<span style='color:var(--text3);font-size:12px;padding:40px;'><i class='ti ti-loader-2' style='animation:spin 1s linear infinite;'></i></span>");
   h+="</div>";
-  h+="<div id='rv-meta' style='display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;color:var(--text2);font-size:12px;'><span>"+escapeHTML(e.vendor||"")+" · "+financeMoney(e.amount)+"</span></div>";
+  h+="<div id='rv-meta' style='display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;color:var(--text2);font-size:12px;'><span>"+escapeHTML(e.vendor||"")+" · "+_finFmt(e.amount,e.currency)+"</span></div>";
   h+="</div>";
   ov.innerHTML=h;ov.onclick=function(){ov.remove();};document.body.appendChild(ov);
   // Resolve the private original via a short-lived signed URL.
@@ -7378,7 +7401,7 @@ function _rdoBuildCosts(dayIso){
     var badge="<span class='rdo-cost-badge "+(isRev?"rev":"pend")+"' onclick=\"toggleExpenseStatus('"+idAttr+"')\" title='"+L("Cliquer pour valider","Click to review","Clique para revisar")+"'>"+(isRev?("✓ "+L("Validé","Reviewed","Revisado")):L("En attente","Pending","Pendente"))+"</span>";
     h+="<tr><td>"+escapeHTML(e.vendor||"—")+"</td>"+
        "<td class='rdo-cost-cat'>"+catLine+"</td>"+
-       "<td style='text-align:right;white-space:nowrap;font-weight:700'>"+financeMoney(e.amount)+"</td>"+
+       "<td style='text-align:right;white-space:nowrap;font-weight:700'>"+_finFmt(e.amount,e.currency)+"</td>"+
        "<td>"+escapeHTML(_finMethodLabel(e.method)||"—")+"</td>"+
        "<td>"+rec+"</td>"+
        "<td>"+badge+"</td></tr>";
@@ -7392,7 +7415,7 @@ function _rdoBuildCosts(dayIso){
   if(proofs.length){
     h+="<div class='rdo-cost-appendix'><div class='rdo-cost-appendix-h'>"+L("Comprovantes joints","Attached receipts","Comprovantes anexados")+"</div><div class='rdo-cost-appendix-grid'>";
     h+=proofs.map(function(e){
-      var cap=escapeHTML((e.vendor||"")+" · "+financeMoney(e.amount));
+      var cap=escapeHTML((e.vendor||"")+" · "+_finFmt(e.amount,e.currency));
       if(e.receipt_thumb)return "<div class='rdo-cost-proof'><img src=\""+escapeHTML(e.receipt_thumb)+"\"><div>"+cap+"</div></div>";
       return "<div class='rdo-cost-proof rdo-cost-proof-ref'><div class='rdo-cost-proof-icon'>▣</div><div>"+cap+" — "+L("reçu archivé","receipt on file","recibo arquivado")+"</div></div>";
     }).join("");
@@ -9105,7 +9128,7 @@ function _finChatContext(){
   var pending=(typeof _finPendingCount==="function")?_finPendingCount():0;
   var recent=(scope||[]).slice(0,8).map(function(e){
     var d="";try{d=_finDayShort(new Date(e.created_at));}catch(_){}
-    return "- "+d+" · "+(e.vendor||"—")+" · "+_finCatLabel(e.category)+(e.subcategory?(" / "+_finSubLabel(e.category,e.subcategory)):"")+" · "+financeMoney(e.amount)+" · "+(e.method||"—")+" · "+(e.status==="reviewed"?L("reviewed","validé","revisado"):L("pending","en attente","pendente"));
+    return "- "+d+" · "+(e.vendor||"—")+" · "+_finCatLabel(e.category)+(e.subcategory?(" / "+_finSubLabel(e.category,e.subcategory)):"")+" · "+_finFmt(e.amount,e.currency)+" · "+(e.method||"—")+" · "+(e.status==="reviewed"?L("reviewed","validé","revisado"):L("pending","en attente","pendente"));
   }).join("\n");
   var prices="";
   try{var s=_finMaterialSeries();FIN_MATERIALS.forEach(function(m){var arr=s[m.key]||[];if(arr.length){var last=arr[arr.length-1];prices+="\n- "+_t3(m.l[0],m.l[1],m.l[2])+": "+financeMoney(last.v)+" ("+_finDayShort(last.d)+")";}});}catch(_){}
