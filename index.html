@@ -4930,15 +4930,19 @@ function enterApp(user){
     }
     localStorage.setItem("pillier_acct",user.email||"");
   }catch(e){}
-  // Apply saved language preference
-  var savedLang=meta.preferred_lang;
-  if(savedLang===undefined||savedLang===null){
-    // Try localStorage fallback
-    var stored=localStorage.getItem("pillier_lang");
-    savedLang=stored!==null?parseInt(stored):0;
-  }
-  lang=parseInt(savedLang)||0;
+  // Apply saved language preference. The user's LAST EXPLICIT device choice
+  // (localStorage) wins — account metadata is only a fallback for a first login
+  // on a new device. (Previously metadata won and, being stale PT, it reverted
+  // EN/FR back to Portuguese on every refresh.)
+  var _lsLang=localStorage.getItem("pillier_lang");
+  var savedLang;
+  if(_lsLang!==null&&_lsLang!==""){savedLang=parseInt(_lsLang,10);}
+  else if(meta.preferred_lang!==undefined&&meta.preferred_lang!==null){savedLang=parseInt(meta.preferred_lang,10);}
+  else{savedLang=0;}
+  lang=(savedLang===0||savedLang===1||savedLang===2)?savedLang:0;
   localStorage.setItem("pillier_lang",lang);
+  // Heal stale account metadata so other devices converge on this choice.
+  try{if(db&&me.email&&parseInt(meta.preferred_lang,10)!==lang){db.auth.updateUser({data:{preferred_lang:lang}}).catch(function(){});}}catch(e){}
   document.getElementById("u-av").textContent=me.av;
   document.getElementById("u-name").textContent=me.name;
   document.getElementById("u-co").textContent=me.co;
