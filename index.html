@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Pillier</title>
+<!-- SEO: canonical + hreflang language alternates (kept in sync per tab/language by JS) -->
+<link rel="canonical" href="https://pillier.com.br/">
+<link rel="alternate" hreflang="pt-BR" href="https://pillier.com.br/">
+<link rel="alternate" hreflang="en" href="https://pillier.com.br/">
+<link rel="alternate" hreflang="fr" href="https://pillier.com.br/">
+<link rel="alternate" hreflang="x-default" href="https://pillier.com.br/">
 <!-- Security: DOMPurify (XSS protection for innerHTML) -->
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
 <!-- Pillier runtime config from Vercel env vars (survives code updates) -->
@@ -3744,12 +3750,32 @@ document.addEventListener('click',function(e){
 
 /* ── Landing tab ⇄ URL routing (clean paths + deep links + back/forward) ───── */
 var _suppressUrlPush=false,_curContentTab=0;
-// Localized clean slugs per language: EN /solutions /plans /resources,
-// FR /solutions /plans /ressources, PT /solucoes /planos /recursos (Home is "/").
-function _landPaths(){
-  if(lang===1)return ['/','/solutions','/plans','/resources'];   // EN
-  if(lang===0)return ['/','/solutions','/plans','/ressources'];  // FR
-  return ['/','/solucoes','/planos','/recursos'];                 // PT
+// Localized clean slugs per language (Home is "/").
+var _LAND_SLUGS={
+  pt:['/','/solucoes','/planos','/recursos'],
+  en:['/','/solutions','/plans','/resources'],
+  fr:['/','/solutions','/plans','/ressources']
+};
+function _landPaths(){return lang===1?_LAND_SLUGS.en:lang===0?_LAND_SLUGS.fr:_LAND_SLUGS.pt;}
+// SEO: keep <link rel=canonical> + hreflang alternates pointing at the current
+// tab's localized URL, so Google treats /recursos, /resources and /ressources as
+// language variants of one page (not duplicates).
+function _seoLink(hreflang){
+  var sel=hreflang?'link[rel="alternate"][hreflang="'+hreflang+'"]':'link[rel="canonical"]';
+  var el=document.head.querySelector(sel);
+  if(!el){el=document.createElement('link');el.setAttribute('rel',hreflang?'alternate':'canonical');if(hreflang)el.setAttribute('hreflang',hreflang);document.head.appendChild(el);}
+  return el;
+}
+function _updateSeoTags(idx){
+  try{
+    var o=location.origin;
+    _seoLink(null).href=o+(_landPaths()[idx]||'/');           // canonical = current language
+    _seoLink('pt-BR').href=o+_LAND_SLUGS.pt[idx];
+    _seoLink('en').href=o+_LAND_SLUGS.en[idx];
+    _seoLink('fr').href=o+_LAND_SLUGS.fr[idx];
+    _seoLink('x-default').href=o+_LAND_SLUGS.pt[idx];          // x-default → PT (primary market)
+    try{document.documentElement.lang=lang===1?'en':lang===0?'fr':'pt-BR';}catch(e){}
+  }catch(e){}
 }
 function _landPathToTab(p){
   p=String(p||'/').toLowerCase().replace(/\/{2,}/g,'/').replace(/\/+$/,'');if(!p)p='/';
@@ -3839,6 +3865,7 @@ function showContentTab(idx){
   localStorage.setItem('pillier_current_page','content');
   localStorage.setItem('pillier_current_tab',idx);
   _syncLandingUrl(idx); // reflect the active tab in the address bar (localized slug)
+  _updateSeoTags(idx);  // keep canonical + hreflang alternates in sync with the tab
 }
 
 function renderSolSections(){
@@ -4275,6 +4302,7 @@ function applyLang(){
   // Re-localize the marketing URL to the new language (e.g. /recursos → /resources)
   // when a content tab is showing — replaceState so it doesn't add history.
   try{var _sc=document.getElementById("s-content");if(_sc&&_sc.classList.contains("active")){var _p=_landPaths()[_curContentTab]||"/";if(location.pathname!==_p)history.replaceState(null,"",_p);}}catch(e){}
+  try{_updateSeoTags(_curContentTab);}catch(e){} // refresh canonical/hreflang for the new language
   try{var _cb=document.getElementById("sb-cap-lbl");if(_cb)_cb.textContent=plL("Capturer un incident","Capture incident","Capturar incidente");}catch(e){}
   // Mobile profile panel labels (were hardcoded PT)
   try{var _ml=document.getElementById("mob-lang-label");if(_ml)_ml.textContent=plL("Langue","Language","Idioma");}catch(e){}
