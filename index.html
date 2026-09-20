@@ -94,6 +94,17 @@ body.light-mode .auth-left-panel{background:#eef4f6 !important;}
 .mk-stat{background:var(--navy2);border:1px solid var(--border);border-radius:16px;padding:26px 18px;text-align:center;}
 .mk-stat .n{font-family:var(--font-d);font-size:42px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;}
 .mk-stat .l{font-size:12.5px;color:var(--text2);margin-top:10px;line-height:1.4;}
+.mk-chart{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-top:16px;}
+.mk-col{flex:1;display:flex;flex-direction:column;align-items:center;}
+.mk-val{font-family:var(--font-m,monospace);font-size:11px;color:var(--text3);margin-bottom:6px;font-variant-numeric:tabular-nums;}
+.mk-track{width:100%;max-width:58px;height:132px;display:flex;align-items:flex-end;}
+.mk-bar{width:100%;border-radius:9px 9px 4px 4px;background:linear-gradient(180deg,rgba(44,190,255,0.42),rgba(44,190,255,0.16));border:1px solid rgba(44,190,255,0.22);border-bottom:none;}
+.mk-bar.hi{background:linear-gradient(180deg,#58ccff,#2cbeff);border-color:transparent;box-shadow:0 0 22px rgba(44,190,255,0.35);}
+.mk-cat{display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:12px;}
+.mk-cat i{font-size:18px;color:var(--text2);}
+.mk-cat span{font-size:11px;color:var(--text3);font-family:var(--font-m,monospace);letter-spacing:-0.02em;}
+.mk-col:first-child .mk-cat i{color:#2cbeff;}
+.mk-col:first-child .mk-cat span{color:var(--text2);}
 .mk-agents{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
 .mk-agents.cols3{grid-template-columns:repeat(3,1fr);}
 .mk-agent{background:var(--navy2);border:1px solid var(--border);border-radius:16px;padding:24px;transition:border-color .15s,transform .15s;}
@@ -1818,16 +1829,13 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
           <div class="mk-device-bar"><span class="mk-dot" style="background:#f87171;"></span><span class="mk-dot" style="background:#fbbf24;"></span><span class="mk-dot" style="background:#4ade80;"></span><span style="margin-left:8px;font-size:12px;color:var(--text3);font-family:var(--font-m,monospace);">insight agent</span></div>
           <div class="mk-device-body">
             <div class="mk-ai"><span class="mk-pulse"></span> <span id="mkh-chart-cap">Incidents by category</span></div>
-            <svg viewBox="0 0 280 96" width="100%" style="margin-top:14px;" aria-hidden="true">
-              <g font-family="DM Mono, monospace" font-size="9" fill="var(--text3)">
-                <rect x="16" y="30" width="34" height="52" rx="3" fill="#2cbeff"/>
-                <rect x="68" y="46" width="34" height="36" rx="3" fill="rgba(44,190,255,0.4)"/>
-                <rect x="120" y="56" width="34" height="26" rx="3" fill="rgba(44,190,255,0.4)"/>
-                <rect x="172" y="63" width="34" height="19" rx="3" fill="rgba(44,190,255,0.4)"/>
-                <rect x="224" y="70" width="34" height="12" rx="3" fill="rgba(44,190,255,0.4)"/>
-                <text x="33" y="92" text-anchor="middle">H2O</text><text x="85" y="92" text-anchor="middle">Estr.</text><text x="137" y="92" text-anchor="middle">Elét.</text><text x="189" y="92" text-anchor="middle">Seg.</text><text x="241" y="92" text-anchor="middle">Outros</text>
-              </g>
-            </svg>
+            <div class="mk-chart" role="img" aria-label="Incidents by category">
+              <div class="mk-col"><div class="mk-val">24</div><div class="mk-track"><div class="mk-bar hi" style="height:88%"></div></div><div class="mk-cat"><i class="ti ti-droplet"></i><span>H2O</span></div></div>
+              <div class="mk-col"><div class="mk-val">17</div><div class="mk-track"><div class="mk-bar" style="height:62%"></div></div><div class="mk-cat"><i class="ti ti-wall"></i><span>Estr.</span></div></div>
+              <div class="mk-col"><div class="mk-val">12</div><div class="mk-track"><div class="mk-bar" style="height:44%"></div></div><div class="mk-cat"><i class="ti ti-bolt"></i><span>Elét.</span></div></div>
+              <div class="mk-col"><div class="mk-val">8</div><div class="mk-track"><div class="mk-bar" style="height:30%"></div></div><div class="mk-cat"><i class="ti ti-shield"></i><span>Seg.</span></div></div>
+              <div class="mk-col"><div class="mk-val">5</div><div class="mk-track"><div class="mk-bar" style="height:20%"></div></div><div class="mk-cat"><i class="ti ti-dots"></i><span>Outros</span></div></div>
+            </div>
           </div>
         </div>
       </div>
