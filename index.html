@@ -55,7 +55,7 @@ body.light-mode .auth-left-panel{background:#eef4f6 !important;}
 .content-tab.active{color:#2cbeff;border-bottom-color:#2cbeff;font-weight:600;}
 /* ===== Marketing redesign design-system (mk-) ===== */
 .mk-eyebrow{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#2cbeff;}
-.mk-section{max-width:1120px;margin:0 auto;padding:72px 40px;}
+.mk-section{max-width:1200px;margin:0 auto;padding:72px 48px;}
 .mk-head{max-width:660px;margin:0 auto 44px;text-align:center;}
 .mk-head h2{font-family:var(--font-d);font-size:clamp(28px,4vw,40px);font-weight:800;color:var(--white);letter-spacing:-0.02em;line-height:1.08;margin:12px 0 0;}
 .mk-head p{color:var(--text2);font-size:16px;line-height:1.6;margin:14px auto 0;max-width:560px;}
@@ -84,7 +84,7 @@ body.light-mode .auth-left-panel{background:#eef4f6 !important;}
 .mk-strip-row{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:14px 30px;}
 .mk-norm{display:inline-flex;align-items:center;gap:8px;color:var(--text2);font-family:var(--font-d);font-weight:700;font-size:15px;opacity:.8;}
 .mk-norm i{color:#2cbeff;font-size:17px;opacity:.9;}
-.mk-vp{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center;}
+.mk-vp{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;}
 .mk-vp.rev .mk-vp-text{order:2;}
 .mk-vp-lead{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
 .mk-vp-ico{width:42px;height:42px;border-radius:12px;background:rgba(44,190,255,0.1);color:#2cbeff;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
@@ -1313,10 +1313,10 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
   .pricing-grid{grid-template-columns:1fr !important;}
   .impact-grid{grid-template-columns:1fr 1fr !important;}
   .about-grid{grid-template-columns:1fr !important;}
-  .about-hero-grid{grid-template-columns:1fr !important;}
-  .about-hero-grid>div:first-child{padding:32px 20px !important;}
+  .about-hero-grid{grid-template-columns:1fr !important;padding:36px 22px 24px !important;gap:28px !important;}
+  .about-hero-grid>div:first-child{padding:0 !important;}
   .about-hero-grid>div:first-child>div:first-child{font-size:32px !important;}
-  .about-hero-grid>div:last-child{padding:0 20px 32px !important;}
+  .about-hero-grid>div:last-child{padding:0 !important;}
   .about-hero-grid>div:last-child svg{max-width:280px !important;}
   .about-values{padding:32px 16px !important;}
   /* Value titles smaller on mobile */
@@ -1749,7 +1749,7 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
   <!-- TAB 0: About Us -->
   <div id="content-panel-0" class="content-panel" style="padding:0;">
     <!-- Hero section -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;padding:56px 40px 32px;" class="about-hero-grid">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;max-width:1200px;margin:0 auto;padding:64px 48px 40px;" class="about-hero-grid">
       <!-- Left: headline -->
       <div style="display:flex;flex-direction:column;justify-content:center;padding:0;">
         <div style="font-family:var(--font-d);font-size:52px;font-weight:800;color:var(--white);line-height:1.1;letter-spacing:-1px;margin-bottom:20px;" id="about-headline">Meet your<br>construction<br>buddy.</div>
@@ -1865,13 +1865,6 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
       <div class="mk-head"><div class="mk-eyebrow" id="mkh-use-eyebrow">In the field</div><h2 id="use-bace-title">How you can use Pillier</h2></div>
       <div id="hyub-tabs" style="display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin-bottom:18px;"></div>
       <div id="hyub-preview-wrap" style="border-radius:14px;background:rgba(255,255,255,0.03);border:0.5px solid rgba(44,190,255,0.1);padding:22px;min-height:220px;max-width:700px;margin:0 auto;"></div>
-    </div>
-
-    <!-- Mission statement (honest, no fabricated customer) -->
-    <div class="mk-section mk-quote" style="padding-block:24px 56px;">
-      <div class="mk-eyebrow" id="mkh-mission-eyebrow">Why we built Pillier</div>
-      <blockquote id="mkh-mission" style="margin-top:20px;">We spent too many evenings turning site photos into incident reports by hand. Pillier is the tool we wished existed — so the record writes itself, and the knowledge never leaves with the person who captured it.</blockquote>
-      <div class="by" style="margin-top:20px;"><span class="mk-vp-ico" style="border-radius:50%;"><i class="ti ti-building-community"></i></span><div style="text-align:left;"><div style="color:var(--white);font-weight:600;" id="mkh-mission-by">The Pillier team</div><div id="mkh-mission-role">Engineers, Brazil &amp; France</div></div></div>
     </div>
 
     <!-- Final CTA -->
@@ -11466,10 +11459,6 @@ function translateMarketingExtras(){
   setT('mkh-strip-lbl',L('References the standards that keep you covered','Référence les normes qui vous protègent','Referencia as normas que protegem você'));
   setT('mkh-chart-cap',L('Incidents by category, last 90 days','Incidents par catégorie, 90 derniers jours','Incidentes por categoria, últimos 90 dias'));
   setT('mkh-use-eyebrow',L('In the field','Sur le terrain','No campo'));
-  setT('mkh-mission-eyebrow',L('Why we built Pillier','Pourquoi nous avons créé Pillier','Por que criamos a Pillier'));
-  setT('mkh-mission',L('We spent too many evenings turning site photos into incident reports by hand. Pillier is the tool we wished existed — so the record writes itself, and the knowledge never leaves with the person who captured it.','Nous avons passé trop de soirées à transformer des photos de chantier en rapports d’incident à la main. Pillier est l’outil que nous aurions voulu avoir — pour que le rapport s’écrive seul et que le savoir ne parte jamais avec celui qui l’a capturé.','Passamos noites demais transformando fotos de obra em relatórios de incidente à mão. A Pillier é a ferramenta que gostaríamos que existisse — para o registro se escrever sozinho e o conhecimento nunca ir embora com quem capturou.'));
-  setT('mkh-mission-by',L('The Pillier team','L’équipe Pillier','A equipe Pillier'));
-  setT('mkh-mission-role',L('Engineers · Brazil & France','Ingénieurs · Brésil & France','Engenheiros · Brasil e França'));
   setT('mkh-cta-t',L('Put an AI engineer on every site','Un ingénieur IA sur chaque chantier','Um engenheiro de IA em cada canteiro'));
   setT('mkh-cta-p',L('Start free. Capture your first incident in under a minute — no credit card, no setup call.','Commencez gratuitement. Capturez votre premier incident en moins d’une minute — sans carte bancaire, sans appel de mise en route.','Comece grátis. Capture seu primeiro incidente em menos de um minuto — sem cartão de crédito, sem call de configuração.'));
   setT('mkh-cta-b1',L('Start free','Commencer gratuitement','Começar grátis'));
