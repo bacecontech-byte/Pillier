@@ -1817,7 +1817,7 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
         <div class="mk-device">
           <div class="mk-device-bar"><span class="mk-dot" style="background:#f87171;"></span><span class="mk-dot" style="background:#fbbf24;"></span><span class="mk-dot" style="background:#4ade80;"></span><span style="margin-left:8px;font-size:12px;color:var(--text3);font-family:var(--font-m,monospace);">insight agent</span></div>
           <div class="mk-device-body">
-            <div class="mk-ai"><span class="mk-pulse"></span> <span id="mkh-chart-cap">Incidents by category, last 90 days</span></div>
+            <div class="mk-ai"><span class="mk-pulse"></span> <span id="mkh-chart-cap">Incidents by category</span></div>
             <svg viewBox="0 0 280 96" width="100%" style="margin-top:14px;" aria-hidden="true">
               <g font-family="DM Mono, monospace" font-size="9" fill="var(--text3)">
                 <rect x="16" y="30" width="34" height="52" rx="3" fill="#2cbeff"/>
@@ -1843,7 +1843,7 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
           <div class="mk-device-body">
             <div class="mk-f" style="margin-top:0;"><div class="k">record #2418</div><div class="v" style="font-family:var(--font-m,monospace);font-size:12px;color:var(--text2);"><i class="ti ti-map-pin" style="font-size:12px;"></i> -23.5614, -46.6560 &middot; 2026-09-14 08:41</div></div>
             <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;"><span class="mk-tag norm">NBR 6118</span><span class="mk-tag norm">NR-18</span><span class="mk-tag ok"><i class="ti ti-lock" style="font-size:12px;"></i></span></div>
-            <div class="mk-f"><div class="k">hash</div><div class="v" style="font-family:var(--font-m,monospace);font-size:11px;color:var(--text3);">sha256: 9f2c&hellip;a41b</div></div>
+            <div class="mk-f"><div class="k" id="mkh-int-k">Integrity</div><div class="v" id="mkh-int-v">Sealed record — tamper-proof and verifiable.</div></div>
           </div>
         </div>
       </div>
@@ -11456,7 +11456,9 @@ function translateMarketingExtras(){
   setT('mkh-v2',L('Prolonged exposure and poor drainage behind the wall; water seepage through the shoring.','Exposition prolongée et mauvais drainage à l’arrière ; infiltration d’eau dans le soutènement.','Exposição prolongada e drenagem deficiente do tardoz; percolação de água na contenção.'));
   setT('mkh-v3',L('Inspect the tie-backs and walers, treat the corrosion, and review drainage before deepening the excavation.','Inspecter les tirants et les lisses, traiter la corrosion et revoir le drainage avant de poursuivre la fouille.','Inspecionar tirantes e longarinas, tratar a corrosão e revisar a drenagem antes de aprofundar a escavação.'));
   setT('mkh-strip-lbl',L('References the standards that keep you covered','Référence les normes qui vous protègent','Referencia as normas que protegem você'));
-  setT('mkh-chart-cap',L('Incidents by category, last 90 days','Incidents par catégorie, 90 derniers jours','Incidentes por categoria, últimos 90 dias'));
+  setT('mkh-chart-cap',L('Incidents by category','Incidents par catégorie','Incidentes por categoria'));
+  setT('mkh-int-k',L('Integrity','Intégrité','Integridade'));
+  setT('mkh-int-v',L('Sealed record — tamper-proof and verifiable.','Enregistrement scellé — inaltérable et vérifiable.','Registro selado — inalterável e verificável.'));
   setT('mkh-use-eyebrow',L('In the field','Sur le terrain','No campo'));
   setT('mkh-cta-t',L('Put an AI engineer on every site','Un ingénieur IA sur chaque chantier','Um engenheiro de IA em cada canteiro'));
   setT('mkh-cta-p',L('Start free. Capture your first incident in under a minute — no credit card, no setup call.','Commencez gratuitement. Capturez votre premier incident en moins d’une minute — sans carte bancaire, sans appel de mise en route.','Comece grátis. Capture seu primeiro incidente em menos de um minuto — sem cartão de crédito, sem call de configuração.'));
