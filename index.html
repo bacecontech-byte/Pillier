@@ -1690,7 +1690,7 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
       </svg>
       <span>Pillier</span>
     </a>
-    <div style="display:flex;align-items:center;gap:0;margin-left:28px;" id="content-tabs">
+    <div style="display:flex;align-items:center;gap:0;flex:1;justify-content:center;" id="content-tabs">
       <button onclick="showContentTab(0)" class="content-tab active" id="ctab-0">Home</button>
       <button onclick="showContentTab(1)" class="content-tab" id="ctab-1">Solutions</button>
       <div style="position:relative;display:none;">
@@ -1742,7 +1742,7 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
       <button onclick="goCapture()" id="ctab-capture" style="display:inline-flex;align-items:center;gap:6px;margin-left:6px;background:rgba(44,190,255,0.12);color:#2cbeff;border:none;border-radius:8px;padding:8px 14px;font-family:var(--font-b);font-size:14px;font-weight:600;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='rgba(44,190,255,0.2)'" onmouseout="this.style.background='rgba(44,190,255,0.12)'"><i class="ti ti-camera" style="font-size:16px;"></i> <span id="ctab-capture-lbl">Capture now</span></button>
       <button onclick="showAuthPage()" class="content-tab" id="ctab-login">Log in</button>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;margin-left:auto;">
+    <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
       <div style="position:relative;" id="content-lang-wrap">
         <button onclick="toggleContentLang()" id="content-lang-btn" style="display:inline-flex;align-items:center;justify-content:center;background:none;border:1px solid var(--border2);border-radius:9px;color:var(--text);font-size:12px;font-weight:600;letter-spacing:0.04em;padding:8px 13px;cursor:pointer;font-family:var(--font-b);transition:border-color 0.15s;" onmouseover="this.style.borderColor='#2cbeff'" onmouseout="this.style.borderColor='var(--border2)'"><span id="content-lang-label">EN</span></button>
         <div id="content-lang-menu" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--navy2);border:1px solid var(--border2);border-radius:10px;padding:6px;min-width:130px;box-shadow:0 8px 24px rgba(0,0,0,0.3);z-index:300;">
