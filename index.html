@@ -1683,14 +1683,14 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
 <!-- ═══ CONTENT PAGE (About/Solutions/Plans/Resources) ═══ -->
 <div id="s-content" class="screen active" style="min-height:100vh;background:var(--navy);">
   <!-- Content page header with tabs inline -->
-  <div style="display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:56px;background:var(--navy2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200;" id="content-header">
+  <div style="display:flex;align-items:center;justify-content:flex-start;padding:0 32px;height:56px;background:var(--navy2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200;" id="content-header">
     <a href="#" onclick="showContentPage(0);return false;" title="Pillier — Home" style="font-family:var(--font-d);font-size:16px;font-weight:800;color:#2cbeff;text-decoration:none;letter-spacing:-0.4px;cursor:pointer;flex-shrink:0;display:inline-flex;align-items:flex-end;gap:8px;line-height:1;">
       <svg width="32" height="30" viewBox="0 0 322.71 305.81" fill="none" aria-hidden="true" style="flex-shrink:0;display:block;">
         <path fill="#2cbeff" d="M67.65,200.75H0v105.05h67.66v-9.23s.12-52.48,0-95.83ZM67.66,305.81V56.54h136.2c10.68,0,19.73,1.78,27.15,5.34,7.41,3.55,13.05,8.6,16.91,15.13,3.86,6.54,5.78,14.39,5.78,23.59,0,13.65-4.38,24.33-13.14,32.05-8.75,7.73-20.98,11.57-36.71,11.57h-79.66l-56.55,56.51,154.91.03c20.18,0,37.74-4.3,52.73-12.9,14.99-8.62,26.63-20.55,34.94-35.83,8.3-15.28,12.48-32.56,12.48-51.86s-4.09-36.87-12.25-51.87c-8.16-14.97-19.59-26.77-34.27-35.38-14.68-8.6-31.97-12.91-51.86-12.91H62C27.77,0,0,27.77,0,62v82.22l67.61,56.53"/>
       </svg>
       <span>Pillier</span>
     </a>
-    <div style="display:flex;align-items:center;gap:0;" id="content-tabs">
+    <div style="display:flex;align-items:center;gap:0;margin-left:28px;" id="content-tabs">
       <button onclick="showContentTab(0)" class="content-tab active" id="ctab-0">Home</button>
       <button onclick="showContentTab(1)" class="content-tab" id="ctab-1">Solutions</button>
       <div style="position:relative;display:none;">
@@ -1739,19 +1739,20 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
       </div>
       <button onclick="showContentTab(2)" class="content-tab" id="ctab-2">Plans</button>
       <button onclick="showContentTab(3)" class="content-tab" id="ctab-3">Resources</button>
+      <button onclick="goCapture()" id="ctab-capture" style="display:inline-flex;align-items:center;gap:6px;margin-left:6px;background:rgba(44,190,255,0.12);color:#2cbeff;border:none;border-radius:8px;padding:8px 14px;font-family:var(--font-b);font-size:14px;font-weight:600;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='rgba(44,190,255,0.2)'" onmouseout="this.style.background='rgba(44,190,255,0.12)'"><i class="ti ti-camera" style="font-size:16px;"></i> <span id="ctab-capture-lbl">Capture now</span></button>
       <button onclick="showAuthPage()" class="content-tab" id="ctab-login">Log in</button>
     </div>
-    <div style="display:flex;align-items:center;gap:12px;flex-shrink:0;">
-      <a href="https://calendar.app.google/rmSpu5ay7PMr3sFf7" target="_blank" id="content-demo-btn" style="font-size:12px;color:#fff;text-decoration:none;padding:8px 20px;background:#2cbeff;border-radius:8px;font-weight:600;">Schedule a demo</a>
+    <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;margin-left:auto;">
       <div style="position:relative;" id="content-lang-wrap">
-        <button onclick="toggleContentLang()" id="content-lang-btn" style="display:flex;align-items:center;gap:6px;background:none;border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:12px;font-weight:500;padding:6px 10px;cursor:pointer;font-family:var(--font-b);transition:border-color 0.15s;" onmouseover="this.style.borderColor='#2cbeff'" onmouseout="this.style.borderColor='var(--border2)'"><span id="content-lang-flag" style="font-size:14px;">🇬🇧</span> <span id="content-lang-label">EN</span> <span style="font-size:9px;opacity:0.7;">▾</span></button>
+        <button onclick="toggleContentLang()" id="content-lang-btn" style="display:inline-flex;align-items:center;justify-content:center;background:none;border:1px solid var(--border2);border-radius:9px;color:var(--text);font-size:12px;font-weight:600;letter-spacing:0.04em;padding:8px 13px;cursor:pointer;font-family:var(--font-b);transition:border-color 0.15s;" onmouseover="this.style.borderColor='#2cbeff'" onmouseout="this.style.borderColor='var(--border2)'"><span id="content-lang-label">EN</span></button>
         <div id="content-lang-menu" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--navy2);border:1px solid var(--border2);border-radius:10px;padding:6px;min-width:130px;box-shadow:0 8px 24px rgba(0,0,0,0.3);z-index:300;">
           <div onclick="changeLang(1);toggleContentLang();" class="lang-menu-item"><span style="font-size:14px;">🇬🇧</span> English</div>
           <div onclick="changeLang(2);toggleContentLang();" class="lang-menu-item"><span style="font-size:14px;">🇧🇷</span> Português</div>
           <div onclick="changeLang(0);toggleContentLang();" class="lang-menu-item"><span style="font-size:14px;">🇫🇷</span> Français</div>
         </div>
       </div>
-      <button onclick="setTheme(document.body.classList.contains('light-mode')?'dark':'light')" style="background:none;border:none;color:var(--text2);font-size:16px;padding:4px;cursor:pointer;"><i class="ti ti-sun-moon"></i></button>
+      <button onclick="setTheme(document.body.classList.contains('light-mode')?'dark':'light')" aria-label="Theme" style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:34px;background:none;border:1px solid var(--border2);border-radius:9px;color:var(--text);cursor:pointer;transition:border-color 0.15s,color 0.15s;" onmouseover="this.style.borderColor='#2cbeff';this.style.color='#2cbeff'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text)'"><i class="ti ti-contrast" style="font-size:16px;"></i></button>
+      <a href="https://calendar.app.google/rmSpu5ay7PMr3sFf7" target="_blank" id="content-demo-btn" style="font-size:13px;color:#04222f;text-decoration:none;padding:9px 18px;background:#2cbeff;border-radius:9px;font-weight:700;">Schedule a demo</a>
       <button onclick="toggleLandingMenu()" id="content-mob-menu" style="display:none;background:none;border:none;color:var(--white);font-size:22px;padding:2px;cursor:pointer;"><i class="ti ti-menu-2"></i></button>
     </div>
   </div>
@@ -3915,6 +3916,23 @@ function showAuthPage(){
   clearInterval(featTimer);
   featTimer=setInterval(autoNextFeat,4000);
 }
+// "Capture now" — logged-in users jump straight to the app's capture tab;
+// visitors go to sign in first (capture requires an account).
+function goCapture(){
+  var loggedIn=localStorage.getItem('pillier_logged_in')==='1'||document.body.classList.contains('logged-in');
+  if(loggedIn&&document.getElementById('s-app')){
+    try{
+      document.getElementById('s-content').classList.remove('active');
+      document.getElementById('s-login').classList.remove('active');
+      document.getElementById('s-app').classList.add('active');
+      var links=document.querySelectorAll('.sidebar-link');
+      if(typeof showTab==='function')showTab(1,links[1]||null);
+    }catch(e){}
+  } else {
+    try{localStorage.setItem('pillier_intent','capture');}catch(e){}
+    showAuthPage();
+  }
+}
 // Restore page on load
 (function(){
   var wasLoggedIn=localStorage.getItem('pillier_logged_in')==='1';
@@ -4300,6 +4318,9 @@ function translateNav(){
   var tabLabels=lang===0?['Home','Solutions','Plans','Ressources']:lang===2?['Home','Soluções','Planos','Recursos']:['Home','Solutions','Plans','Resources'];
   for(var ti=0;ti<4;ti++){var tb=document.getElementById('ctab-'+ti);if(tb)tb.textContent=tabLabels[ti];}
   var loginTab=document.getElementById('ctab-login');if(loginTab)loginTab.textContent=lang===0?'Connexion':lang===2?'Entrar':'Log in';
+  var _capTxt=lang===0?'Capturer':lang===2?'Capturar agora':'Capture now';
+  var capLbl=document.getElementById('ctab-capture-lbl');if(capLbl)capLbl.textContent=_capTxt;
+  var mCap=document.getElementById('mob-tab-capture');if(mCap)mCap.innerHTML='<i class="ti ti-camera" style="font-size:18px;"></i> '+_capTxt;
   var homeBtn=document.getElementById('nav-home-btn');if(homeBtn)homeBtn.textContent=lang===0?'Accueil':lang===2?'Início':'Home';
   // Mobile menu tab labels
   ['mob-tab-about','mob-tab-solutions','mob-tab-plans','mob-tab-resources'].forEach(function(id,i){var el=document.getElementById(id);if(el)el.textContent=tabLabels[i];});
@@ -12139,7 +12160,8 @@ function cloudSiteName(proj){
     <a href="#" onclick="event.preventDefault();toggleLandingMenu();showContentTab(1);document.getElementById('s-login').classList.remove('active');document.getElementById('s-content').classList.add('active');" id="mob-tab-solutions" style="display:block;padding:14px 4px;font-size:15px;font-weight:500;color:#f0f0f5;text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.06);">Solutions</a>
     <a href="#" onclick="event.preventDefault();toggleLandingMenu();showContentTab(2);document.getElementById('s-login').classList.remove('active');document.getElementById('s-content').classList.add('active');" id="mob-tab-plans" style="display:block;padding:14px 4px;font-size:15px;font-weight:500;color:#f0f0f5;text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.06);">Plans</a>
     <a href="#" onclick="event.preventDefault();toggleLandingMenu();showContentTab(3);document.getElementById('s-login').classList.remove('active');document.getElementById('s-content').classList.add('active');" id="mob-tab-resources" style="display:block;padding:14px 4px;font-size:15px;font-weight:500;color:#f0f0f5;text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.06);">Resources</a>
-    <a href="#" onclick="event.preventDefault();toggleLandingMenu();showAuthPage();" id="mob-tab-login" style="display:block;padding:14px 4px;font-size:15px;font-weight:600;color:#2cbeff;text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.06);">Log in</a>
+    <a href="#" onclick="event.preventDefault();toggleLandingMenu();goCapture();" id="mob-tab-capture" style="display:flex;align-items:center;gap:8px;padding:14px 4px;font-size:15px;font-weight:600;color:#2cbeff;text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.06);"><i class="ti ti-camera" style="font-size:18px;"></i> Capture now</a>
+    <a href="#" onclick="event.preventDefault();toggleLandingMenu();showAuthPage();" id="mob-tab-login" style="display:block;padding:14px 4px;font-size:15px;font-weight:600;color:#f0f0f5;text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.06);">Log in</a>
     <!-- Language + theme -->
     <div style="display:flex;gap:8px;margin-top:16px;">
       <div style="flex:1;">
