@@ -4160,10 +4160,21 @@ var _resLang='pt';
 var _resReportId=1;
 // Local PT ebook files (hosted in the repo, served by Vercel)
 var _resFiles={1:'/reports/Pillier_Riscos_Ebook_PT.pdf',2:'/reports/Pillier_AI_Ebook_PT.pdf',3:'/reports/Pillier_Financeiro_Ebook_PT.pdf'};
+var _resFormHTML=null;
 function openResForm(id){
   _resReportId=id||1;
   var f=document.getElementById('res-lead-form');
-  if(f){f.style.display='block';try{f.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){}}
+  if(f){
+    // Capture the pristine form once; restore it on later opens so the
+    // "Report ready" success message from a previous download is replaced
+    // by fresh, fillable fields instead of lingering.
+    if(_resFormHTML===null)_resFormHTML=f.innerHTML;
+    else f.innerHTML=_resFormHTML;
+    f.style.display='block';
+    ['res-f-name','res-f-email','res-f-company'].forEach(function(k){var el=document.getElementById(k);if(el)el.value='';});
+    try{f.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){}
+  }
+  try{translateResources(lang===0?'fr':lang===2?'pt':'en');}catch(e){}
   setResLang('pt');
 }
 function setResLang(l){
