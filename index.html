@@ -163,6 +163,9 @@ body.light-mode .auth-left-panel{background:#eef4f6 !important;}
   .mk-vp.rev .mk-vp-text{order:0;}
   .mk-stats{grid-template-columns:1fr 1fr;gap:12px;}
   #s-content{overflow-x:hidden;}
+  .hero-ask{flex-direction:column !important;align-items:stretch !important;}
+  .hero-ask #about-ask-input{width:100%;}
+  .hero-ask #about-ask-btn{width:100%;justify-content:center;}
   .mk-agents,.mk-agents.cols3{grid-template-columns:1fr;}
   .mk-plans{grid-template-columns:1fr;max-width:420px;}
   .mk-res{grid-template-columns:1fr;}
@@ -1366,12 +1369,11 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
   .sol-content-grid{grid-template-columns:1fr !important;}
   .cmp-grid{grid-template-columns:2fr 1fr 1fr 1fr 1fr !important;gap:6px !important;font-size:10px !important;}
   .cmp-row{font-size:11px !important;}
-  /* Content page mobile: hide tabs (moved to hamburger), keep logo+demo+hamburger */
+  /* Content page mobile: hide tabs + all controls (moved to hamburger); keep logo + hamburger only */
   #content-tabs{display:none !important;}
-  #content-header{padding:0 16px !important;}
-  #content-header>div:last-child{gap:6px !important;}
-  #content-header>div:last-child>a{font-size:10px !important;padding:5px 10px !important;}
-  #content-header>div:last-child>div,#content-header>div:last-child>button:not(#content-mob-menu){display:none !important;}
+  #content-header{padding:0 16px !important;justify-content:space-between !important;}
+  #content-header>div:last-child{gap:6px !important;margin-left:auto;}
+  #content-header>div:last-child>div,#content-header>div:last-child>button:not(#content-mob-menu),#content-header>div:last-child>a{display:none !important;}
   #content-mob-menu{display:flex !important;align-items:center;}
   .content-panel{padding:32px 16px !important;}
   /* Solutions tab hover dropdown - convert to click on mobile */
@@ -1767,8 +1769,8 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
         <div style="font-family:var(--font-d);font-size:52px;font-weight:800;color:var(--white);line-height:1.1;letter-spacing:-1px;margin-bottom:20px;" id="about-headline">Meet your<br>construction<br>buddy.</div>
         <div style="font-size:17px;color:var(--text2);line-height:1.6;max-width:440px;margin-bottom:32px;" id="about-hero-sub">Capture, analyze, and resolve site incidents with AI — in under 60 seconds.</div>
         <!-- Claude-style input - functional -->
-        <div style="max-width:520px;background:var(--navy2);border:1px solid var(--border2);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#2cbeff'" onmouseout="this.style.borderColor='var(--border2)'">
-          <textarea id="about-ask-input" placeholder="How can Pillier help you today?" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();askBaceFromAbout();}" style="flex:1;background:none;border:none;outline:none;color:var(--text);font-family:var(--font-b);font-size:15px;resize:none;max-height:120px;line-height:1.4;"></textarea>
+        <div class="hero-ask" style="max-width:520px;background:var(--navy2);border:1px solid var(--border2);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#2cbeff'" onmouseout="this.style.borderColor='var(--border2)'">
+          <textarea id="about-ask-input" placeholder="How can Pillier help you today?" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();askBaceFromAbout();}" style="flex:1;min-width:0;background:none;border:none;outline:none;color:var(--text);font-family:var(--font-b);font-size:15px;resize:none;max-height:120px;line-height:1.4;"></textarea>
           <button onclick="askBaceFromAbout()" style="display:flex;align-items:center;gap:6px;background:#2cbeff;color:#fff;border:none;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-b);flex-shrink:0;" id="about-ask-btn">Ask Pillier <span style="font-size:15px;">↑</span></button>
         </div>
       </div>
