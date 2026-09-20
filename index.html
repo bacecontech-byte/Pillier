@@ -1833,11 +1833,11 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
           <div class="mk-device-body">
             <div class="mk-ai"><span class="mk-pulse"></span> <span id="mkh-chart-cap">Incidents by category</span></div>
             <div class="mk-chart" role="img" aria-label="Incidents by category">
-              <div class="mk-col"><div class="mk-track"><div class="mk-bar hi" style="height:88%"></div></div><div class="mk-cat"><i class="ti ti-droplet"></i><span>H2O</span></div></div>
-              <div class="mk-col"><div class="mk-track"><div class="mk-bar" style="height:62%"></div></div><div class="mk-cat"><i class="ti ti-wall"></i><span>Estr.</span></div></div>
-              <div class="mk-col"><div class="mk-track"><div class="mk-bar" style="height:44%"></div></div><div class="mk-cat"><i class="ti ti-bolt"></i><span>Elét.</span></div></div>
-              <div class="mk-col"><div class="mk-track"><div class="mk-bar" style="height:30%"></div></div><div class="mk-cat"><i class="ti ti-shield"></i><span>Seg.</span></div></div>
-              <div class="mk-col"><div class="mk-track"><div class="mk-bar" style="height:20%"></div></div><div class="mk-cat"><i class="ti ti-dots"></i><span>Outros</span></div></div>
+              <div class="mk-col"><div class="mk-track"><div class="mk-bar hi" style="height:88%"></div></div><div class="mk-cat"><i class="ti ti-droplet"></i><span id="mkc-1">Water</span></div></div>
+              <div class="mk-col"><div class="mk-track"><div class="mk-bar" style="height:62%"></div></div><div class="mk-cat"><i class="ti ti-wall"></i><span id="mkc-2">Struct.</span></div></div>
+              <div class="mk-col"><div class="mk-track"><div class="mk-bar" style="height:44%"></div></div><div class="mk-cat"><i class="ti ti-bolt"></i><span id="mkc-3">Elec.</span></div></div>
+              <div class="mk-col"><div class="mk-track"><div class="mk-bar" style="height:30%"></div></div><div class="mk-cat"><i class="ti ti-shield"></i><span id="mkc-4">Safety</span></div></div>
+              <div class="mk-col"><div class="mk-track"><div class="mk-bar" style="height:20%"></div></div><div class="mk-cat"><i class="ti ti-dots"></i><span id="mkc-5">Other</span></div></div>
             </div>
           </div>
         </div>
@@ -11483,6 +11483,11 @@ function translateMarketingExtras(){
   setT('mkh-v3',L('Inspect the tie-backs and walers, treat the corrosion, and review drainage before deepening the excavation.','Inspecter les tirants et les lisses, traiter la corrosion et revoir le drainage avant de poursuivre la fouille.','Inspecionar tirantes e longarinas, tratar a corrosão e revisar a drenagem antes de aprofundar a escavação.'));
   setT('mkh-strip-lbl',L('References the standards that keep you covered','Référence les normes qui vous protègent','Referencia as normas que protegem você'));
   setT('mkh-chart-cap',L('Incidents by category','Incidents par catégorie','Incidentes por categoria'));
+  setT('mkc-1',L('Water','Eau','Água'));
+  setT('mkc-2',L('Struct.','Struct.','Estrut.'));
+  setT('mkc-3',L('Elec.','Élec.','Elét.'));
+  setT('mkc-4',L('Safety','Sécur.','Seg.'));
+  setT('mkc-5',L('Other','Autres','Outros'));
   setT('mkh-int-k',L('Integrity','Intégrité','Integridade'));
   setT('mkh-int-v',L('Sealed record — tamper-proof and verifiable.','Enregistrement scellé — inaltérable et vérifiable.','Registro selado — inalterável e verificável.'));
   setT('mkh-cta-t',L('Put an AI engineer on every site','Un ingénieur IA sur chaque chantier','Um engenheiro de IA em cada canteiro'));
