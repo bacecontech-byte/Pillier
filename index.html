@@ -4160,6 +4160,9 @@ var _resLang='pt';
 var _resReportId=1;
 // Local PT ebook files (hosted in the repo, served by Vercel)
 var _resFiles={1:'/reports/Pillier_Riscos_Ebook_PT.pdf',2:'/reports/Pillier_AI_Ebook_PT.pdf',3:'/reports/Pillier_Financeiro_Ebook_PT.pdf'};
+// Send a resources lead to the server (stores in Supabase + emails the team).
+// Fire-and-forget: failures never block the visitor's download.
+function _sendLead(p){try{fetch('/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)}).catch(function(){});}catch(_e){}}
 var _resFormHTML=null;
 function openResForm(id){
   _resReportId=id||1;
@@ -4204,8 +4207,9 @@ function downloadResReport(){
   var e=document.getElementById('res-f-email').value.trim();
   if(!n||!e){toast(ui===0?'Remplissez nom et e-mail':ui===1?'Please fill in name and email':'Preencha nome e e-mail');return;}
   var company=(document.getElementById('res-f-company')||{}).value||'';
-  // Best-effort lead capture (never blocks the download)
-  if(typeof dbOk!=='undefined'&&dbOk&&dbCoId){try{db.from('leads').insert({name:n,email:e,company:company,lang:'pt',report_id:_resReportId}).then(function(){}).catch(function(){});}catch(_e){}}
+  // Capture the lead + notify the team (server-side: Supabase + email).
+  // Best-effort and fire-and-forget — it never blocks the download.
+  _sendLead({name:n,email:e,company:company,report_id:_resReportId,report_title:((document.getElementById('rp-title-'+_resReportId)||{}).textContent||'').trim(),lang:(ui===0?'fr':ui===1?'en':'pt'),source:'resources'});
   // Trigger the download of the local PT ebook
   var file=_resFiles[_resReportId]||_resFiles[1];
   try{var a=document.createElement('a');a.href=file;a.download=file.split('/').pop();document.body.appendChild(a);a.click();a.remove();}catch(_e){window.open(file,'_blank');}
@@ -4301,7 +4305,7 @@ function downloadReport(){
   }
   var name=document.getElementById('lead-name').value.trim();var email=document.getElementById('lead-email').value.trim();var company=document.getElementById('lead-company').value.trim();
   if(!name||!email){toast(ui===0?'Remplissez nom et e-mail':ui===1?'Please fill in name and email':'Preencha nome e e-mail');return;}
-  if(typeof dbOk!=='undefined'&&dbOk&&dbCoId){try{db.from('leads').insert({name:name,email:email,company:company,lang:'pt',report_id:_leadReportId}).then(function(){}).catch(function(){});}catch(_e){}}
+  _sendLead({name:name,email:email,company:company,report_id:_leadReportId,lang:(ui===0?'fr':ui===1?'en':'pt'),source:'resources-nav'});
   var file=(typeof _resFiles!=='undefined'&&_resFiles[_leadReportId])?_resFiles[_leadReportId]:'/reports/Pillier_Riscos_Ebook_PT.pdf';
   try{var a=document.createElement('a');a.href=file;a.download=file.split('/').pop();document.body.appendChild(a);a.click();a.remove();}catch(_e){window.open(file,'_blank');}
   var ok=ui===0?'Rapport prêt !':ui===1?'Report ready! Check your downloads.':'Relatório pronto! Verifique seus downloads.';
