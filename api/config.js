@@ -62,8 +62,9 @@ async function handleLead(req, res) {
     const ua = str(req.headers['user-agent']).slice(0, 300);
 
     // 1) Store the lead (service key bypasses RLS).
-    let stored = false;
-    if (SERVICE_KEY) {
+    let stored = false, storeErr = '';
+    if (!SERVICE_KEY) { storeErr = 'no_service_key'; }
+    else {
       try {
         const r = await fetch(SUPABASE_URL + '/rest/v1/leads', {
           method: 'POST',
@@ -71,8 +72,8 @@ async function handleLead(req, res) {
           body: JSON.stringify({ name, email, company, report_id, report_title, lang, source, ip, user_agent: ua }),
         });
         stored = r.ok;
-        if (!r.ok) console.error('[lead] supabase insert failed', r.status, (await r.text()).slice(0, 200));
-      } catch (e) { console.error('[lead] supabase error', e.message); }
+        if (!r.ok) { storeErr = r.status + ': ' + (await r.text()).slice(0, 300); console.error('[lead] supabase insert failed', storeErr); }
+      } catch (e) { storeErr = 'exception: ' + e.message; console.error('[lead] supabase error', e.message); }
     }
 
     // 2) Notify by email.
@@ -99,7 +100,7 @@ async function handleLead(req, res) {
     }
 
     console.log('[lead]', email, '| stored:', stored, '| emailed:', emailed, '|', report_title);
-    return res.status(200).json({ ok: true, stored, emailed });
+    return res.status(200).json({ ok: true, stored, emailed, store_error: storeErr || undefined });
   } catch (err) {
     console.error('[lead] error', err.message);
     return res.status(200).json({ ok: false, error: 'server_error' });
