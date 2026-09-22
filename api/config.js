@@ -15,7 +15,7 @@
 //   SUPABASE_URL          (existing)
 //   SUPABASE_SERVICE_KEY  (existing)
 //   RESEND_API_KEY        (NEW — https://resend.com, "Sending access" key)
-//   LEAD_NOTIFY_TO        (optional — inbox to alert; default dyken@focustribes.com)
+//   LEAD_NOTIFY_TO        (optional — inbox to alert; default dykenmarcelin@icloud.com)
 //   LEAD_NOTIFY_FROM      (optional — verified sender; default noreply@pillier.com.br)
 // ═══════════════════════════════════════════════════════════════════
 
@@ -24,7 +24,7 @@ import { applyRateLimit } from './_rate-limit.js';
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://rzdoeehbpdgjxtfbbmwp.supabase.co';
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const RESEND_KEY = process.env.RESEND_API_KEY;
-const NOTIFY_TO = process.env.LEAD_NOTIFY_TO || 'dyken@focustribes.com';
+const NOTIFY_TO = process.env.LEAD_NOTIFY_TO || 'dykenmarcelin@icloud.com';
 const NOTIFY_FROM = process.env.LEAD_NOTIFY_FROM || 'Pillier <noreply@pillier.com.br>';
 
 export default async function handler(req, res) {
