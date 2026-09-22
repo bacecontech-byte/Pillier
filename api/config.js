@@ -1,32 +1,114 @@
 // ═══════════════════════════════════════════════════════════════════
-// /api/config.js — Serves public frontend config from Vercel env vars
+// /api/config.js — dual purpose (kept as one function to stay within the
+// Vercel plan's serverless-function limit):
 //
-// PURPOSE: The Turnstile SITE KEY (which is technically public but must
-// match your Cloudflare-registered domain) is kept in Vercel env vars
-// instead of the source code. This means it survives code updates and
-// can be rotated without a deploy.
+//   GET  → serves public frontend config (Turnstile SITE key) as JS.
+//          Loaded early in <head>:  <script src="/api/config.js"></script>
+//          Sets: window.PILLIER_CONFIG = { turnstileSiteKey: '...' }
 //
-// SETUP:
-//   Vercel Dashboard → Settings → Environment Variables → Add:
-//   Key: TURNSTILE_SITE_KEY
-//   Value: (paste your Cloudflare Turnstile SITE key, starts with 0x...)
-//   Apply to: Production, Preview, Development
+//   POST → captures a Resources ebook download lead: stores it in Supabase
+//          (service key, bypasses RLS) AND emails a notification via Resend.
+//          Best-effort + non-blocking — the visitor's download never waits.
 //
-// The frontend loads this script early in <head>:
-//   <script src="/api/config.js"></script>
-// Which sets: window.PILLIER_CONFIG = { turnstileSiteKey: '...' }
+// SETUP (Vercel → Settings → Environment Variables):
+//   TURNSTILE_SITE_KEY    (existing — Cloudflare Turnstile site key)
+//   SUPABASE_URL          (existing)
+//   SUPABASE_SERVICE_KEY  (existing)
+//   RESEND_API_KEY        (NEW — https://resend.com, "Sending access" key)
+//   LEAD_NOTIFY_TO        (optional — inbox to alert; default contact@pillier.com.br)
+//   LEAD_NOTIFY_FROM      (optional — verified sender; default noreply@pillier.com.br)
 // ═══════════════════════════════════════════════════════════════════
 
-export default function handler(req, res) {
-  res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
-  // Cache 5 minutes on the CDN, but let browser check for freshness
-  res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=300');
+import { applyRateLimit } from './_rate-limit.js';
+
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://rzdoeehbpdgjxtfbbmwp.supabase.co';
+const SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
+const RESEND_KEY = process.env.RESEND_API_KEY;
+const NOTIFY_TO = process.env.LEAD_NOTIFY_TO || 'contact@pillier.com.br';
+const NOTIFY_FROM = process.env.LEAD_NOTIFY_FROM || 'Pillier <noreply@pillier.com.br>';
+
+export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method === 'POST') return handleLead(req, res);
 
+  // ---- GET: public frontend config ----
+  res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=300');
   const turnstileSiteKey = (process.env.TURNSTILE_SITE_KEY || '').replace(/[^\w-]/g, '');
-
-  // Build a safe JS assignment (no template strings from env; strict char whitelist above)
-  const js = 'window.PILLIER_CONFIG = { turnstileSiteKey: "' + turnstileSiteKey + '" };';
-
-  res.status(200).send(js);
+  return res.status(200).send('window.PILLIER_CONFIG = { turnstileSiteKey: "' + turnstileSiteKey + '" };');
 }
+
+// ---- POST: resources download lead ----
+async function handleLead(req, res) {
+  if (!applyRateLimit(req, res, 'lead', 30)) return;
+  try {
+    const body = req.body || JSON.parse(await getBody(req));
+    const name = str(body.name).slice(0, 120);
+    const email = str(body.email).slice(0, 160).toLowerCase();
+    const company = str(body.company).slice(0, 160);
+    const report_id = body.report_id != null ? String(body.report_id).slice(0, 12) : '';
+    const report_title = str(body.report_title).slice(0, 200);
+    const lang = str(body.lang).slice(0, 8);
+    const source = str(body.source || 'resources').slice(0, 40);
+
+    if (!name || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      return res.status(400).json({ ok: false, error: 'invalid_lead' });
+    }
+
+    const ip = str(req.headers['x-forwarded-for']).split(',')[0].trim();
+    const ua = str(req.headers['user-agent']).slice(0, 300);
+
+    // 1) Store the lead (service key bypasses RLS).
+    let stored = false;
+    if (SERVICE_KEY) {
+      try {
+        const r = await fetch(SUPABASE_URL + '/rest/v1/leads', {
+          method: 'POST',
+          headers: { apikey: SERVICE_KEY, Authorization: 'Bearer ' + SERVICE_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+          body: JSON.stringify({ name, email, company, report_id, report_title, lang, source, ip, user_agent: ua }),
+        });
+        stored = r.ok;
+        if (!r.ok) console.error('[lead] supabase insert failed', r.status, (await r.text()).slice(0, 200));
+      } catch (e) { console.error('[lead] supabase error', e.message); }
+    }
+
+    // 2) Notify by email.
+    let emailed = false;
+    if (RESEND_KEY) {
+      try {
+        const when = new Date().toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
+        const html =
+          '<div style="font-family:Arial,sans-serif;font-size:14px;color:#1a2b33;line-height:1.6">' +
+          '<h2 style="margin:0 0 12px;color:#0a95d6">Novo download de relatório</h2>' +
+          '<table cellpadding="0" cellspacing="0" style="border-collapse:collapse">' +
+          row('Nome', esc(name)) + row('E-mail', '<a href="mailto:' + esc(email) + '">' + esc(email) + '</a>') +
+          row('Empresa', esc(company) || '—') + row('Relatório', esc(report_title || report_id) || '—') +
+          row('Idioma', esc(lang) || '—') + row('Origem', esc(source)) + row('Quando', esc(when)) +
+          '</table><p style="margin-top:16px;color:#6b7c84;font-size:12px">Enviado automaticamente pela página Recursos da Pillier.</p></div>';
+        const er = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: { Authorization: 'Bearer ' + RESEND_KEY, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ from: NOTIFY_FROM, to: [NOTIFY_TO], reply_to: email, subject: 'Novo lead: ' + (report_title || 'Relatório') + ' — ' + name, html }),
+        });
+        emailed = er.ok;
+        if (!er.ok) console.error('[lead] resend failed', er.status, (await er.text()).slice(0, 200));
+      } catch (e) { console.error('[lead] resend error', e.message); }
+    }
+
+    console.log('[lead]', email, '| stored:', stored, '| emailed:', emailed, '|', report_title);
+    return res.status(200).json({ ok: true, stored, emailed });
+  } catch (err) {
+    console.error('[lead] error', err.message);
+    return res.status(200).json({ ok: false, error: 'server_error' });
+  }
+}
+
+function row(k, v) {
+  return '<tr><td style="padding:4px 16px 4px 0;color:#6b7c84;font-weight:bold;vertical-align:top">' + esc(k) + '</td><td style="padding:4px 0;color:#1a2b33">' + v + '</td></tr>';
+}
+function str(v) { return (v === null || v === undefined) ? '' : String(v); }
+function esc(s) { return str(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function getBody(req) { return new Promise((resolve) => { let d = ''; req.on('data', (c) => (d += c)); req.on('end', () => resolve(d || '{}')); }); }

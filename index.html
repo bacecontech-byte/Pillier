@@ -4162,7 +4162,7 @@ var _resReportId=1;
 var _resFiles={1:'/reports/Pillier_Riscos_Ebook_PT.pdf',2:'/reports/Pillier_AI_Ebook_PT.pdf',3:'/reports/Pillier_Financeiro_Ebook_PT.pdf'};
 // Send a resources lead to the server (stores in Supabase + emails the team).
 // Fire-and-forget: failures never block the visitor's download.
-function _sendLead(p){try{fetch('/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)}).catch(function(){});}catch(_e){}}
+function _sendLead(p){try{fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)}).catch(function(){});}catch(_e){}}
 var _resFormHTML=null;
 function openResForm(id){
   _resReportId=id||1;
