@@ -3893,7 +3893,26 @@ function _landPathToTab(p){
   var m={'/':0,'/home':0,'/solucoes':1,'/solucao':1,'/solutions':1,
          '/planos':2,'/plans':2,'/pricing':2,
          '/recursos':3,'/resources':3,'/ressources':3};
-  return (p in m)?m[p]:-1;
+  if(p in m)return m[p];
+  // deep sub-paths like /recursos/riscos still resolve to their tab
+  var seg=p.split('/').filter(Boolean);
+  if(seg.length){
+    if(/^(recursos|resources|ressources)$/.test(seg[0]))return 3;
+    if(/^(solucoes|solucao|solutions)$/.test(seg[0]))return 1;
+    if(/^(planos|plans|pricing)$/.test(seg[0]))return 2;
+    if(/^(home)$/.test(seg[0]))return 0;
+  }
+  return -1;
+}
+// Per-ebook deep links: /recursos/<slug> (any language base) opens that report's
+// download form. Slugs are forgiving so email links are hard to get wrong.
+var _EBOOK_SLUGS={'1':1,'riscos':1,'risco':1,'risk':1,'risco-em-canteiros':1,
+                  '2':2,'roi':2,'ia':2,'ia-preditiva':2,'maturidade':2,
+                  '3':3,'financeiro':3,'financas':3,'financial':3,'microcompras':3};
+function _ebookFromPath(p){
+  var seg=String(p||'').toLowerCase().replace(/\/+$/,'').split('/').filter(Boolean);
+  if(seg.length>=2 && /^(recursos|resources|ressources)$/.test(seg[0])) return _EBOOK_SLUGS[seg[1]]||0;
+  return 0;
 }
 function _syncLandingUrl(idx){
   if(_suppressUrlPush)return;
@@ -3947,7 +3966,14 @@ function goCapture(){
     var scd=document.getElementById('s-content'),sld=document.getElementById('s-login');
     if(scd&&sld){sld.classList.remove('active');scd.classList.add('active');}
     _suppressUrlPush=true;try{showContentTab(urlTab);}catch(e){}_suppressUrlPush=false;
-    try{history.replaceState(null,'',_landPaths()[urlTab]);}catch(e){}
+    var _eb=_ebookFromPath(location.pathname);
+    if(urlTab===3&&_eb){
+      // Per-ebook deep link (e.g. /recursos/riscos) — open that report's form,
+      // keep the deep-link URL in the address bar (shareable / trackable).
+      setTimeout(function(){try{openResForm(_eb);}catch(e){}},300);
+    } else {
+      try{history.replaceState(null,'',_landPaths()[urlTab]);}catch(e){}
+    }
     return;
   }
   if(wasLoggedIn){
