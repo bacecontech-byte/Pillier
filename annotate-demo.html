@@ -64,6 +64,20 @@
   .marker.active .frame,.marker:hover .frame{background:color-mix(in srgb,var(--accent) 10%,transparent);}
   .marker.active .hud,.marker:hover .hud{border-color:var(--accent);}
   .marker.dim .hud{display:none;}
+  /* compact single-line label (minor / info items) */
+  .marker .hud.compact{display:flex;align-items:center;gap:7px;padding:5px 10px;font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:700;letter-spacing:-0.01em;color:#fff;white-space:nowrap;}
+  .marker .hud.compact .num{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:4px;background:var(--accent);color:#04222f;font-size:10px;flex-shrink:0;}
+  .marker .hud.compact .cf{color:var(--accent);}
+  /* ---- stage chrome: outer frame, context tag, tagline banner ---- */
+  .stage-chrome{position:absolute;inset:0;pointer-events:none;z-index:6;}
+  .stage-chrome .fc{position:absolute;width:26px;height:26px;border:0 solid rgba(255,255,255,0.6);filter:drop-shadow(0 0 5px rgba(44,190,255,0.5));}
+  .stage-chrome .fc.tl{top:10px;left:10px;border-top-width:2px;border-left-width:2px;border-top-left-radius:8px;}
+  .stage-chrome .fc.tr{top:10px;right:10px;border-top-width:2px;border-right-width:2px;border-top-right-radius:8px;}
+  .stage-chrome .fc.bl{bottom:10px;left:10px;border-bottom-width:2px;border-left-width:2px;border-bottom-left-radius:8px;}
+  .stage-chrome .fc.br{bottom:10px;right:10px;border-bottom-width:2px;border-right-width:2px;border-bottom-right-radius:8px;}
+  .stage-tag{position:absolute;top:16px;left:16px;display:inline-flex;align-items:center;gap:6px;font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:700;letter-spacing:0.14em;color:var(--amber);background:rgba(9,22,29,0.72);border:1px solid rgba(251,191,36,0.5);border-radius:6px;padding:5px 10px;text-transform:uppercase;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);}
+  .stage-tag i{font-size:13px;}
+  .stage-tagline{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);max-width:90%;text-align:center;font-family:var(--font-b);font-weight:700;font-size:13px;line-height:1.3;color:#fff;background:rgba(9,22,29,0.82);border:1px solid rgba(44,190,255,0.5);border-radius:100px;padding:8px 18px;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);box-shadow:0 8px 24px rgba(0,0,0,0.4);}
   /* Findings list */
   .flist{display:flex;flex-direction:column;gap:12px;}
   .fcard{background:var(--navy2);border:1px solid var(--border);border-radius:14px;padding:16px 16px 14px;transition:.12s;cursor:pointer;}
@@ -284,10 +298,19 @@
 
   function render(findings){
     lastFindings=findings;
-    // clear old markers (keep the img)
-    Array.prototype.slice.call(stage.querySelectorAll('.marker')).forEach(function(m){m.remove();});
+    // clear old markers + chrome (keep the img)
+    Array.prototype.slice.call(stage.querySelectorAll('.marker,.stage-chrome,.stage-tag,.stage-tagline')).forEach(function(m){m.remove();});
     flist.innerHTML='';
     results.classList.remove('hidden');
+    // stage chrome: outer corner frame, context tag, tagline banner
+    var chrome=document.createElement('div');chrome.className='stage-chrome';
+    chrome.innerHTML='<span class="fc tl"></span><span class="fc tr"></span><span class="fc bl"></span><span class="fc br"></span>';
+    stage.appendChild(chrome);
+    var tag=document.createElement('div');tag.className='stage-tag';tag.innerHTML='<i class="ti ti-building-skyscraper"></i> Obra física';
+    stage.appendChild(tag);
+    var tl=document.createElement('div');tl.className='stage-tagline';
+    tl.textContent='Pillier AI transforma cada dia de obra em conhecimento pesquisável';
+    stage.appendChild(tl);
 
     findings.forEach(function(f,i){
       var n=i+1;
@@ -305,14 +328,19 @@
         if(f.norm)meta.push(esc(f.norm));
         if(typeof f.confidence==='number')meta.push('conf. '+f.confidence.toFixed(2).replace('.',','));
         var lead='<span class="lead" style="'+(pos==='below'?'top:100%;':'bottom:100%;')+'height:18px;"></span>';
+        var confComma=(typeof f.confidence==='number')?f.confidence.toFixed(2).replace('.',','):'';
+        var hud;
+        if(sev==='info'){
+          // compact single-line label for minor / informational items
+          hud='<div class="hud compact '+pos+'"><span class="num">'+n+'</span>'+esc(f.label||'Item')+(confComma?' · <span class="cf">'+confComma+'</span>':'')+'</div>';
+        } else {
+          hud='<div class="hud '+pos+'"><div class="hud-t"><span class="num">'+n+'</span>'+esc(f.label||'Item')+'</div>'+
+              (meta.length?'<div class="hud-m">'+meta.join(' · ')+'</div>':'')+'</div>';
+        }
         mk.innerHTML=
           '<div class="frame"></div>'+
           '<span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>'+
-          '<span class="dot"></span>'+lead+
-          '<div class="hud '+pos+'">'+
-            '<div class="hud-t"><span class="num">'+n+'</span>'+esc(f.label||'Item')+'</div>'+
-            (meta.length?'<div class="hud-m">'+meta.join(' · ')+'</div>':'')+
-          '</div>';
+          '<span class="dot"></span>'+lead+hud;
         mk.addEventListener('mouseenter',function(){highlight(n,true);});
         mk.addEventListener('mouseleave',function(){highlight(n,false);});
         mk.addEventListener('click',function(){scrollToCard(n);});
