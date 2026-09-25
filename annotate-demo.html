@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Pillier — Captura Anotada (demo)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.5.0/dist/tabler-icons.min.css">
 <style>
   :root{
@@ -42,14 +42,28 @@
   @media(max-width:840px){.results{grid-template-columns:1fr;}}
   .stage{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--border2);background:#000;line-height:0;}
   .stage img{display:block;width:100%;height:auto;}
-  .marker{position:absolute;border:2px solid var(--blue);border-radius:8px;box-shadow:0 0 0 2px rgba(4,34,47,0.5),0 0 18px rgba(44,190,255,0.35);cursor:pointer;transition:.12s;}
-  .marker.sev-risco{border-color:var(--red);box-shadow:0 0 0 2px rgba(4,34,47,0.5),0 0 18px rgba(248,113,113,0.4);}
-  .marker.sev-attention{border-color:var(--amber);box-shadow:0 0 0 2px rgba(4,34,47,0.5),0 0 18px rgba(251,191,36,0.4);}
-  .marker .chip{position:absolute;top:-11px;left:-2px;transform:translateY(-100%);white-space:nowrap;background:var(--blue);color:#04222f;font-size:11px;font-weight:700;font-family:var(--font-b);padding:3px 8px;border-radius:6px;line-height:1.3;display:flex;align-items:center;gap:6px;max-width:240px;overflow:hidden;text-overflow:ellipsis;}
-  .marker.sev-risco .chip{background:var(--red);color:#2a0b0b;}
-  .marker.sev-attention .chip{background:var(--amber);color:#2a1e00;}
-  .marker .num{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:rgba(0,0,0,0.28);font-size:10px;flex-shrink:0;}
-  .marker.active,.marker:hover{filter:brightness(1.15);border-width:3px;z-index:5;}
+  /* ---- HUD marker: corner brackets + anchor dot + glass card ---- */
+  .marker{position:absolute;--accent:var(--blue);cursor:pointer;transition:.12s;}
+  .marker.sev-risco{--accent:var(--red);}
+  .marker.sev-attention{--accent:var(--amber);}
+  .marker .frame{position:absolute;inset:0;border-radius:4px;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.04);}
+  .marker .c{position:absolute;width:15px;height:15px;border:0 solid var(--accent);filter:drop-shadow(0 0 4px color-mix(in srgb,var(--accent) 60%,transparent));}
+  .marker .c.tl{top:-1px;left:-1px;border-top-width:2px;border-left-width:2px;border-top-left-radius:4px;}
+  .marker .c.tr{top:-1px;right:-1px;border-top-width:2px;border-right-width:2px;border-top-right-radius:4px;}
+  .marker .c.bl{bottom:-1px;left:-1px;border-bottom-width:2px;border-left-width:2px;border-bottom-left-radius:4px;}
+  .marker .c.br{bottom:-1px;right:-1px;border-bottom-width:2px;border-right-width:2px;border-bottom-right-radius:4px;}
+  .marker .dot{position:absolute;top:-4px;left:-4px;width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px rgba(4,34,47,0.55),0 0 12px var(--accent);}
+  .marker .lead{position:absolute;left:6px;width:1px;background:linear-gradient(var(--accent),transparent);opacity:.7;}
+  .marker .hud{position:absolute;left:-1px;min-width:110px;max-width:230px;background:rgba(9,22,29,0.86);border:1px solid rgba(255,255,255,0.13);border-left:2px solid var(--accent);border-radius:9px;padding:7px 11px;box-shadow:0 10px 26px rgba(0,0,0,0.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+  .marker .hud.above{bottom:100%;margin-bottom:18px;}
+  .marker .hud.below{top:100%;margin-top:18px;}
+  .marker .hud-t{font-family:var(--font-b);font-weight:700;color:#fff;font-size:12.5px;line-height:1.25;display:flex;align-items:center;gap:7px;white-space:nowrap;}
+  .marker .hud-t .num{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:5px;background:var(--accent);color:#04222f;font-size:10px;font-weight:700;flex-shrink:0;font-family:var(--font-b);}
+  .marker .hud-m{font-family:"JetBrains Mono",monospace;font-size:10.5px;font-weight:500;color:var(--accent);margin-top:4px;letter-spacing:-0.02em;white-space:nowrap;}
+  .marker.active,.marker:hover{z-index:8;}
+  .marker.active .frame,.marker:hover .frame{background:color-mix(in srgb,var(--accent) 10%,transparent);}
+  .marker.active .hud,.marker:hover .hud{border-color:var(--accent);}
+  .marker.dim .hud{display:none;}
   /* Findings list */
   .flist{display:flex;flex-direction:column;gap:12px;}
   .fcard{background:var(--navy2);border:1px solid var(--border);border-radius:14px;padding:16px 16px 14px;transition:.12s;cursor:pointer;}
@@ -99,6 +113,7 @@
 
     <div class="controls hidden" id="controls">
       <button class="btn btn-primary" id="analyze"><i class="ti ti-sparkles"></i> Analisar foto</button>
+      <button class="btn btn-ghost" id="toggleCards"><i class="ti ti-eye"></i> Cartões: sempre</button>
       <button class="btn btn-ghost" id="reset"><i class="ti ti-refresh"></i> Outra foto</button>
     </div>
 
@@ -137,6 +152,14 @@
   var rawWrap=document.getElementById('rawWrap');
   var rawEl=document.getElementById('raw');
   var currentDataUrl='';
+  var cardsHover=false;      // false = cards always visible; true = only on hover
+  var lastFindings=null;
+  var toggleBtn=document.getElementById('toggleCards');
+  toggleBtn.addEventListener('click',function(){
+    cardsHover=!cardsHover;
+    toggleBtn.innerHTML=cardsHover?'<i class="ti ti-eye-off"></i> Cartões: ao passar':'<i class="ti ti-eye"></i> Cartões: sempre';
+    if(lastFindings)render(lastFindings);
+  });
 
   function setStatus(html,isErr){
     statusEl.className='status show'+(isErr?' err':'');
@@ -260,6 +283,7 @@
   }
 
   function render(findings){
+    lastFindings=findings;
     // clear old markers (keep the img)
     Array.prototype.slice.call(stage.querySelectorAll('.marker')).forEach(function(m){m.remove();});
     flist.innerHTML='';
@@ -272,12 +296,23 @@
       // ---- marker on the photo (label + norm + confidence ONLY, no cause/fix) ----
       if(box){
         var mk=document.createElement('div');
-        mk.className='marker sev-'+sev;
+        mk.className='marker sev-'+sev+(cardsHover?' dim':'');
         mk.style.left=box.left+'%';mk.style.top=box.top+'%';
         mk.style.width=box.w+'%';mk.style.height=box.h+'%';
         mk.dataset.i=n;
-        var conf=(typeof f.confidence==='number')?' · '+Math.round(f.confidence*100)+'%':'';
-        mk.innerHTML='<span class="chip"><span class="num">'+n+'</span>'+esc(f.label||'Item')+(f.norm?' · '+esc(f.norm):'')+conf+'</span>';
+        var pos=(box.top<22)?'below':'above';
+        var meta=[];
+        if(f.norm)meta.push(esc(f.norm));
+        if(typeof f.confidence==='number')meta.push('conf. '+f.confidence.toFixed(2).replace('.',','));
+        var lead='<span class="lead" style="'+(pos==='below'?'top:100%;':'bottom:100%;')+'height:18px;"></span>';
+        mk.innerHTML=
+          '<div class="frame"></div>'+
+          '<span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>'+
+          '<span class="dot"></span>'+lead+
+          '<div class="hud '+pos+'">'+
+            '<div class="hud-t"><span class="num">'+n+'</span>'+esc(f.label||'Item')+'</div>'+
+            (meta.length?'<div class="hud-m">'+meta.join(' · ')+'</div>':'')+
+          '</div>';
         mk.addEventListener('mouseenter',function(){highlight(n,true);});
         mk.addEventListener('mouseleave',function(){highlight(n,false);});
         mk.addEventListener('click',function(){scrollToCard(n);});
