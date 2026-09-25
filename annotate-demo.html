@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Pillier — Captura Anotada (demo)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.5.0/dist/tabler-icons.min.css">
+<style>
+  :root{
+    --navy:#10222b; --navy2:#16323b; --navy3:#1c3a44; --blue:#2cbeff;
+    --white:#f0f0f5; --text:#d0d0da; --text2:#8a8a95; --text3:#6a6a75;
+    --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.14);
+    --green:#4ade80; --amber:#fbbf24; --red:#f87171;
+    --font-d:"Syne",sans-serif; --font-b:"DM Sans",sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--navy);color:var(--text);font-family:var(--font-b);line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1200px;margin:0 auto;padding:28px 20px 80px;}
+  header{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+  .logo{font-family:var(--font-d);font-weight:800;font-size:20px;letter-spacing:-0.5px;color:var(--blue);}
+  .logo span{font-size:11px;letter-spacing:2px;color:var(--text2);text-transform:uppercase;font-weight:700;}
+  .badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--amber);border:1px solid rgba(251,191,36,0.4);background:rgba(251,191,36,0.1);border-radius:6px;padding:3px 8px;}
+  h1{font-family:var(--font-d);font-weight:800;font-size:clamp(24px,4vw,34px);color:var(--white);margin:14px 0 6px;letter-spacing:-0.02em;}
+  .sub{color:var(--text2);font-size:15px;max-width:620px;margin-bottom:26px;}
+  /* Upload */
+  .drop{border:1.5px dashed var(--border2);border-radius:16px;padding:40px 20px;text-align:center;cursor:pointer;transition:.15s;background:var(--navy2);}
+  .drop:hover,.drop.over{border-color:var(--blue);background:rgba(44,190,255,0.05);}
+  .drop i{font-size:34px;color:var(--blue);}
+  .drop p{margin:12px 0 4px;color:var(--white);font-weight:600;}
+  .drop small{color:var(--text3);}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px;}
+  button.btn{font-family:var(--font-b);font-weight:700;font-size:14px;border:none;border-radius:10px;padding:12px 22px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.15s;}
+  .btn-primary{background:var(--blue);color:#04222f;}
+  .btn-primary:disabled{opacity:.5;cursor:not-allowed;}
+  .btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border2);}
+  .btn-ghost:hover{border-color:var(--blue);}
+  /* Results */
+  .results{display:grid;grid-template-columns:1.15fr 0.85fr;gap:24px;margin-top:24px;align-items:start;}
+  @media(max-width:840px){.results{grid-template-columns:1fr;}}
+  .stage{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--border2);background:#000;line-height:0;}
+  .stage img{display:block;width:100%;height:auto;}
+  .marker{position:absolute;border:2px solid var(--blue);border-radius:8px;box-shadow:0 0 0 2px rgba(4,34,47,0.5),0 0 18px rgba(44,190,255,0.35);cursor:pointer;transition:.12s;}
+  .marker.sev-risco{border-color:var(--red);box-shadow:0 0 0 2px rgba(4,34,47,0.5),0 0 18px rgba(248,113,113,0.4);}
+  .marker.sev-attention{border-color:var(--amber);box-shadow:0 0 0 2px rgba(4,34,47,0.5),0 0 18px rgba(251,191,36,0.4);}
+  .marker .chip{position:absolute;top:-11px;left:-2px;transform:translateY(-100%);white-space:nowrap;background:var(--blue);color:#04222f;font-size:11px;font-weight:700;font-family:var(--font-b);padding:3px 8px;border-radius:6px;line-height:1.3;display:flex;align-items:center;gap:6px;max-width:240px;overflow:hidden;text-overflow:ellipsis;}
+  .marker.sev-risco .chip{background:var(--red);color:#2a0b0b;}
+  .marker.sev-attention .chip{background:var(--amber);color:#2a1e00;}
+  .marker .num{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:rgba(0,0,0,0.28);font-size:10px;flex-shrink:0;}
+  .marker.active,.marker:hover{filter:brightness(1.15);border-width:3px;z-index:5;}
+  /* Findings list */
+  .flist{display:flex;flex-direction:column;gap:12px;}
+  .fcard{background:var(--navy2);border:1px solid var(--border);border-radius:14px;padding:16px 16px 14px;transition:.12s;cursor:pointer;}
+  .fcard.active{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue);}
+  .fhead{display:flex;align-items:flex-start;gap:10px;}
+  .fnum{flex-shrink:0;width:24px;height:24px;border-radius:7px;background:rgba(44,190,255,0.14);color:var(--blue);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;}
+  .fcard.sev-risco .fnum{background:rgba(248,113,113,0.14);color:var(--red);}
+  .fcard.sev-attention .fnum{background:rgba(251,191,36,0.14);color:var(--amber);}
+  .ftitle{font-family:var(--font-d);font-weight:700;font-size:15px;color:var(--white);line-height:1.3;}
+  .ftags{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 10px 34px;}
+  .tag{font-size:10.5px;font-weight:700;letter-spacing:.03em;border-radius:6px;padding:2px 7px;}
+  .tag.norm{background:rgba(44,190,255,0.12);color:var(--blue);}
+  .tag.conf{background:rgba(255,255,255,0.06);color:var(--text2);}
+  .tag.sev-risco{background:rgba(248,113,113,0.14);color:var(--red);}
+  .tag.sev-attention{background:rgba(251,191,36,0.14);color:var(--amber);}
+  .tag.sev-info{background:rgba(74,222,128,0.12);color:var(--green);}
+  .frow{margin:0 0 8px 34px;font-size:13.5px;}
+  .frow .k{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-weight:700;margin-bottom:2px;}
+  .frow .v{color:var(--text);line-height:1.5;}
+  .note{margin-top:18px;font-size:12.5px;color:var(--text3);border-top:1px solid var(--border);padding-top:14px;line-height:1.6;}
+  .status{margin-top:16px;font-size:14px;color:var(--text2);display:none;align-items:center;gap:10px;}
+  .status.show{display:flex;}
+  .spin{width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--blue);border-radius:50%;animation:sp 0.8s linear infinite;}
+  @keyframes sp{to{transform:rotate(360deg);}}
+  .err{color:var(--red);}
+  .raw{margin-top:20px;}
+  .raw summary{cursor:pointer;color:var(--text3);font-size:12px;}
+  .raw pre{background:#0a1a22;border:1px solid var(--border);border-radius:10px;padding:14px;overflow:auto;font-size:11.5px;color:var(--text2);max-height:280px;}
+  .hidden{display:none!important;}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <span class="logo">PILLIER<span>&nbsp;tech</span></span>
+      <span class="badge">Demo interna · Captura Anotada</span>
+    </header>
+    <h1>Captura Anotada por IA</h1>
+    <p class="sub">Envie uma foto de obra. A IA identifica elementos e patologias, <strong>marca cada um sobre a imagem</strong> e lista descrição, causa provável e ação recomendada ao lado — a foto fica limpa, a análise fica na lista.</p>
+
+    <div id="drop" class="drop">
+      <i class="ti ti-camera-plus"></i>
+      <p>Clique ou arraste uma foto aqui</p>
+      <small>JPG ou PNG · a imagem é reduzida a 1280px antes do envio</small>
+      <input id="file" type="file" accept="image/*" class="hidden">
+    </div>
+
+    <div class="controls hidden" id="controls">
+      <button class="btn btn-primary" id="analyze"><i class="ti ti-sparkles"></i> Analisar foto</button>
+      <button class="btn btn-ghost" id="reset"><i class="ti ti-refresh"></i> Outra foto</button>
+    </div>
+
+    <div class="status" id="status"></div>
+
+    <div class="results hidden" id="results">
+      <div class="stage" id="stage"><img id="preview" alt="Foto da obra"></div>
+      <div class="flist" id="flist"></div>
+    </div>
+
+    <details class="raw hidden" id="rawWrap">
+      <summary>Ver resposta bruta da IA (debug)</summary>
+      <pre id="raw"></pre>
+    </details>
+
+    <p class="note">
+      Protótipo para avaliar a precisão do posicionamento em fotos reais — não conectado ao app.
+      As caixas vêm da IA de visão (Gemini) e podem não ser exatas em cenas com muitos elementos;
+      a confiança exibida é a estimativa do modelo, não um valor de engenharia calibrado.
+      Medições e leituras de sensores não são inferidas de uma foto.
+    </p>
+  </div>
+
+<script>
+(function(){
+  var fileInput=document.getElementById('file');
+  var drop=document.getElementById('drop');
+  var controls=document.getElementById('controls');
+  var analyzeBtn=document.getElementById('analyze');
+  var resetBtn=document.getElementById('reset');
+  var statusEl=document.getElementById('status');
+  var results=document.getElementById('results');
+  var stage=document.getElementById('stage');
+  var preview=document.getElementById('preview');
+  var flist=document.getElementById('flist');
+  var rawWrap=document.getElementById('rawWrap');
+  var rawEl=document.getElementById('raw');
+  var currentDataUrl='';
+
+  function setStatus(html,isErr){
+    statusEl.className='status show'+(isErr?' err':'');
+    statusEl.innerHTML=html;
+  }
+  function clearStatus(){statusEl.className='status';statusEl.innerHTML='';}
+
+  // ---- File handling ----
+  drop.addEventListener('click',function(){fileInput.click();});
+  drop.addEventListener('dragover',function(e){e.preventDefault();drop.classList.add('over');});
+  drop.addEventListener('dragleave',function(){drop.classList.remove('over');});
+  drop.addEventListener('drop',function(e){
+    e.preventDefault();drop.classList.remove('over');
+    if(e.dataTransfer.files&&e.dataTransfer.files[0])loadFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener('change',function(){if(fileInput.files[0])loadFile(fileInput.files[0]);});
+
+  function loadFile(file){
+    if(!/^image\//.test(file.type)){setStatus('Selecione um arquivo de imagem.',true);return;}
+    clearStatus();
+    var reader=new FileReader();
+    reader.onload=function(){
+      downscale(reader.result,1280,0.82,function(dataUrl){
+        currentDataUrl=dataUrl;
+        preview.src=dataUrl;
+        drop.classList.add('hidden');
+        controls.classList.remove('hidden');
+        results.classList.add('hidden');
+        flist.innerHTML='';
+        rawWrap.classList.add('hidden');
+      });
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // Downscale to max dimension via canvas → JPEG data URL
+  function downscale(src,maxDim,quality,cb){
+    var img=new Image();
+    img.onload=function(){
+      var w=img.width,h=img.height;
+      if(w>maxDim||h>maxDim){
+        if(w>=h){h=Math.round(h*maxDim/w);w=maxDim;}
+        else{w=Math.round(w*maxDim/h);h=maxDim;}
+      }
+      var c=document.createElement('canvas');c.width=w;c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      try{cb(c.toDataURL('image/jpeg',quality));}catch(e){cb(src);}
+    };
+    img.onerror=function(){cb(src);};
+    img.src=src;
+  }
+
+  resetBtn.addEventListener('click',function(){
+    currentDataUrl='';fileInput.value='';
+    drop.classList.remove('hidden');
+    controls.classList.add('hidden');
+    results.classList.add('hidden');
+    rawWrap.classList.add('hidden');
+    clearStatus();
+  });
+
+  // ---- Analyze ----
+  var PROMPT=[
+    "Você é um assistente de inspeção de obras de construção civil (engenharia).",
+    "Analise a foto e identifique elementos relevantes: equipamentos, e principalmente",
+    "patologias e riscos (corrosão, trincas/fissuras, infiltração de água, oxidação,",
+    "falta de proteção/EPC, deslocamento de contenção, etc.).",
+    "Responda APENAS com JSON válido, sem texto fora do JSON, sem blocos de código.",
+    "Formato exato:",
+    '{"findings":[{',
+    '"label":"rótulo curto em PT (máx 4 palavras)",',
+    '"box":[ymin,xmin,ymax,xmax],',           // Gemini convention, normalized 0-1000
+    '"confidence":0.0,',
+    '"severity":"info|attention|risco",',
+    '"norm":"NBR/NR aplicável ou null",',
+    '"description":"uma frase em PT",',
+    '"cause":"causa provável em uma frase PT ou null",',
+    '"fix":"ação recomendada em uma frase PT ou null"',
+    '}]}',
+    "REGRAS: box em coordenadas NORMALIZADAS de 0 a 1000 na ordem [ymin,xmin,ymax,xmax].",
+    "Inclua apenas itens que você consegue LOCALIZAR na imagem. Entre 3 e 8 itens.",
+    "severity: 'risco' para perigo estrutural/segurança, 'attention' para atenção, 'info' para neutro."
+  ].join(" ");
+
+  analyzeBtn.addEventListener('click',function(){
+    if(!currentDataUrl)return;
+    analyzeBtn.disabled=true;
+    setStatus('<span class="spin"></span> Analisando a foto com a IA…');
+    var body={max_tokens:2048,messages:[{role:"user",content:[
+      {type:"image_url",image_url:{url:currentDataUrl}},
+      {type:"text",text:PROMPT}
+    ]}]};
+    fetch('/api/gemini',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+      .then(function(r){return r.json();})
+      .then(function(data){
+        analyzeBtn.disabled=false;
+        if(data.error){setStatus('Erro da IA: '+(data.error.message||'desconhecido'),true);return;}
+        var text=(data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'';
+        rawEl.textContent=text;rawWrap.classList.remove('hidden');
+        var parsed=parseJson(text);
+        if(!parsed||!parsed.findings||!parsed.findings.length){
+          setStatus('A IA não retornou marcações reconhecíveis. Veja a resposta bruta abaixo.',true);
+          return;
+        }
+        clearStatus();
+        render(parsed.findings);
+      })
+      .catch(function(e){
+        analyzeBtn.disabled=false;
+        setStatus('Falha de rede: '+(e.message||e),true);
+      });
+  });
+
+  function parseJson(text){
+    if(!text)return null;
+    var t=text.trim().replace(/^```(?:json)?/i,'').replace(/```$/,'').trim();
+    try{return JSON.parse(t);}catch(e){}
+    var m=t.match(/\{[\s\S]*\}/);   // grab first {...} block
+    if(m){try{return JSON.parse(m[0]);}catch(e){}}
+    return null;
+  }
+
+  function render(findings){
+    // clear old markers (keep the img)
+    Array.prototype.slice.call(stage.querySelectorAll('.marker')).forEach(function(m){m.remove();});
+    flist.innerHTML='';
+    results.classList.remove('hidden');
+
+    findings.forEach(function(f,i){
+      var n=i+1;
+      var sev=(f.severity==='risco'||f.severity==='attention')?f.severity:'info';
+      var box=normalizeBox(f.box);
+      // ---- marker on the photo (label + norm + confidence ONLY, no cause/fix) ----
+      if(box){
+        var mk=document.createElement('div');
+        mk.className='marker sev-'+sev;
+        mk.style.left=box.left+'%';mk.style.top=box.top+'%';
+        mk.style.width=box.w+'%';mk.style.height=box.h+'%';
+        mk.dataset.i=n;
+        var conf=(typeof f.confidence==='number')?' · '+Math.round(f.confidence*100)+'%':'';
+        mk.innerHTML='<span class="chip"><span class="num">'+n+'</span>'+esc(f.label||'Item')+(f.norm?' · '+esc(f.norm):'')+conf+'</span>';
+        mk.addEventListener('mouseenter',function(){highlight(n,true);});
+        mk.addEventListener('mouseleave',function(){highlight(n,false);});
+        mk.addEventListener('click',function(){scrollToCard(n);});
+        stage.appendChild(mk);
+      }
+      // ---- findings list (cause + fix live HERE) ----
+      var card=document.createElement('div');
+      card.className='fcard sev-'+sev;card.dataset.i=n;
+      var tags='';
+      if(f.norm)tags+='<span class="tag norm">'+esc(f.norm)+'</span>';
+      tags+='<span class="tag sev-'+sev+'">'+({risco:'Risco alto',attention:'Atenção',info:'Informativo'}[sev])+'</span>';
+      if(typeof f.confidence==='number')tags+='<span class="tag conf">'+Math.round(f.confidence*100)+'% conf.</span>';
+      var html='<div class="fhead"><span class="fnum">'+n+'</span><span class="ftitle">'+esc(f.label||'Item')+'</span></div>';
+      html+='<div class="ftags">'+tags+'</div>';
+      if(f.description)html+='<div class="frow"><div class="k">Descrição</div><div class="v">'+esc(f.description)+'</div></div>';
+      if(f.cause)html+='<div class="frow"><div class="k">Causa provável</div><div class="v">'+esc(f.cause)+'</div></div>';
+      if(f.fix)html+='<div class="frow"><div class="k">Ação recomendada</div><div class="v">'+esc(f.fix)+'</div></div>';
+      card.innerHTML=html;
+      card.addEventListener('mouseenter',function(){highlight(n,true);});
+      card.addEventListener('mouseleave',function(){highlight(n,false);});
+      flist.appendChild(card);
+    });
+  }
+
+  // Accept [ymin,xmin,ymax,xmax] 0-1000 (Gemini) → CSS %.
+  function normalizeBox(b){
+    if(!b||b.length!==4)return null;
+    var ymin=+b[0],xmin=+b[1],ymax=+b[2],xmax=+b[3];
+    if([ymin,xmin,ymax,xmax].some(isNaN))return null;
+    // If values look like 0-1 fractions, scale to 0-1000
+    var mx=Math.max(ymin,xmin,ymax,xmax);
+    if(mx<=1){ymin*=1000;xmin*=1000;ymax*=1000;xmax*=1000;}
+    var left=xmin/10,top=ymin/10,w=(xmax-xmin)/10,h=(ymax-ymin)/10;
+    if(w<=0||h<=0)return null;
+    // clamp
+    left=Math.max(0,Math.min(100,left));top=Math.max(0,Math.min(100,top));
+    w=Math.min(100-left,w);h=Math.min(100-top,h);
+    return {left:left,top:top,w:w,h:h};
+  }
+
+  function highlight(n,on){
+    var mk=stage.querySelector('.marker[data-i="'+n+'"]');
+    var cd=flist.querySelector('.fcard[data-i="'+n+'"]');
+    if(mk)mk.classList.toggle('active',on);
+    if(cd)cd.classList.toggle('active',on);
+  }
+  function scrollToCard(n){
+    var cd=flist.querySelector('.fcard[data-i="'+n+'"]');
+    if(cd)cd.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+})();
+</script>
+</body>
+</html>
