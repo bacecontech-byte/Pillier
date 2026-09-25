@@ -11,7 +11,7 @@
     { "source": "/financeiro", "destination": "/index.html" },
     { "source": "/financeiro/(.*)", "destination": "/index.html" },
     { "source": "/annotate-demo", "destination": "/annotate-demo.html" },
-    { "source": "/twin-demo", "destination": "/twin-demo.html" },
+    { "source": "/twin-demo", "destination": "/annotate-demo.html" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "headers": [

@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.5.0/dist/tabler-icons.min.css">
 <style>
   :root{
-    --navy:#10222b; --navy2:#16323b; --navy3:#1c3a44; --blue:#2cbeff;
+    --navy:#10222b; --navy2:#16323b; --navy3:#1c3a44; --blue:#2cbeff; --cyan:#00e5ff;
     --white:#f0f0f5; --text:#d0d0da; --text2:#8a8a95; --text3:#6a6a75;
     --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.14);
     --green:#4ade80; --amber:#fbbf24; --red:#f87171;
@@ -37,11 +37,27 @@
   .btn-primary:disabled{opacity:.5;cursor:not-allowed;}
   .btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border2);}
   .btn-ghost:hover{border-color:var(--blue);}
-  /* Results */
-  .results{display:grid;grid-template-columns:1.15fr 0.85fr;gap:24px;margin-top:24px;align-items:start;}
-  @media(max-width:840px){.results{grid-template-columns:1fr;}}
-  .stage{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--border2);background:#000;line-height:0;}
+  /* Results — twin split: OBRA FÍSICA (photo) | GÊMEO DIGITAL (blueprint + findings) */
+  .results{position:relative;display:grid;grid-template-columns:1.02fr 0.98fr;gap:0;margin-top:24px;align-items:start;
+    background:#07121a;border-radius:16px;overflow:hidden;border:1px solid rgba(0,229,255,0.2);box-shadow:0 30px 80px rgba(0,0,0,0.5);}
+  @media(max-width:860px){.results{grid-template-columns:1fr;}}
+  .stage{position:relative;overflow:hidden;background:#050f16;line-height:0;}
   .stage img{display:block;width:100%;height:auto;}
+  /* GÊMEO DIGITAL panel */
+  .twin-panel{position:relative;overflow:hidden;padding:18px 16px 16px;
+    background:radial-gradient(120% 90% at 85% 25%,rgba(0,229,255,0.12),transparent 60%),linear-gradient(120deg,#0a1a26,#0b2233 60%,#0a2740);}
+  .twin-panel .bp-grid{position:absolute;inset:0;opacity:.5;pointer-events:none;
+    background-image:linear-gradient(rgba(0,229,255,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.08) 1px,transparent 1px);background-size:30px 30px;}
+  .twin-panel .bp-art{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.85;}
+  .gd-tag{position:absolute;top:14px;right:14px;z-index:3;font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:700;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);background:rgba(6,16,26,0.7);border:1px solid rgba(0,229,255,0.5);
+    border-radius:6px;padding:5px 10px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);}
+  .gd-hint{position:relative;z-index:2;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--cyan);opacity:.8;margin:2px 0 14px;letter-spacing:.02em;}
+  /* voxel seam between panels */
+  .vseam{position:absolute;top:0;bottom:0;left:50%;width:2px;z-index:5;transform:translateX(-50%);
+    background:linear-gradient(180deg,transparent,var(--cyan),transparent);box-shadow:0 0 20px 3px rgba(0,229,255,0.5);pointer-events:none;}
+  .vseam .vx{position:absolute;border-radius:1px;background:var(--cyan);}
+  @media(max-width:860px){.vseam{display:none;}}
   /* ---- HUD marker: corner brackets + anchor dot + glass card ---- */
   .marker{position:absolute;--accent:var(--blue);cursor:pointer;transition:.12s;}
   .marker.sev-risco{--accent:var(--red);}
@@ -78,12 +94,16 @@
   .stage-tag{position:absolute;top:16px;left:16px;display:inline-flex;align-items:center;gap:6px;font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:700;letter-spacing:0.14em;color:var(--amber);background:rgba(9,22,29,0.72);border:1px solid rgba(251,191,36,0.5);border-radius:6px;padding:5px 10px;text-transform:uppercase;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);}
   .stage-tag i{font-size:13px;}
   .stage-tagline{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);max-width:90%;text-align:center;font-family:var(--font-b);font-weight:700;font-size:13px;line-height:1.3;color:#fff;background:rgba(9,22,29,0.82);border:1px solid rgba(44,190,255,0.5);border-radius:100px;padding:8px 18px;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);box-shadow:0 8px 24px rgba(0,0,0,0.4);}
-  /* Findings list */
-  .flist{display:flex;flex-direction:column;gap:12px;}
-  .fcard{background:var(--navy2);border:1px solid var(--border);border-radius:14px;padding:16px 16px 14px;transition:.12s;cursor:pointer;}
-  .fcard.active{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue);}
+  /* Findings list — glass HUD cards over the blueprint */
+  .flist{position:relative;z-index:2;display:flex;flex-direction:column;gap:11px;max-height:none;}
+  .fcard{background:rgba(8,20,28,0.72);border:1px solid rgba(0,229,255,0.22);border-left:2px solid var(--cyan);border-radius:11px;padding:14px 15px 13px;transition:.12s;cursor:pointer;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);box-shadow:0 10px 26px rgba(0,0,0,0.4);}
+  .fcard.sev-risco{border-left-color:var(--red);}
+  .fcard.sev-attention{border-left-color:var(--amber);}
+  .fcard.active{box-shadow:0 0 0 1px var(--cyan),0 10px 26px rgba(0,0,0,0.4);}
   .fhead{display:flex;align-items:flex-start;gap:10px;}
-  .fnum{flex-shrink:0;width:24px;height:24px;border-radius:7px;background:rgba(44,190,255,0.14);color:var(--blue);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;}
+  .fnum{flex-shrink:0;width:24px;height:24px;border-radius:7px;background:var(--cyan);color:#04222f;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;}
+  .fcard.sev-risco .fnum{background:var(--red);color:#2a0b0b;}
+  .fcard.sev-attention .fnum{background:var(--amber);color:#2a1e00;}
   .fcard.sev-risco .fnum{background:rgba(248,113,113,0.14);color:var(--red);}
   .fcard.sev-attention .fnum{background:rgba(251,191,36,0.14);color:var(--amber);}
   .ftitle{font-family:var(--font-d);font-weight:700;font-size:15px;color:var(--white);line-height:1.3;}
@@ -113,10 +133,10 @@
   <div class="wrap">
     <header>
       <span class="logo">PILLIER<span>&nbsp;tech</span></span>
-      <span class="badge">Demo interna · Captura Anotada</span>
+      <span class="badge">Demo interna · Gêmeo Digital</span>
     </header>
-    <h1>Captura Anotada por IA</h1>
-    <p class="sub">Envie uma foto de obra. A IA identifica elementos e patologias, <strong>marca cada um sobre a imagem</strong> e lista descrição, causa provável e ação recomendada ao lado — a foto fica limpa, a análise fica na lista.</p>
+    <h1>Da obra física ao gêmeo digital</h1>
+    <p class="sub">Envie uma foto de obra. A IA marca cada elemento sobre a imagem (<strong>Obra física</strong>) e organiza os achados no <strong>Gêmeo digital</strong> ao lado — descrição, causa provável e ação recomendada.</p>
 
     <div id="drop" class="drop">
       <i class="ti ti-camera-plus"></i>
@@ -135,7 +155,14 @@
 
     <div class="results hidden" id="results">
       <div class="stage" id="stage"><img id="preview" alt="Foto da obra"></div>
-      <div class="flist" id="flist"></div>
+      <div class="vseam" id="vseam"></div>
+      <div class="twin-panel">
+        <div class="bp-grid"></div>
+        <svg class="bp-art" id="bpart" viewBox="0 0 400 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+        <span class="gd-tag">Gêmeo digital</span>
+        <div class="gd-hint">// Pillier AI · achados indexados</div>
+        <div class="flist" id="flist"></div>
+      </div>
     </div>
 
     <details class="raw hidden" id="rawWrap">
@@ -389,6 +416,35 @@
     if(cd)cd.scrollIntoView({behavior:'smooth',block:'center'});
   }
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+
+  // ---- Twin chrome: blueprint line-art (retaining piles/walers/tie-backs) + voxel seam ----
+  (function buildTwinChrome(){
+    var bp=document.getElementById('bpart');
+    if(bp){
+      var NS="http://www.w3.org/2000/svg";
+      function ln(x1,y1,x2,y2,o,w){var l=document.createElementNS(NS,'line');l.setAttribute('x1',x1);l.setAttribute('y1',y1);l.setAttribute('x2',x2);l.setAttribute('y2',y2);l.setAttribute('stroke','#00e5ff');l.setAttribute('stroke-opacity',o);l.setAttribute('stroke-width',w||1);bp.appendChild(l);}
+      function dot(x,y,r,o){var c=document.createElementNS(NS,'circle');c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r',r);c.setAttribute('fill','#00e5ff');c.setAttribute('fill-opacity',o);bp.appendChild(c);}
+      var T=60,B=470,N=16;                              // wall top/bottom, pile count
+      function topY(t){return T+t*40;} function botY(t){return B-t*30;}
+      for(var i=0;i<=N;i++){var t=i/N;var x=30+t*350;ln(x,topY(t),x,botY(t),i%4===0?0.5:0.24,i%4===0?1.4:1);}
+      [0.25,0.55,0.82].forEach(function(f){ln(30,T+(B-T)*f,380,(B-30)-(B-T)*f*0.7,0.55,1.3);});
+      for(var k=0;k<4;k++){var xx=70+k*90;var tt=(xx-30)/350;var yy=(topY(tt)+botY(tt))/2;ln(xx,yy,xx+52,yy-40,0.45,1);dot(xx+52,yy-40,2.4,0.8);}
+      ln(20,B,380,B-40,0.3,1);
+    }
+    var vs=document.getElementById('vseam');
+    if(vs){
+      for(var v=0;v<46;v++){
+        var d=document.createElement('div');d.className='vx';
+        var s=2+Math.random()*Math.random()*9;
+        d.style.width=s+'px';d.style.height=s+'px';
+        d.style.top=(Math.random()*100)+'%';
+        d.style.left=((Math.random()<0.5?-1:1)*Math.pow(Math.random(),1.6)*22)+'px';
+        d.style.opacity=(0.3+Math.random()*0.6).toFixed(2);
+        if(Math.random()<0.5)d.style.boxShadow='0 0 8px rgba(0,229,255,0.8)';
+        vs.appendChild(d);
+      }
+    }
+  })();
 })();
 </script>
 </body>
