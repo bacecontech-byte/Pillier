@@ -5725,9 +5725,13 @@ window.addEventListener("load",async function(){
       document.getElementById('s-content').classList.add('active');
       showContentTab(0);
     }
-    // Deep-link to chat while logged out → send them to sign in first;
-    // the stored intent (pillier_go) opens the chat once enterApp runs.
-    try{if(localStorage.getItem('pillier_go')&&typeof showAuthPage==='function')showAuthPage();}catch(e){}
+    // Deep-link to the app while logged out → send them to sign in first, but ONLY
+    // when the CURRENT url carries the ?go intent. Otherwise clear any stale intent
+    // so it can't hijack unrelated links (e.g. /recursos/<slug>) on a later visit.
+    try{
+      if(_goParam&&typeof showAuthPage==='function'){showAuthPage();}
+      else{localStorage.removeItem('pillier_go');}
+    }catch(e){}
   }
 });
 
