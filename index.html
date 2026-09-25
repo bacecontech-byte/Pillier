@@ -2694,6 +2694,9 @@ var STRINGS=[
 // Capture the password-recovery marker BEFORE supabase-js parses & strips the URL hash.
 var _pwRecoveryPending=false;
 try{_pwRecoveryPending=/type=recovery/.test(location.hash||"")||/type=recovery/.test(location.search||"");}catch(e){}
+// Deep-link into the app: ?go=chat (or #chat) lands the user in Pillier IA chat
+// after login. Captured here (persisted) so it survives the magic-link redirect.
+try{var _goParam=(new URLSearchParams(location.search).get("go")||"").toLowerCase();if(!_goParam&&/(^#|[#/])chat$/.test(location.hash||""))_goParam="chat";if(_goParam)localStorage.setItem("pillier_go",_goParam);}catch(e){}
 try{db=supabase.createClient(SB_URL,SB_KEY);}catch(e){console.error(e);}
 // Register the auth listener IMMEDIATELY so PASSWORD_RECOVERY (fired during URL detection) is never missed.
 try{
@@ -5230,8 +5233,11 @@ function enterApp(user){
   }
   var mobAv=document.getElementById("mob-av-initials");if(mobAv)mobAv.textContent=(me.name||"??").split(" ").map(function(w){return w[0];}).join("").toUpperCase().slice(0,2);
   applyLang();
-  // Restore last tab
-  var savedTab=parseInt(localStorage.getItem("bace-tab"))||0;
+  // Deep-link intent (?go=chat) overrides the restored tab → open Pillier IA chat.
+  var _goApp="";try{_goApp=localStorage.getItem("pillier_go")||"";localStorage.removeItem("pillier_go");}catch(e){}
+  var _goTab=(_goApp==="chat")?4:null;
+  // Restore last tab (or the deep-link target)
+  var savedTab=(_goTab!==null)?_goTab:(parseInt(localStorage.getItem("bace-tab"))||0);
   showTab(savedTab,document.querySelectorAll(".sidebar-link")[savedTab]);
   // Update mobile tab active state
   var mtEl=document.getElementById("mt-"+savedTab);
@@ -5719,6 +5725,9 @@ window.addEventListener("load",async function(){
       document.getElementById('s-content').classList.add('active');
       showContentTab(0);
     }
+    // Deep-link to chat while logged out → send them to sign in first;
+    // the stored intent (pillier_go) opens the chat once enterApp runs.
+    try{if(localStorage.getItem('pillier_go')&&typeof showAuthPage==='function')showAuthPage();}catch(e){}
   }
 });
 
