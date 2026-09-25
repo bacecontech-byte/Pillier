@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Pillier — Gêmeo Digital (demo)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#07121a; --cyan:#00e5ff; --cyan-dim:rgba(0,229,255,0.55);
+    --card:rgba(8,20,28,0.74); --line:rgba(0,229,255,0.30);
+    --white:#eaf6fb; --amber:#fbbf24;
+    --font-d:"Syne",sans-serif; --font-b:"DM Sans",sans-serif; --font-m:"JetBrains Mono",monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--white);font-family:var(--font-b);-webkit-font-smoothing:antialiased;}
+  .page{max-width:1240px;margin:0 auto;padding:28px 18px 60px;}
+  .phead{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+  .logo{font-family:var(--font-d);font-weight:800;font-size:20px;letter-spacing:-0.5px;color:var(--cyan);}
+  .logo span{font-size:11px;letter-spacing:2px;color:#7c8a93;text-transform:uppercase;font-weight:700;}
+  .pill{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);border:1px solid rgba(251,191,36,0.4);background:rgba(251,191,36,0.1);border-radius:6px;padding:3px 8px;}
+
+  /* ===== Twin hero ===== */
+  .twin{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;
+        background:#06101a;border:1px solid rgba(0,229,255,0.18);box-shadow:0 30px 80px rgba(0,0,0,0.5);}
+  /* base = digital twin side (fills all; photo overlays the left) */
+  .side-twin{position:absolute;inset:0;z-index:1;
+    background:
+      radial-gradient(120% 90% at 82% 40%, rgba(0,229,255,0.12), transparent 60%),
+      linear-gradient(120deg,#0a1a26 0%,#0b2233 55%,#0a2740 100%);}
+  .grid{position:absolute;inset:0;opacity:.5;
+    background-image:linear-gradient(rgba(0,229,255,0.09) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.09) 1px,transparent 1px);
+    background-size:34px 34px;mask-image:linear-gradient(100deg,transparent 30%,#000 55%);-webkit-mask-image:linear-gradient(100deg,transparent 30%,#000 55%);}
+  .blueprint{position:absolute;inset:0;width:100%;height:100%;z-index:2;}
+  /* left photo, diagonally clipped */
+  .side-photo{position:absolute;inset:0;z-index:3;background-size:cover;background-position:center;
+    clip-path:polygon(0 0,58% 0,42% 100%,0 100%);-webkit-clip-path:polygon(0 0,58% 0,42% 100%,0 100%);}
+  .side-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,16,26,0.15),rgba(6,16,26,0.05) 60%,rgba(0,229,255,0.10));}
+  /* glowing diagonal seam */
+  .seam{position:absolute;top:-10%;left:50%;height:120%;width:3px;z-index:4;transform:rotate(9.2deg);transform-origin:center;
+    background:linear-gradient(var(--cyan),rgba(0,229,255,0.15));box-shadow:0 0 24px 4px rgba(0,229,255,0.55);}
+  .voxels{position:absolute;inset:0;z-index:4;pointer-events:none;}
+  .vox{position:absolute;border-radius:1px;}
+
+  /* zone tags */
+  .ztag{position:absolute;z-index:6;font-family:var(--font-m);font-size:11px;font-weight:700;letter-spacing:.16em;
+        text-transform:uppercase;padding:5px 10px;border-radius:6px;background:rgba(6,16,26,0.7);backdrop-filter:blur(4px);}
+  .ztag.left{top:16px;left:16px;color:var(--amber);border:1px solid rgba(251,191,36,0.5);}
+  .ztag.right{bottom:16px;right:16px;color:var(--cyan);border:1px solid rgba(0,229,255,0.5);}
+
+  /* CV bracket label (bounding box style) */
+  .cvbox{position:absolute;z-index:6;}
+  .cvbox .cc{position:absolute;width:16px;height:16px;border:0 solid var(--amber);}
+  .cvbox .cc.tl{top:0;left:0;border-top-width:2px;border-left-width:2px;}
+  .cvbox .cc.tr{top:0;right:0;border-top-width:2px;border-right-width:2px;}
+  .cvbox .cc.bl{bottom:0;left:0;border-bottom-width:2px;border-left-width:2px;}
+  .cvbox .cc.br{bottom:0;right:0;border-bottom-width:2px;border-right-width:2px;}
+  .cvbox .lbl{position:absolute;top:-11px;left:0;transform:translateY(-100%);white-space:nowrap;
+    font-family:var(--font-m);font-size:11px;font-weight:700;color:#08131a;background:var(--amber);
+    padding:3px 8px;border-radius:5px;letter-spacing:.02em;}
+  .cvbox.cyan .cc{border-color:var(--cyan);}
+  .cvbox.cyan .lbl{background:var(--cyan);color:#04222f;}
+
+  /* glass HUD cards */
+  .card{position:absolute;z-index:6;min-width:150px;max-width:270px;background:var(--card);
+    border:1px solid rgba(0,229,255,0.22);border-left:2px solid var(--cyan);border-radius:10px;
+    padding:11px 13px;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);box-shadow:0 12px 30px rgba(0,0,0,0.45);}
+  .card.amber{border-left-color:var(--amber);border-color:rgba(251,191,36,0.28);}
+  .card .ct{font-family:var(--font-d);font-weight:700;font-size:13.5px;color:#fff;line-height:1.25;}
+  .card .cm{font-family:var(--font-m);font-size:11px;line-height:1.55;margin-top:6px;color:var(--cyan);letter-spacing:-0.02em;}
+  .card .cm .ok{color:#4ade80;}
+  .card .cm .mut{color:#8fb4c4;}
+  .card.amber .cm{color:var(--amber);}
+  .card .anchor{position:absolute;width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 3px rgba(6,16,26,0.6),0 0 12px var(--cyan);}
+
+  .caption{margin-top:14px;color:#8fb4c4;font-size:13px;}
+  h1{font-family:var(--font-d);font-weight:800;font-size:clamp(22px,3.4vw,30px);color:#fff;margin:0 0 6px;letter-spacing:-0.02em;}
+  .note{margin-top:22px;font-size:12.5px;color:#5f7c8a;border-top:1px solid rgba(255,255,255,0.08);padding-top:14px;line-height:1.6;max-width:820px;}
+
+  /* Responsive: stack + straighten the seam on small screens */
+  @media(max-width:820px){
+    .twin{aspect-ratio:4/5;}
+    .side-photo{clip-path:polygon(0 0,100% 0,100% 46%,0 54%);-webkit-clip-path:polygon(0 0,100% 0,100% 46%,0 54%);}
+    .seam{top:44%;left:-10%;width:120%;height:3px;transform:rotate(-4deg);}
+    .grid{mask-image:linear-gradient(180deg,transparent 40%,#000 60%);-webkit-mask-image:linear-gradient(180deg,transparent 40%,#000 60%);}
+    .card{max-width:230px;font-size:12px;}
+    .ztag.left{top:12px;left:12px;} .ztag.right{bottom:12px;right:12px;}
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="phead">
+      <span class="logo">PILLIER<span>&nbsp;tech</span></span>
+      <span class="pill">Demo interna · Gêmeo Digital</span>
+    </div>
+    <h1>Da obra física ao gêmeo digital</h1>
+    <p class="caption">Visão computacional na foto real → dissolução em voxels → gêmeo digital com telemetria da contenção.</p>
+
+    <div class="twin" id="twin">
+      <!-- Digital twin base -->
+      <div class="side-twin">
+        <div class="grid"></div>
+        <svg class="blueprint" id="bp" viewBox="0 0 600 338" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+      </div>
+      <!-- Physical photo (left, diagonally clipped) -->
+      <div class="side-photo" id="photo"></div>
+
+      <!-- seam + voxel dissolve -->
+      <div class="seam"></div>
+      <div class="voxels" id="voxels"></div>
+
+      <!-- zone tags -->
+      <span class="ztag left"><i></i>Obra física</span>
+      <span class="ztag right">Gêmeo digital</span>
+
+      <!-- LEFT: CV on the photo -->
+      <div class="cvbox" style="left:6%;top:52%;width:20%;height:40%;">
+        <span class="cc tl"></span><span class="cc tr"></span><span class="cc bl"></span><span class="cc br"></span>
+        <span class="lbl">PERFURATRIZ · 0,97</span>
+      </div>
+      <div class="card amber" style="left:20%;top:60%;">
+        <div class="ct">Perfuratriz CM-04</div>
+        <div class="cm">Estaca P-118 · 14,2 m perfurados<br><span class="mut">Utilização hoje</span> 87%</div>
+      </div>
+
+      <!-- RIGHT: digital-twin HUD -->
+      <div class="cvbox cyan" style="right:6%;top:30%;width:24%;height:16%;">
+        <span class="cc tl"></span><span class="cc tr"></span><span class="cc bl"></span><span class="cc br"></span>
+        <span class="lbl">LONGARINA + TIRANTES · 0,94</span>
+      </div>
+      <div class="card" style="right:5%;top:8%;">
+        <div class="ct">Tirantes linha 2 · Vãos 1–42</div>
+        <div class="cm">42/42 protendidos <span class="ok">✓ trava OK</span><br>Ensaio 1,33× carga registrado</div>
+      </div>
+      <div class="card" style="right:8%;bottom:14%;">
+        <span class="anchor" style="left:-24px;top:20px;"></span>
+        <div class="ct">Cortina de estacas · Seção B</div>
+        <div class="cm">Deslocamento <span class="ok">3,1 mm</span> <span class="mut">/ lim. 25</span><br>Inclinômetro I-3 sincronizado</div>
+      </div>
+    </div>
+
+    <p class="note">
+      Protótipo de visual de marca (hero). O lado esquerdo usa uma foto real com visão computacional;
+      o lado direito é uma ilustração do gêmeo digital com dados de exemplo (telemetria/ensaios) para fins de demonstração —
+      não representa leituras ao vivo de um canteiro específico.
+    </p>
+  </div>
+
+<script>
+(function(){
+  var PHOTO="/assets/hero-obra.jpg";
+  document.getElementById('photo').style.backgroundImage="url('"+PHOTO+"')";
+
+  // ---- Blueprint vector line-art: retaining piles + waler beams + tie-backs ----
+  var bp=document.getElementById('bp');
+  var SVGNS="http://www.w3.org/2000/svg";
+  function ln(x1,y1,x2,y2,o,w){var l=document.createElementNS(SVGNS,'line');l.setAttribute('x1',x1);l.setAttribute('y1',y1);l.setAttribute('x2',x2);l.setAttribute('y2',y2);l.setAttribute('stroke','#00e5ff');l.setAttribute('stroke-opacity',o);l.setAttribute('stroke-width',w||1);bp.appendChild(l);}
+  function dot(x,y,r,o){var c=document.createElementNS(SVGNS,'circle');c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r',r);c.setAttribute('fill','#00e5ff');c.setAttribute('fill-opacity',o);bp.appendChild(c);}
+  var L=260,R=595;                                   // wall spans this x-range (right half)
+  function topY(x){return 150-(x-L)/(R-L)*95;}       // wall top recedes up to the right
+  function botY(x){return 330-(x-L)/(R-L)*70;}       // wall base recedes up to the right
+  // vertical piles (perspective: denser toward the right)
+  var N=22;
+  for(var i=0;i<=N;i++){
+    var t=Math.pow(i/N,1.35);
+    var x=L+(R-L)*t;
+    ln(x,topY(x),x,botY(x), i%4===0?0.55:0.28, i%4===0?1.4:1);
+  }
+  // waler beams (3 horizontal-ish lines following the slope)
+  [0.22,0.5,0.78].forEach(function(f){
+    var yA=topY(L)+(botY(L)-topY(L))*f, yB=topY(R)+(botY(R)-topY(R))*f;
+    ln(L,yA,R,yB,0.6,1.4);
+  });
+  // tie-backs (tirantes) going up-right into the soil, with anchor dots
+  for(var k=0;k<5;k++){
+    var xx=L+40+k*62; var yy=topY(xx)+(botY(xx)-topY(xx))*0.5;
+    var ax=xx+70, ay=yy-46;
+    ln(xx,yy,ax,ay,0.5,1); dot(ax,ay,2.4,0.8);
+  }
+  // ground line
+  ln(L-10,botY(L),R,botY(R),0.35,1);
+
+  // ---- Voxel / pixel dissolve along the diagonal seam ----
+  var vox=document.getElementById('voxels');
+  var COUNT=150;
+  for(var v=0;v<COUNT;v++){
+    var ty=Math.random();
+    var seamX=58-16*ty;                              // matches clip-path: 58%→42%
+    var side=Math.random();
+    var spread=(Math.pow(Math.random(),1.7))*16;     // most voxels hug the seam
+    var x=seamX+(side<0.5?-spread:spread);
+    var s=2+Math.random()*Math.random()*11;          // small squares, few large
+    var d=document.createElement('div');
+    d.className='vox';
+    d.style.left=x+'%'; d.style.top=(ty*100)+'%';
+    d.style.width=s+'px'; d.style.height=s+'px';
+    var cyanSide=x>seamX;
+    if(cyanSide){
+      d.style.background='rgba(0,229,255,'+(0.25+Math.random()*0.6).toFixed(2)+')';
+      if(Math.random()<0.5)d.style.boxShadow='0 0 8px rgba(0,229,255,0.8)';
+    }else{
+      d.style.background='rgba(10,26,38,'+(0.4+Math.random()*0.5).toFixed(2)+')';
+    }
+    d.style.opacity=(0.35+Math.random()*0.65).toFixed(2);
+    vox.appendChild(d);
+  }
+})();
+</script>
+</body>
+</html>
