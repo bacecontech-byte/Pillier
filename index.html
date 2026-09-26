@@ -1217,6 +1217,53 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
 .doc-field{margin-bottom:6px;}
 .doc-field-label{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:2px;}
 .doc-field-value{font-size:12px;color:var(--text2);line-height:1.5;}
+/* ===== Digital twin — AI-mapped capture (markers on the photo + findings panel) ===== */
+.tw-wrap,.tw-wrap *{box-sizing:border-box;}
+.tw-wrap{margin-bottom:14px;border-radius:14px;overflow:hidden;border:1px solid rgba(0,229,255,0.22);background:#07121a;box-shadow:0 14px 40px rgba(0,0,0,0.35);}
+.tw-stage{position:relative;line-height:0;background:#050f16;}
+.tw-stage img{display:block;width:100%;height:auto;max-height:none;}
+.tw-tag{position:absolute;top:10px;left:10px;z-index:7;font-family:ui-monospace,Menlo,monospace;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#fbbf24;background:rgba(6,16,26,.72);border:1px solid rgba(251,191,36,.5);border-radius:6px;padding:4px 8px;line-height:1.2;}
+.tw-busy{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);z-index:7;display:flex;align-items:center;gap:8px;font-size:12px;line-height:1.2;color:#00e5ff;background:rgba(6,16,26,.84);border:1px solid rgba(0,229,255,.45);border-radius:100px;padding:6px 12px;white-space:nowrap;}
+.tw-sp{width:12px;height:12px;border:2px solid rgba(0,229,255,.25);border-top-color:#00e5ff;border-radius:50%;animation:twsp .8s linear infinite;}
+@keyframes twsp{to{transform:rotate(360deg);}}
+.tw-mk{position:absolute;--ac:#00e5ff;cursor:pointer;}
+.tw-mk.tw-sev-risco{--ac:#f87171;}.tw-mk.tw-sev-attention{--ac:#fbbf24;}
+.tw-fr{position:absolute;inset:0;border-radius:3px;transition:background .12s;}
+.tw-c{position:absolute;width:12px;height:12px;border:0 solid var(--ac);filter:drop-shadow(0 0 3px var(--ac));}
+.tw-tl{top:-1px;left:-1px;border-top-width:2px;border-left-width:2px;}
+.tw-tr{top:-1px;right:-1px;border-top-width:2px;border-right-width:2px;}
+.tw-bl{bottom:-1px;left:-1px;border-bottom-width:2px;border-left-width:2px;}
+.tw-br{bottom:-1px;right:-1px;border-bottom-width:2px;border-right-width:2px;}
+.tw-dt{position:absolute;top:-4px;left:-4px;width:8px;height:8px;border-radius:50%;background:var(--ac);box-shadow:0 0 0 2px rgba(4,34,47,.6),0 0 10px var(--ac);}
+.tw-lb{position:absolute;z-index:5;left:-1px;display:flex;align-items:center;gap:6px;white-space:nowrap;max-width:260px;overflow:hidden;text-overflow:ellipsis;font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:700;line-height:1.25;color:#fff;background:rgba(9,22,29,.88);border:1px solid rgba(255,255,255,.13);border-left:2px solid var(--ac);border-radius:7px;padding:4px 8px;box-shadow:0 6px 18px rgba(0,0,0,.45);}
+.tw-up{bottom:100%;margin-bottom:6px;}.tw-dn{top:100%;margin-top:6px;}
+.tw-lb.tw-rt{left:auto;right:-1px;}
+.tw-tx{overflow:hidden;text-overflow:ellipsis;min-width:0;}
+.tw-lb.tw-min{padding:3px;gap:0;}.tw-lb.tw-min .tw-tx,.tw-lb.tw-min .tw-cf{display:none;}
+.tw-n{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:4px;background:var(--ac);color:#04222f;font-size:10px;flex-shrink:0;}
+.tw-cf{color:var(--ac);flex-shrink:0;}
+.tw-mk.tw-on{z-index:6;}.tw-mk.tw-on .tw-fr{background:rgba(255,255,255,.1);}
+.tw-seam{position:relative;height:2px;z-index:2;background:linear-gradient(90deg,transparent,#00e5ff,transparent);box-shadow:0 0 16px 2px rgba(0,229,255,.5);}
+.tw-seam i{position:absolute;display:block;background:#00e5ff;border-radius:1px;box-shadow:0 0 6px rgba(0,229,255,.7);}
+.tw-panel{position:relative;padding:14px 12px 12px;background:radial-gradient(120% 90% at 85% 20%,rgba(0,229,255,.12),transparent 60%),linear-gradient(120deg,#0a1a26,#0b2233 60%,#0a2740);}
+.tw-panel::before{content:"";position:absolute;inset:0;opacity:.5;pointer-events:none;background-image:linear-gradient(rgba(0,229,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.08) 1px,transparent 1px);background-size:26px 26px;}
+.tw-ph{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;}
+.tw-h{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:#00e5ff;opacity:.85;}
+.tw-t{font-family:ui-monospace,Menlo,monospace;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#00e5ff;border:1px solid rgba(0,229,255,.5);background:rgba(6,16,26,.7);border-radius:6px;padding:4px 8px;white-space:nowrap;}
+.tw-list{position:relative;display:flex;flex-direction:column;gap:8px;}
+.tw-card{background:rgba(8,20,28,.76);border:1px solid rgba(0,229,255,.2);border-left:2px solid #00e5ff;border-radius:10px;padding:10px 12px;cursor:pointer;transition:box-shadow .12s;}
+.tw-card.tw-sev-risco{border-left-color:#f87171;}.tw-card.tw-sev-attention{border-left-color:#fbbf24;}
+.tw-card.tw-on{box-shadow:0 0 0 1px #00e5ff;}
+.tw-hd{display:flex;align-items:center;gap:8px;}
+.tw-n2{flex-shrink:0;width:20px;height:20px;border-radius:6px;background:#00e5ff;color:#04222f;font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;}
+.tw-sev-risco .tw-n2{background:#f87171;color:#2a0b0b;}.tw-sev-attention .tw-n2{background:#fbbf24;color:#2a1e00;}
+.tw-tt{font-weight:700;font-size:13px;color:#fff;line-height:1.3;}
+.tw-tg{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 4px 28px;}
+.tw-tg span{font-size:10px;font-weight:700;border-radius:5px;padding:1px 6px;background:rgba(255,255,255,.07);color:#9fb3bd;}
+.tw-tg .tw-nm{background:rgba(0,229,255,.12);color:#00e5ff;}
+.tw-tg .tw-sr{background:rgba(248,113,113,.15);color:#f87171;}.tw-tg .tw-sa{background:rgba(251,191,36,.15);color:#fbbf24;}.tw-tg .tw-si{background:rgba(74,222,128,.13);color:#4ade80;}
+.tw-rw{margin:4px 0 0 28px;font-size:12.5px;line-height:1.5;color:#d0d8dd;}
+.tw-rw b{display:block;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:#6f8791;font-weight:700;margin-bottom:1px;}
 /* Document Viewer */
 .inc-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:600;display:none;align-items:center;justify-content:center;padding:20px;}
 .inc-modal-overlay.show{display:flex;}
@@ -2306,6 +2353,8 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
                 </div>
               </div>
               <div id="cap-offline-banner" style="display:none;align-items:center;gap:8px;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.35);border-radius:10px;padding:10px 14px;font-size:13px;color:#fbbf24;line-height:1.45;margin-bottom:14px;"></div>
+              <!-- Digital twin: AI-mapped photo (markers) + findings panel. Filled by twRender(). -->
+              <div id="cap-twin" style="display:none;"></div>
               <div class="ai-solution-box" id="ai-photo">
                 <div class="ai-solution-header">
                   <div class="ai-solution-tag">Pillier IA</div>
@@ -5662,14 +5711,22 @@ function openIncModal(id){
   document.getElementById("imd-lbl-edit").textContent=S.btnEdit||"Modifier";
   document.getElementById("imd-lbl-resolve").textContent=e.status==="resolved"?(S.btnReopen||"Réouvrir"):(S.btnResolve||"Résoudre");
   document.getElementById("imd-lbl-delete").textContent=S.btnDelete||"Supprimer";
-  // Photo
+  // Photo — digital twin (markers + findings) when this capture was mapped, else the plain photo
   var photoWrap=document.getElementById("imd-photo-wrap");
   var photoImg=document.getElementById("imd-photo");
-  if(e.photo_url||e.photo){
-    photoImg.src=e.photo_url||e.photo;
-    photoWrap.style.display="block";
-  } else {
+  var twHost=document.getElementById("imd-twin");
+  var twF=_twFromEntry(e);
+  if((e.photo_url||e.photo)&&twF&&twF.length){
     photoWrap.style.display="none";
+    twRender(twHost,e.photo_url||e.photo,twF);
+  } else {
+    if(twHost){twHost.innerHTML="";twHost.style.display="none";}
+    if(e.photo_url||e.photo){
+      photoImg.src=e.photo_url||e.photo;
+      photoWrap.style.display="block";
+    } else {
+      photoWrap.style.display="none";
+    }
   }
   // Show
   document.getElementById("inc-modal-overlay").classList.add("show");
@@ -5763,7 +5820,7 @@ async function loadDB(){
   if(local.length&&!entries.length){entries=local.slice();renderDash();renderKB();renderCounts();}
   if(!dbOk||!dbCoId){entries=local.slice();renderDash();renderKB();renderCounts();return;}
   var r=await db.from("captures").select("*").eq("company_id",dbCoId).order("created_at",{ascending:false}).limit(200);
-  var dbEntries=(r&&r.data)?r.data.map(function(d){var aiData={};try{aiData=JSON.parse(d.ai_analysis||"{}");}catch(e){aiData={solution:d.ai_analysis||""};}return{id:d.id,title:d.title,project:d.project||"",cat:canonCat(d.category||"Structure"),sev:d.severity||"medium",desc:d.description||"",action:d.action||"",cause:aiData.cause||"",normes:aiData.normes||"",date:new Date(d.created_at).toLocaleDateString("fr-FR"),status:d.status||"open",author:d.uploaded_by||"",photo_url:d.photo_url||null};}):[];
+  var dbEntries=(r&&r.data)?r.data.map(function(d){var aiData={};try{aiData=JSON.parse(d.ai_analysis||"{}");}catch(e){aiData={solution:d.ai_analysis||""};}return{id:d.id,title:d.title,project:d.project||"",cat:canonCat(d.category||"Structure"),sev:d.severity||"medium",desc:d.description||"",action:d.action||"",cause:aiData.cause||"",normes:aiData.normes||"",date:new Date(d.created_at).toLocaleDateString("fr-FR"),status:d.status||"open",author:d.uploaded_by||"",photo_url:d.photo_url||null,findings:Array.isArray(aiData.findings)?aiData.findings:null};}):[];
   if(r&&r.error){console.error("loadDB:",r.error);}
   // Merge: keep only genuinely UNSYNCED local records (numeric temp id) that the
   // DB doesn't have — then the DB records. A local record with a UUID that's
@@ -7287,7 +7344,7 @@ function startRealtime(){
       if(d.user_name===me.name)return;
       var aiRT={};try{aiRT=JSON.parse(d.ai_analysis||"{}");}catch(ex){aiRT={solution:d.ai_analysis||""};}
       if(entries.some(function(e){return String(e.id)===String(d.id);}))return; // dedupe
-      entries.unshift({id:d.id,title:d.title,project:d.project||"",cat:canonCat(d.category||"Structure"),sev:d.severity||"medium",desc:d.description||"",action:d.action||"",cause:aiRT.cause||"",normes:aiRT.normes||"",date:new Date(d.created_at).toLocaleDateString("fr-FR"),status:d.status||"open",author:d.user_name||"",photo_url:d.photo_url||null});
+      entries.unshift({id:d.id,title:d.title,project:d.project||"",cat:canonCat(d.category||"Structure"),sev:d.severity||"medium",desc:d.description||"",action:d.action||"",cause:aiRT.cause||"",normes:aiRT.normes||"",date:new Date(d.created_at).toLocaleDateString("fr-FR"),status:d.status||"open",author:d.user_name||"",photo_url:d.photo_url||null,findings:Array.isArray(aiRT.findings)?aiRT.findings:null});
       try{saveEntriesLocal();}catch(_){}
       renderDash();renderKB();renderCounts();
       addNotif("<strong>"+escapeHTML(d.user_name||"Equipe")+"</strong> "+(STRINGS[lang].notifCaptured||"capturou")+": "+escapeHTML(d.title||""));
@@ -7304,7 +7361,7 @@ function startRealtime(){
       var d=payload.new;
       var idx=entries.findIndex(function(e){return String(e.id)===String(d.id);});
       var aiUP={};try{aiUP=JSON.parse(d.ai_analysis||"{}");}catch(ex){aiUP={solution:d.ai_analysis||""};}
-      if(idx>=0){entries[idx]={id:d.id,title:d.title,project:d.project||"",cat:canonCat(d.category||"Structure"),sev:d.severity||"medium",desc:d.description||"",action:d.action||"",cause:aiUP.cause||"",normes:aiUP.normes||"",date:entries[idx].date,status:d.status||"open",author:d.user_name||"",photo_url:d.photo_url||null};}
+      if(idx>=0){entries[idx]={id:d.id,title:d.title,project:d.project||"",cat:canonCat(d.category||"Structure"),sev:d.severity||"medium",desc:d.description||"",action:d.action||"",cause:aiUP.cause||"",normes:aiUP.normes||"",date:entries[idx].date,status:d.status||"open",author:d.user_name||"",photo_url:d.photo_url||null,findings:Array.isArray(aiUP.findings)?aiUP.findings:(entries[idx].findings||null)};}
       try{saveEntriesLocal();}catch(_){}
       renderDash();renderKB();renderCounts();
     })
@@ -7850,6 +7907,158 @@ function capDrop(e){
   var files=e.dataTransfer&&e.dataTransfer.files;
   if(files&&files[0])handlePhoto({files:files});
 }
+// ===== Digital twin: AI-mapped capture (markers pinned on the photo + findings panel) =====
+// Runs as a SECOND, parallel Gemini call next to the main photo analysis. It is purely
+// additive: if it fails, the regular Pillier IA record works exactly as before.
+function _twL(){return {
+  site:plL("Chantier physique","Physical site","Obra física"),
+  twin:plL("Jumeau numérique","Digital twin","Gêmeo digital"),
+  hint:plL("// Pillier IA · éléments cartographiés","// Pillier AI · mapped elements","// Pillier IA · elementos mapeados"),
+  busy:plL("Pillier IA cartographie la photo…","Pillier AI is mapping the photo…","Pillier IA está mapeando a foto…"),
+  desc:plL("Description","Description","Descrição"),
+  cause:plL("Cause probable","Probable cause","Causa provável"),
+  fix:plL("Action recommandée","Recommended action","Ação recomendada"),
+  conf:"conf.",
+  sev:{risco:plL("Risque élevé","High risk","Risco alto"),attention:plL("Attention","Attention","Atenção"),info:plL("Informatif","Info","Informativo")}
+};}
+function _twPrompt(langFull){
+  return ["You are a construction-site inspection assistant (civil engineering).",
+  "Analyze the photo and identify relevant elements: equipment, structural elements and especially defects and risks",
+  "(corrosion, cracks, water infiltration, oxidation, missing collective protection or guardrails, retaining-wall displacement, exposed rebar, etc.).",
+  "Reply ONLY with valid JSON, no text outside the JSON, no code fences. Exact format:",
+  '{"findings":[{"label":"short label (max 4 words)","box":[ymin,xmin,ymax,xmax],"confidence":0.0,"severity":"info|attention|risco","norm":"applicable standard code or null","description":"one sentence","cause":"probable cause in one sentence or null","fix":"recommended action in one sentence or null"}]}',
+  "RULES: box uses NORMALIZED coordinates 0-1000 in the order [ymin,xmin,ymax,xmax].",
+  "Only include items you can actually LOCATE in the image. Between 3 and 8 items.",
+  "severity: 'risco' = structural/safety danger, 'attention' = needs attention, 'info' = neutral element.",
+  "Write label, description, cause and fix in "+langFull+". Keep severity values exactly info|attention|risco."].join(" ");
+}
+function _twBox(b){
+  if(!b||b.length!==4)return null;
+  var y0=+b[0],x0=+b[1],y1=+b[2],x1=+b[3];
+  if([y0,x0,y1,x1].some(isNaN))return null;
+  if(Math.max(y0,x0,y1,x1)<=1){y0*=1000;x0*=1000;y1*=1000;x1*=1000;}
+  var l=Math.max(0,Math.min(100,x0/10)),t=Math.max(0,Math.min(100,y0/10));
+  var w=Math.min(100-l,(x1-x0)/10),h=Math.min(100-t,(y1-y0)/10);
+  if(w<=0||h<=0)return null;
+  return {l:l,t:t,w:w,h:h};
+}
+function _twEsc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+async function twAnnotate(img,langFull){
+  try{
+    var res=await fetch("/api/gemini",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({max_tokens:2048,messages:[{role:"user",content:[{type:"image_url",image_url:{url:img}},{type:"text",text:_twPrompt(langFull)}]}]})});
+    var data=await res.json();
+    var txt=(data&&data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||"";
+    var t=String(txt).trim().replace(/^```(?:json)?/i,"").replace(/```$/,"").trim(),j=null;
+    try{j=JSON.parse(t);}catch(e){var m=t.match(/\{[\s\S]*\}/);if(m){try{j=JSON.parse(m[0]);}catch(_e){}}}
+    var f=(j&&Array.isArray(j.findings))?j.findings:[];
+    return f.filter(function(x){return x&&_twBox(x.box);}).slice(0,8).map(function(x){return {
+      label:String(x.label||"").slice(0,60),box:x.box.map(Number),
+      confidence:(typeof x.confidence==="number")?x.confidence:null,
+      severity:(x.severity==="risco"||x.severity==="attention")?x.severity:"info",
+      norm:x.norm?String(x.norm).slice(0,40):null,
+      description:x.description?String(x.description).slice(0,300):"",
+      cause:x.cause?String(x.cause).slice(0,300):"",
+      fix:x.fix?String(x.fix).slice(0,300):""};});
+  }catch(e){console.warn("[twin] annotate failed",e);return null;}
+}
+// Render the twin into `host`: photo + markers, voxel seam, findings panel.
+// findings===null → loading state (photo + "mapping…" pill).
+function twRender(host,photoSrc,findings){
+  if(!host)return;
+  var L=_twL();
+  var h='<div class="tw-wrap"><div class="tw-stage"><img src="'+_twEsc(photoSrc)+'" alt=""><span class="tw-tag">'+_twEsc(L.site)+'</span>';
+  if(findings===null)h+='<span class="tw-busy"><span class="tw-sp"></span>'+_twEsc(L.busy)+'</span>';
+  (findings||[]).forEach(function(f,i){
+    var b=_twBox(f.box);if(!b)return;
+    var n=i+1,sev=f.severity||"info";
+    var cf=(typeof f.confidence==="number")?f.confidence.toFixed(2).replace(".",","):"";
+    var pos=b.t<16?"tw-dn":"tw-up";   // initial guess; _twDeclutter() fixes collisions with real geometry
+    var rt=b.l>55?"1":"";              // right-side boxes anchor their label to the right edge
+    // On-photo label = number + label + confidence only (norm/cause/fix live in the findings panel)
+    h+='<div class="tw-mk tw-sev-'+sev+'" data-i="'+n+'" style="left:'+b.l+'%;top:'+b.t+'%;width:'+b.w+'%;height:'+b.h+'%">'+
+      '<i class="tw-fr"></i><i class="tw-c tw-tl"></i><i class="tw-c tw-tr"></i><i class="tw-c tw-bl"></i><i class="tw-c tw-br"></i><i class="tw-dt"></i>'+
+      '<span class="tw-lb '+pos+(rt?" tw-rt":"")+'" data-pos="'+pos+'" data-rt="'+rt+'"><span class="tw-n">'+n+'</span><span class="tw-tx">'+_twEsc(f.label||"")+'</span>'+
+      (cf?'<span class="tw-cf">· '+cf+'</span>':'')+'</span></div>';
+  });
+  h+='</div>';
+  if(findings&&findings.length){
+    h+='<div class="tw-seam">';
+    for(var v=0;v<26;v++){var s=(2+Math.random()*Math.random()*7).toFixed(1);
+      h+='<i style="left:'+(Math.random()*100).toFixed(1)+'%;top:'+((Math.random()<0.5?-1:1)*Math.pow(Math.random(),1.6)*12).toFixed(1)+'px;width:'+s+'px;height:'+s+'px;opacity:'+(0.3+Math.random()*0.6).toFixed(2)+'"></i>';}
+    h+='</div><div class="tw-panel"><div class="tw-ph"><span class="tw-h">'+_twEsc(L.hint)+'</span><span class="tw-t">'+_twEsc(L.twin)+'</span></div><div class="tw-list">';
+    findings.forEach(function(f,i){
+      var n=i+1,sev=f.severity||"info";
+      var tags=(f.norm?'<span class="tw-nm">'+_twEsc(f.norm)+'</span>':'')+
+        '<span class="'+(sev==="risco"?"tw-sr":sev==="attention"?"tw-sa":"tw-si")+'">'+_twEsc(L.sev[sev])+'</span>'+
+        ((typeof f.confidence==="number")?'<span>'+Math.round(f.confidence*100)+'% '+L.conf+'</span>':'');
+      h+='<div class="tw-card tw-sev-'+sev+'" data-i="'+n+'"><div class="tw-hd"><span class="tw-n2">'+n+'</span><span class="tw-tt">'+_twEsc(f.label||"")+'</span></div><div class="tw-tg">'+tags+'</div>'+
+        (f.description?'<div class="tw-rw"><b>'+_twEsc(L.desc)+'</b>'+_twEsc(f.description)+'</div>':'')+
+        (f.cause?'<div class="tw-rw"><b>'+_twEsc(L.cause)+'</b>'+_twEsc(f.cause)+'</div>':'')+
+        (f.fix?'<div class="tw-rw"><b>'+_twEsc(L.fix)+'</b>'+_twEsc(f.fix)+'</div>':'')+'</div>';
+    });
+    h+='</div></div>';
+  }
+  h+='</div>';
+  host.innerHTML=h;host.style.display="";
+  // Resolve label collisions once the photo has real dimensions; re-run on resize/rotation
+  // (also covers the incident modal, which is rendered while still hidden).
+  var st=host.querySelector(".tw-stage"),im=st&&st.querySelector("img");
+  var run=function(){try{_twDeclutter(host);}catch(_e){}};
+  if(im){if(im.complete&&im.naturalWidth)requestAnimationFrame(run);else im.addEventListener("load",function(){requestAnimationFrame(run);});}
+  if(st&&typeof ResizeObserver!=="undefined"){try{if(host._twRO)host._twRO.disconnect();host._twRO=new ResizeObserver(run);host._twRO.observe(st);}catch(_e){}}
+  // Link markers ↔ cards (hover on desktop, tap on mobile)
+  function hl(n,on){Array.prototype.forEach.call(host.querySelectorAll('[data-i="'+n+'"]'),function(el){el.classList.toggle("tw-on",on);});}
+  Array.prototype.forEach.call(host.querySelectorAll(".tw-mk,.tw-card"),function(el){
+    var n=el.getAttribute("data-i");
+    el.addEventListener("mouseenter",function(){hl(n,true);});
+    el.addEventListener("mouseleave",function(){hl(n,false);});
+    el.addEventListener("click",function(){
+      Array.prototype.forEach.call(host.querySelectorAll(".tw-on"),function(o){o.classList.remove("tw-on");});hl(n,true);
+      if(el.classList.contains("tw-mk")){var cd=host.querySelector('.tw-card[data-i="'+n+'"]');if(cd)cd.scrollIntoView({behavior:"smooth",block:"nearest"});}
+    });
+  });
+}
+// Measure rendered labels: keep inside the photo, flip above/below on collision, and if
+// both positions collide collapse the label to its number badge (details stay in the panel).
+function _twDeclutter(host){
+  var st=host.querySelector(".tw-stage");if(!st)return;
+  var sr=st.getBoundingClientRect();if(!sr.width||!sr.height)return; // hidden → ResizeObserver retries
+  var labels=Array.prototype.slice.call(st.querySelectorAll(".tw-lb"));
+  labels.forEach(function(lb){ // reset to the initial placement before re-measuring
+    lb.classList.remove("tw-min","tw-up","tw-dn","tw-rt");lb.style.maxWidth="";
+    lb.classList.add(lb.getAttribute("data-pos")||"tw-up");
+    if(lb.getAttribute("data-rt"))lb.classList.add("tw-rt");
+  });
+  var done=[];
+  function hit(r){for(var k=0;k<done.length;k++){var d=done[k];if(r.left<d.right+2&&r.right>d.left-2&&r.top<d.bottom+2&&r.bottom>d.top-2)return true;}return false;}
+  function out(r){return r.top<sr.top-1||r.bottom>sr.bottom+1;}
+  labels.forEach(function(lb){
+    var r=lb.getBoundingClientRect();
+    if(r.right>sr.right+1&&!lb.classList.contains("tw-rt")){lb.classList.add("tw-rt");r=lb.getBoundingClientRect();if(r.left<sr.left-1){lb.classList.remove("tw-rt");r=lb.getBoundingClientRect();}}
+    // Still too wide → shrink to the space left; the label text ellipsizes, confidence stays visible
+    if(r.right>sr.right+1){lb.style.maxWidth=Math.max(56,Math.floor(sr.right-r.left-4))+"px";r=lb.getBoundingClientRect();}
+    else if(r.left<sr.left-1){lb.style.maxWidth=Math.max(56,Math.floor(r.right-sr.left-4))+"px";r=lb.getBoundingClientRect();}
+    if(hit(r)||out(r)){
+      var cur=lb.classList.contains("tw-up")?"tw-up":"tw-dn",alt=cur==="tw-up"?"tw-dn":"tw-up";
+      lb.classList.remove(cur);lb.classList.add(alt);
+      var r2=lb.getBoundingClientRect();
+      if(hit(r2)||out(r2)){lb.classList.remove(alt);lb.classList.add(cur);lb.classList.add("tw-min");r=lb.getBoundingClientRect();}
+      else r=r2;
+    }
+    done.push(r);
+  });
+}
+function twClearCapture(){
+  window._lastFindings=null;window._twToken=(window._twToken||0)+1; // invalidates any in-flight mapping
+  var h=document.getElementById("cap-twin");if(h){h.innerHTML="";h.style.display="none";}
+}
+function _twFromEntry(e){
+  if(!e)return null;
+  if(Array.isArray(e.findings))return e.findings;
+  if(e.ai){try{var a=JSON.parse(e.ai);if(a&&Array.isArray(a.findings))return a.findings;}catch(_e){}}
+  return null;
+}
+
 async function handlePhoto(input){
   if(!input.files||!input.files[0])return;
   var proj=document.getElementById("c-proj").value||"the site";
@@ -7867,6 +8076,7 @@ async function handlePhoto(input){
     if(typeof navigator!=="undefined"&&navigator.onLine===false){
       window._lastAI=null;window._offlineCapture=true;
       var ap=document.getElementById("ai-photo");if(ap)ap.style.display="none";
+      twClearCapture();
       _showOfflineBanner(true);
       var t=document.getElementById("c-title");
       if(t&&!t.value)t.placeholder=plL("Photo capturée — ajoutez un titre (optionnel)","Photo captured — add a title (optional)","Foto capturada — adicione um título (opcional)");
@@ -7875,6 +8085,15 @@ async function handlePhoto(input){
     }
     window._offlineCapture=false;
     var aiImg=await _aiReadyImage(e.target.result); // shrink for the 4.5MB API limit (mobile photos)
+    // Digital twin: map the photo in parallel with the main analysis (never blocks it).
+    var _twTok=(window._twToken=(window._twToken||0)+1);window._lastFindings=null;
+    var _twHost=document.getElementById("cap-twin");
+    twRender(_twHost,aiImg,null);
+    twAnnotate(aiImg,langFull).then(function(f){
+      if(_twTok!==window._twToken)return; // a newer photo (or a reset) superseded this one
+      if(f&&f.length){window._lastFindings=f;twRender(_twHost,aiImg,f);}
+      else if(_twHost){_twHost.innerHTML="";_twHost.style.display="none";}
+    });
     var resp=await callAI([{img:aiImg},{text:prompt}]);
     if(resp){
       var p=parseAI(resp);
@@ -7895,6 +8114,7 @@ async function handlePhoto(input){
       // the next successful connection instead of failing at a dead end.
       window._lastAI=null;window._offlineCapture=true;
       var apf=document.getElementById("ai-photo");if(apf)apf.style.display="none";
+      twClearCapture();
       _showOfflineBanner(true);
     }
   };
@@ -8059,6 +8279,7 @@ function editAI(){
 
 function declineAI(){
   window._lastPhotoData=null;window._lastPhotoFile=null;
+  twClearCapture();
   ["ai-photo","ai-voice","voice-transcript"].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display="none";});
   document.getElementById("c-desc").value="";
   document.getElementById("c-action").value="";
@@ -8143,10 +8364,15 @@ async function saveEntry(){
   var p=window._lastAI||{};
   // Norm Agent: deterministic suggested references from the final category + jurisdiction
   p.normes=suggestedNormsCodes(canonCat(document.getElementById("c-cat").value),siteJurisdiction(document.getElementById("c-proj").value))||p.normes||"";
-  var ai=JSON.stringify({solution:p.solution||p.action||"",cause:p.cause||"",normes:p.normes||""});
+  // Digital-twin findings ride inside the same ai_analysis JSON blob → no DB schema change.
+  var _twF=(Array.isArray(window._lastFindings)&&window._lastFindings.length)?window._lastFindings:null;
+  var _aiObj={solution:p.solution||p.action||"",cause:p.cause||"",normes:p.normes||""};
+  if(_twF)_aiObj.findings=_twF;
+  var ai=JSON.stringify(_aiObj);
   var pendingSync=isOffline&&!!window._lastPhotoData; // photo saved offline → AI runs on reconnect
   var entry={id:Date.now(),title:title,project:document.getElementById("c-proj").value,cat:canonCat(document.getElementById("c-cat").value),sev:document.getElementById("c-sev").value||"medium",desc:document.getElementById("c-desc").value,action:document.getElementById("c-action").value,date:new Date().toLocaleDateString("fr-FR"),status:"open",ai:ai,cause:p.cause||"",normes:p.normes||"",photo:window._lastPhotoData||null,photo_url:null,ai_status:pendingSync?"pending_sync":"done"};
   if(_autoTitle)entry._autoTitle=true;
+  if(_twF)entry.findings=_twF;
   var _origPhoto=window._lastPhotoData||null; // full-res original (before we clear it)
   // Compress photo to thumbnail and store as base64 in photo_url
   if(window._lastPhotoData){
@@ -8163,6 +8389,7 @@ async function saveEntry(){
   entries.unshift(entry);
   saveEntriesLocal(); // persist immediately so it survives refresh regardless of DB
   window._lastPhotoData=null;window._lastPhotoFile=null;window._offlineCapture=false;
+  twClearCapture();
   _showOfflineBanner(false);
   ["ai-photo","ai-voice"].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display="none";});
   ["c-title","c-desc","c-action"].forEach(function(id){document.getElementById(id).value="";});
@@ -11820,6 +12047,7 @@ function cloudSiteName(proj){
     </div>
     <div class="inc-modal-meta" id="imd-meta"></div>
     <div class="inc-modal-body">
+      <div id="imd-twin" style="display:none;"></div>
       <div id="imd-photo-wrap" style="display:none;margin-bottom:12px;border-radius:8px;overflow:hidden;">
         <img id="imd-photo" style="width:100%;max-height:300px;object-fit:cover;border-radius:8px;" alt="">
       </div>
