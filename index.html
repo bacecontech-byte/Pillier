@@ -1011,6 +1011,22 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
 #rdo-doc .rdo-occ .oc-t{font-weight:700;font-size:13px;}
 #rdo-doc .rdo-occ .oc-m{font-size:11px;color:#5b6f77;margin:2px 0 4px;}
 #rdo-doc .rdo-occ .oc-d{font-size:12px;color:#2d3d45;}
+/* RDO: print-friendly digital twin — mapped photo (brackets + numbered badges) + element list */
+#rdo-doc .rdo-tw{position:relative;width:250px;flex-shrink:0;align-self:flex-start;line-height:0;border-radius:6px;overflow:hidden;border:1px solid #d8e3e5;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+#rdo-doc .rdo-occ .rdo-tw img{width:100%;height:auto;object-fit:contain;border-radius:0;display:block;}
+#rdo-doc .rdo-tw .tm{position:absolute;}
+#rdo-doc .rdo-tw .tc{position:absolute;width:9px;height:9px;border:0 solid var(--c);}
+#rdo-doc .rdo-tw .t1{top:0;left:0;border-top-width:2px;border-left-width:2px;}
+#rdo-doc .rdo-tw .t2{top:0;right:0;border-top-width:2px;border-right-width:2px;}
+#rdo-doc .rdo-tw .t3{bottom:0;left:0;border-bottom-width:2px;border-left-width:2px;}
+#rdo-doc .rdo-tw .t4{bottom:0;right:0;border-bottom-width:2px;border-right-width:2px;}
+#rdo-doc .rdo-tw .tn,#rdo-doc .rdo-twl .tn{display:inline-block;min-width:16px;height:16px;padding:0 4px;border-radius:4px;background:var(--c);color:#fff;font:700 10px/16px Arial,sans-serif;text-align:center;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+#rdo-doc .rdo-tw .tn{position:absolute;top:2px;left:2px;box-shadow:0 0 0 1.5px #fff;}
+#rdo-doc .rdo-twl{margin-top:7px;font-size:11.5px;line-height:1.45;color:#2d3d45;}
+#rdo-doc .rdo-twl .th{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#0c4651;margin-bottom:3px;}
+#rdo-doc .rdo-twl .ti2{display:flex;gap:6px;margin-bottom:3px;}
+#rdo-doc .rdo-twl .ti2 .tn{flex-shrink:0;margin-top:1px;}
+@media (max-width:640px){#rdo-doc .rdo-occ{flex-wrap:wrap;}#rdo-doc .rdo-tw{width:calc(100% - 18px);}}
 #rdo-doc .rdo-sev{width:8px;border-radius:4px;flex-shrink:0;}
 #rdo-doc .rdo-sign{margin-top:34px;display:flex;justify-content:space-between;gap:30px;}
 #rdo-doc .rdo-sign div{flex:1;border-top:1px solid #14202a;padding-top:6px;font-size:12px;text-align:center;color:#5b6f77;}
@@ -7665,14 +7681,31 @@ function _rdoBuildOcc(dayIso){
   });
   var occ=list.length?list.map(function(e){
     var sc=sevColor[e.sev]||"#178fbe";
-    var img=e.photo_url?"<img src=\""+escapeHTML(e.photo_url)+"\" alt=\"\">":"";
+    var img,twList="";
+    var tf=(typeof _twFromEntry==="function")?_twFromEntry(e):null;
+    if(e.photo_url&&tf&&tf.length){
+      // Digital twin in report form: mapped photo (brackets + numbered badges) + element list
+      var twc={risco:"#c8372f",attention:"#c96a12",info:"#178fbe"},TL=_twL();
+      img="<div class='rdo-tw'><img src=\""+escapeHTML(e.photo_url)+"\" alt=\"\">"+tf.map(function(f,i){
+        var b=_twBox(f.box);if(!b)return "";
+        return "<div class='tm' style='--c:"+(twc[f.severity]||twc.info)+";left:"+b.l+"%;top:"+b.t+"%;width:"+b.w+"%;height:"+b.h+"%'>"+
+          "<i class='tc t1'></i><i class='tc t2'></i><i class='tc t3'></i><i class='tc t4'></i><span class='tn'>"+(i+1)+"</span></div>";
+      }).join("")+"</div>";
+      twList="<div class='rdo-twl'><div class='th'>"+escapeHTML(TL.mapped)+" · "+tf.length+"</div>"+tf.map(function(f,i){
+        var meta=[TL.sev[f.severity]||f.severity||""];if(f.norm)meta.push(f.norm);if(typeof f.confidence==="number")meta.push(Math.round(f.confidence*100)+"%");
+        return "<div class='ti2'><span class='tn' style='--c:"+(twc[f.severity]||twc.info)+"'>"+(i+1)+"</span><div><b>"+escapeHTML(f.label||"")+"</b> — "+escapeHTML(meta.join(" · "))+
+          (f.fix?"<br><span style='color:#5b6f77'>"+escapeHTML(TL.fix)+": "+escapeHTML(f.fix)+"</span>":"")+"</div></div>";
+      }).join("")+"</div>";
+    }else{
+      img=e.photo_url?"<img src=\""+escapeHTML(e.photo_url)+"\" alt=\"\">":"";
+    }
     var sol=_fmtSolution(e.action||"");
     return "<div class='rdo-occ'><div class='rdo-sev' style='background:"+sc+"'></div>"+img+
       "<div style='min-width:0'><div class='oc-t'>"+escapeHTML(e.title||"")+"</div>"+
       "<div class='oc-m'>"+escapeHTML(catLabel(e.cat||""))+" · "+sevLabel(e.sev)+" · "+statusLabel(e.status)+(!site&&e.project?" · "+escapeHTML(e.project):"")+" · "+escapeHTML(e.date||"")+"</div>"+
       "<div class='oc-d'>"+escapeHTML(e.desc||"")+"</div>"+
       (sol?"<div style='white-space:pre-line;margin-top:5px;font-size:12px;color:#2d3d45'><b style='color:#0c4651'>"+L("Solution recommandée","Recommended solution","Solução recomendada")+" :</b>\n"+escapeHTML(sol)+"</div>":"")+
-      "</div></div>";
+      twList+"</div></div>";
   }).join(""):"<div class='rdo-empty'>"+L("Aucune occurrence ce jour.","No occurrences on this day.","Nenhuma ocorrência neste dia.")+"</div>";
   return {count:list.length,html:occ};
 }
