@@ -17,6 +17,10 @@
 //   RESEND_API_KEY        (NEW — https://resend.com, "Sending access" key)
 //   LEAD_NOTIFY_TO        (optional — inbox to alert; default dyken@pillier.com.br)
 //   LEAD_NOTIFY_FROM      (optional — verified sender; default noreply@pillier.com.br)
+//   ZOHO_WTL_URL          (optional — Zoho Web-to-Lead action URL, e.g. https://crm.zoho.eu/crm/WebToLeadForm)
+//   ZOHO_WTL_ID           (optional — Web-to-Lead hidden field xnQsjsdp)
+//   ZOHO_WTL_TOKEN        (optional — Web-to-Lead hidden field xmIwtLD)
+//   ZOHO_WTL_RETURN       (optional — redirect target after submit; default /recursos)
 // ═══════════════════════════════════════════════════════════════════
 
 import { applyRateLimit } from './_rate-limit.js';
@@ -111,8 +115,31 @@ async function handleLead(req, res) {
       } catch (e) { console.error('[lead] resend error', e.message); }
     }
 
-    console.log('[lead]', email, '| stored:', stored, '| emailed:', emailed, '|', report_title);
-    return res.status(200).json({ ok: true, stored, emailed, store_error: storeErr || undefined });
+    // 3) Push to Zoho CRM via Web-to-Lead (no OAuth needed). Non-blocking.
+    let zoho = false, zohoErr = '';
+    const ZWTL_URL = process.env.ZOHO_WTL_URL;      // e.g. https://crm.zoho.eu/crm/WebToLeadForm
+    const ZWTL_ID = process.env.ZOHO_WTL_ID;        // hidden field: xnQsjsdp
+    const ZWTL_TOKEN = process.env.ZOHO_WTL_TOKEN;  // hidden field: xmIwtLD
+    if (ZWTL_URL && ZWTL_ID && ZWTL_TOKEN) {
+      try {
+        const form = new URLSearchParams();
+        form.set('xnQsjsdp', ZWTL_ID);
+        form.set('xmIwtLD', ZWTL_TOKEN);
+        form.set('actionType', 'TGVhZHM=');          // base64("Leads")
+        form.set('returnURL', process.env.ZOHO_WTL_RETURN || 'https://pillier.com.br/recursos');
+        form.set('Last Name', name || 'Lead');       // required by Zoho Leads
+        form.set('Company', company || 'Não informado'); // required by Zoho Leads
+        form.set('Email', email);
+        form.set('Lead Source', 'Website - Ebook');
+        form.set('Description', 'Baixou "' + (report_title || report_id) + '" (' + lang + ') · origem: ' + source);
+        const zr = await fetch(ZWTL_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: form.toString(), redirect: 'manual' });
+        zoho = zr.status >= 200 && zr.status < 400; // WebToLead redirects (3xx) to returnURL on success
+        if (!zoho) { zohoErr = 'zoho ' + zr.status; console.error('[lead] zoho wtl failed', zr.status); }
+      } catch (e) { zohoErr = 'exception: ' + e.message; console.error('[lead] zoho error', e.message); }
+    }
+
+    console.log('[lead]', email, '| stored:', stored, '| emailed:', emailed, '| zoho:', zoho, '|', report_title);
+    return res.status(200).json({ ok: true, stored, emailed, zoho, store_error: storeErr || undefined, zoho_error: zohoErr || undefined });
   } catch (err) {
     console.error('[lead] error', err.message);
     return res.status(200).json({ ok: false, error: 'server_error' });
