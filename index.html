@@ -1264,6 +1264,21 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
 .tw-tg .tw-sr{background:rgba(248,113,113,.15);color:#f87171;}.tw-tg .tw-sa{background:rgba(251,191,36,.15);color:#fbbf24;}.tw-tg .tw-si{background:rgba(74,222,128,.13);color:#4ade80;}
 .tw-rw{margin:4px 0 0 28px;font-size:12.5px;line-height:1.5;color:#d0d8dd;}
 .tw-rw b{display:block;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:#6f8791;font-weight:700;margin-bottom:1px;}
+/* Merged capture: overall diagnosis card + section header + action bar inside the twin panel */
+.tw-diag{position:relative;background:rgba(8,20,28,.84);border:1px solid rgba(0,229,255,.32);border-left:3px solid #00e5ff;border-radius:10px;padding:12px 13px;}
+.tw-dg-r{border-left-color:#f87171;}.tw-dg-a{border-left-color:#fbbf24;}.tw-dg-g{border-left-color:#4ade80;}
+.tw-dh{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+.tw-dl{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#00e5ff;margin-right:2px;}
+.tw-dp{font-size:10px;font-weight:700;border-radius:5px;padding:1px 7px;background:rgba(0,229,255,.12);color:#00e5ff;}
+.tw-dp-r{background:rgba(248,113,113,.15);color:#f87171;}.tw-dp-a{background:rgba(251,191,36,.15);color:#fbbf24;}.tw-dp-g{background:rgba(74,222,128,.13);color:#4ade80;}
+.tw-dtx{font-size:13px;line-height:1.55;color:#e3eaee;margin:0 0 4px;}
+.tw-dk{font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:#6f8791;font-weight:700;margin:8px 0 2px;}
+.tw-dk-g{color:#34d399;}
+.tw-dv{font-size:12.5px;line-height:1.5;color:#c9d3d8;}
+.tw-pl{white-space:pre-line;}
+.tw-sub{position:relative;font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#6f8791;margin:6px 0 -2px;}
+.tw-act{position:relative;display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid rgba(0,229,255,.18);}
+.tw-done{font-size:12.5px;font-weight:600;color:#4ade80;}
 /* Document Viewer */
 .inc-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:600;display:none;align-items:center;justify-content:center;padding:20px;}
 .inc-modal-overlay.show{display:flex;}
@@ -5976,7 +5991,7 @@ async function syncPendingAnalyses(){
       done++;
       saveEntriesLocal();
       try{renderDash();renderKB();renderCounts();}catch(_){}
-      try{ragIndex("incident",e.id,e.project,e.title,[e.title,catLabel(e.cat),e.desc,e.action,e.cause,e.normes].filter(Boolean).join("\n"));}catch(_){}
+      try{ragIndex("incident",e.id,e.project,e.title,_incRagText(e));}catch(_){}
       try{if(dbOk)await saveDB(e);}catch(_){} // push the enriched record to the cloud
       try{dispatchIncident(e);}catch(_){} // now that AI enriched it, notify connected apps
     }catch(err){delete _aiSyncing[oid];break;}
@@ -7919,7 +7934,12 @@ function _twL(){return {
   cause:plL("Cause probable","Probable cause","Causa provável"),
   fix:plL("Action recommandée","Recommended action","Ação recomendada"),
   conf:"conf.",
-  sev:{risco:plL("Risque élevé","High risk","Risco alto"),attention:plL("Attention","Attention","Atenção"),info:plL("Informatif","Info","Informativo")}
+  sev:{risco:plL("Risque élevé","High risk","Risco alto"),attention:plL("Attention","Attention","Atenção"),info:plL("Informatif","Info","Informativo")},
+  diag:plL("Diagnostic général","Overall diagnosis","Diagnóstico geral"),
+  plan:plL("Plan d'action","Action plan","Plano de ação"),
+  mapped:plL("Éléments cartographiés","Mapped elements","Elementos mapeados"),
+  applied:plL("Appliqué au registre","Applied to the record","Aplicado ao registro"),
+  acc:plL("Accepter","Accept","Aceitar"),edit:plL("Modifier","Edit","Editar"),dec:plL("Refuser","Decline","Recusar")
 };}
 function _twPrompt(langFull){
   return ["You are a construction-site inspection assistant (civil engineering).",
@@ -7963,8 +7983,11 @@ async function twAnnotate(img,langFull){
 }
 // Render the twin into `host`: photo + markers, voxel seam, findings panel.
 // findings===null → loading state (photo + "mapping…" pill).
-function twRender(host,photoSrc,findings){
+// opts.diag    → prepend the overall "Diagnóstico geral" card (merged capture block)
+// opts.actions → append Accept / Edit / Decline (or the "applied" note when opts.applied)
+function twRender(host,photoSrc,findings,opts){
   if(!host)return;
+  opts=opts||{};
   var L=_twL();
   var h='<div class="tw-wrap"><div class="tw-stage"><img src="'+_twEsc(photoSrc)+'" alt=""><span class="tw-tag">'+_twEsc(L.site)+'</span>';
   if(findings===null)h+='<span class="tw-busy"><span class="tw-sp"></span>'+_twEsc(L.busy)+'</span>';
@@ -7986,6 +8009,18 @@ function twRender(host,photoSrc,findings){
     for(var v=0;v<26;v++){var s=(2+Math.random()*Math.random()*7).toFixed(1);
       h+='<i style="left:'+(Math.random()*100).toFixed(1)+'%;top:'+((Math.random()<0.5?-1:1)*Math.pow(Math.random(),1.6)*12).toFixed(1)+'px;width:'+s+'px;height:'+s+'px;opacity:'+(0.3+Math.random()*0.6).toFixed(2)+'"></i>';}
     h+='</div><div class="tw-panel"><div class="tw-ph"><span class="tw-h">'+_twEsc(L.hint)+'</span><span class="tw-t">'+_twEsc(L.twin)+'</span></div><div class="tw-list">';
+    if(opts.diag){
+      var d=opts.diag,sc=(d.sev==="critical"||d.sev==="high")?"r":d.sev==="medium"?"a":d.sev?"g":"";
+      var sevTxt=sc?((typeof sevLabel==="function")?sevLabel(d.sev):d.sev):"";
+      var nt=(d.normes&&!/^\s*na\s*$/i.test(d.normes))?d.normes.split(/[,;\n·]+/).map(function(s){return s.trim();}).filter(function(s){return s.length>2;}).slice(0,6):[];
+      h+='<div class="tw-diag tw-dg-'+(sc||"n")+'"><div class="tw-dh"><span class="tw-dl">◆ '+_twEsc(L.diag)+'</span>'+
+        (sc?'<span class="tw-dp tw-dp-'+sc+'">'+_twEsc(sevTxt)+'</span>':'')+
+        nt.map(function(n){return '<span class="tw-dp">'+_twEsc(n)+'</span>';}).join('')+'</div>'+
+        (d.desc?'<p class="tw-dtx">'+_twEsc(d.desc)+'</p>':'')+
+        (d.cause?'<div class="tw-dk">'+_twEsc(L.cause)+'</div><div class="tw-dv">'+_twEsc(d.cause)+'</div>':'')+
+        (d.plan?'<div class="tw-dk tw-dk-g">'+_twEsc(L.plan)+'</div><div class="tw-dv tw-pl">'+_twEsc(d.plan)+'</div>':'')+
+        '</div><div class="tw-sub">'+_twEsc(L.mapped)+' · '+findings.length+'</div>';
+    }
     findings.forEach(function(f,i){
       var n=i+1,sev=f.severity||"info";
       var tags=(f.norm?'<span class="tw-nm">'+_twEsc(f.norm)+'</span>':'')+
@@ -7996,7 +8031,14 @@ function twRender(host,photoSrc,findings){
         (f.cause?'<div class="tw-rw"><b>'+_twEsc(L.cause)+'</b>'+_twEsc(f.cause)+'</div>':'')+
         (f.fix?'<div class="tw-rw"><b>'+_twEsc(L.fix)+'</b>'+_twEsc(f.fix)+'</div>':'')+'</div>';
     });
-    h+='</div></div>';
+    h+='</div>';
+    if(opts.actions){
+      h+='<div class="tw-act">'+(opts.applied?'<span class="tw-done">✓ '+_twEsc(L.applied)+'</span>':
+        '<button type="button" class="btn-accept" onclick="acceptAI()"><i class="ti ti-check"></i> '+_twEsc(L.acc)+'</button>'+
+        '<button type="button" class="btn-edit-ai" onclick="editAI()"><i class="ti ti-pencil"></i> '+_twEsc(L.edit)+'</button>'+
+        '<button type="button" class="btn-decline" onclick="declineAI()"><i class="ti ti-x"></i> '+_twEsc(L.dec)+'</button>')+'</div>';
+    }
+    h+='</div>';
   }
   h+='</div>';
   host.innerHTML=h;host.style.display="";
@@ -8049,8 +8091,47 @@ function _twDeclutter(host){
   });
 }
 function twClearCapture(){
-  window._lastFindings=null;window._twToken=(window._twToken||0)+1; // invalidates any in-flight mapping
+  window._lastFindings=null;window._twImg=null;window._twApplied=false;
+  window._twToken=(window._twToken||0)+1; // invalidates any in-flight mapping
   var h=document.getElementById("cap-twin");if(h){h.innerHTML="";h.style.display="none";}
+}
+// Overall diagnosis for the merged block, from the main Pillier IA analysis (window._lastAI).
+function _twDiag(p){
+  var s=String((p&&p.sev)||"").toLowerCase();
+  var lv=/crit/.test(s)?"critical":/elev|high|alta|alto/.test(s)?"high":/moyen|medium|media|médio|medio/.test(s)?"medium":(s?"low":"");
+  return {desc:(p&&p.desc)||"",cause:(p&&p.cause)||"",plan:(p&&(p.solution||p.action))||"",normes:(p&&p.normes)||"",sev:lv};
+}
+// Merge the two parallel AI results in the capture panel (whichever arrives first):
+//  • mapping + analysis → ONE block (photo, Diagnóstico geral, mapped elements, actions); old box hidden
+//  • analysis only (mapping pending/failed) → today's Pillier IA box stays as the fallback
+function twCaptureRefresh(){
+  var host=document.getElementById("cap-twin"),box=document.getElementById("ai-photo");
+  var f=window._lastFindings,p=window._lastAI,src=window._twImg;
+  if(!host||!src||!(f&&f.length))return;
+  twRender(host,src,f,p?{diag:_twDiag(p),actions:true,applied:!!window._twApplied}:null);
+  if(p&&box)box.style.display="none";
+}
+// Accept / Edit collapse the merged block's buttons into an "applied" note (the photo stays).
+function _twActDone(){
+  window._twApplied=true;
+  var a=document.querySelector("#cap-twin .tw-act");
+  if(a)a.innerHTML='<span class="tw-done">✓ '+_twEsc(_twL().applied)+'</span>';
+}
+// Plain-text form of an incident for Pillier IA chat / semantic search (RAG): the overall
+// analysis, the AI action plan (even if not accepted into the form) and every mapped element.
+function _twFindingsText(f){
+  if(!Array.isArray(f)||!f.length)return "";
+  var L=_twL();
+  return L.mapped+":\n"+f.map(function(x,i){
+    return (i+1)+") "+(x.label||"")+" ["+(L.sev[x.severity]||x.severity||"")+(x.norm?", "+x.norm:"")+"]"+
+      (x.description?" — "+x.description:"")+(x.cause?" | "+L.cause+": "+x.cause:"")+(x.fix?" | "+L.fix+": "+x.fix:"");
+  }).join("\n");
+}
+function _incRagText(e){
+  if(!e)return "";
+  var plan="";
+  try{var a=e.ai?JSON.parse(e.ai):null;if(a&&a.solution&&a.solution!==e.action)plan=a.solution;}catch(_e){}
+  return [e.title,catLabel(e.cat),e.desc,e.action,plan,e.cause,e.normes,_twFindingsText(_twFromEntry(e))].filter(Boolean).join("\n");
 }
 function _twFromEntry(e){
   if(!e)return null;
@@ -8086,18 +8167,25 @@ async function handlePhoto(input){
     window._offlineCapture=false;
     var aiImg=await _aiReadyImage(e.target.result); // shrink for the 4.5MB API limit (mobile photos)
     // Digital twin: map the photo in parallel with the main analysis (never blocks it).
-    var _twTok=(window._twToken=(window._twToken||0)+1);window._lastFindings=null;
+    var _twTok=(window._twToken=(window._twToken||0)+1);
+    window._lastFindings=null;window._lastAI=null;window._twApplied=false;window._twImg=aiImg;
     var _twHost=document.getElementById("cap-twin");
     twRender(_twHost,aiImg,null);
     twAnnotate(aiImg,langFull).then(function(f){
       if(_twTok!==window._twToken)return; // a newer photo (or a reset) superseded this one
-      if(f&&f.length){window._lastFindings=f;twRender(_twHost,aiImg,f);}
-      else if(_twHost){_twHost.innerHTML="";_twHost.style.display="none";}
+      if(f&&f.length){window._lastFindings=f;twCaptureRefresh();}
+      else{
+        if(_twHost){_twHost.innerHTML="";_twHost.style.display="none";}
+        // Mapping failed → keep today's Pillier IA box as the fallback record
+        if(window._lastAI){var _apb=document.getElementById("ai-photo");if(_apb)_apb.style.display="block";}
+      }
     });
     var resp=await callAI([{img:aiImg},{text:prompt}]);
+    if(resp&&_twTok!==window._twToken)return; // photo was replaced/declined while analysing
     if(resp){
       var p=parseAI(resp);
       document.getElementById("ai-photo").style.display="block";
+      var _ldb=document.getElementById("lbl-desc-box");if(_ldb)_ldb.textContent=plL("Description","Description","Descrição");
       document.getElementById("ai-p-desc").textContent=p.desc||resp;
       document.getElementById("ai-p-cause").textContent=p.cause||"-";
       document.getElementById("ai-p-solution").textContent=p.solution||p.action||"-";
@@ -8106,7 +8194,11 @@ async function handlePhoto(input){
       var _npl=document.getElementById("lbl-normes");if(_npl)_npl.textContent=normsLabel();
       if(p.title)document.getElementById("c-title").value=cleanTitle(p.title);
       if(p.sev)document.getElementById("c-sev").value=p.sev;
+      // Pre-select the AI category: it decides which folder the capture is filed in
+      // (the user can still change the chip before saving).
+      if(p.cat){var _ce=document.getElementById("c-cat");if(_ce){_ce.value=canonCat(p.cat);try{syncCatChips();}catch(_e){}}}
       window._lastAI=p;
+      twCaptureRefresh(); // mapping already back → show the single merged block
       toast(STRINGS[lang].toastAIPhoto||"Analyse IA complète");
     }else{
       // AI unreachable even though we appeared online (flaky mobile network).
@@ -8264,6 +8356,7 @@ function acceptAI(){
   var p=window._lastAI||{};
   applyAIFields(p);
   ["ai-photo","ai-voice"].forEach(function(id){document.getElementById(id).style.display="none";});
+  try{_twActDone();}catch(_e){}
   toast(STRINGS[lang].toastAccept||"✅ Solution acceptée");
 }
 
@@ -8271,6 +8364,7 @@ function editAI(){
   var p=window._lastAI||{};
   applyAIFields(p);
   ["ai-photo","ai-voice"].forEach(function(id){document.getElementById(id).style.display="none";});
+  try{_twActDone();}catch(_e){}
   // Focus the action field for editing
   var actionEl=document.getElementById("c-action");
   if(actionEl){actionEl.focus();actionEl.setSelectionRange(actionEl.value.length,actionEl.value.length);}
@@ -8344,7 +8438,7 @@ async function saveEntry(){
       existingEntry.sev=document.getElementById("c-sev").value;
       if(dbOk&&dbCoId){db.from("captures").update({title:existingEntry.title,description:existingEntry.desc,action:existingEntry.action,project:existingEntry.project,category:existingEntry.cat,severity:existingEntry.sev}).eq("id",existingEntry.id);}
       saveEntriesLocal();
-      try{ragIndex("incident",existingEntry.id,existingEntry.project,existingEntry.title,[existingEntry.title,catLabel(existingEntry.cat),existingEntry.desc,existingEntry.action,existingEntry.cause,existingEntry.normes].filter(Boolean).join("\n"));}catch(e){}
+      try{ragIndex("incident",existingEntry.id,existingEntry.project,existingEntry.title,_incRagText(existingEntry));}catch(e){}
       window._editingId=null;
       ["c-title","c-desc","c-action"].forEach(function(id){document.getElementById(id).value="";});
       toast(STRINGS[lang].toastUpdated||"✅ Incident mis à jour");
@@ -8370,7 +8464,7 @@ async function saveEntry(){
   if(_twF)_aiObj.findings=_twF;
   var ai=JSON.stringify(_aiObj);
   var pendingSync=isOffline&&!!window._lastPhotoData; // photo saved offline → AI runs on reconnect
-  var entry={id:Date.now(),title:title,project:document.getElementById("c-proj").value,cat:canonCat(document.getElementById("c-cat").value),sev:document.getElementById("c-sev").value||"medium",desc:document.getElementById("c-desc").value,action:document.getElementById("c-action").value,date:new Date().toLocaleDateString("fr-FR"),status:"open",ai:ai,cause:p.cause||"",normes:p.normes||"",photo:window._lastPhotoData||null,photo_url:null,ai_status:pendingSync?"pending_sync":"done"};
+  var entry={id:Date.now(),title:title,project:document.getElementById("c-proj").value,cat:canonCat(document.getElementById("c-cat").value),sev:document.getElementById("c-sev").value||"medium",desc:document.getElementById("c-desc").value||p.desc||"",action:document.getElementById("c-action").value||p.solution||p.action||"",date:new Date().toLocaleDateString("fr-FR"),status:"open",ai:ai,cause:p.cause||"",normes:p.normes||"",photo:window._lastPhotoData||null,photo_url:null,ai_status:pendingSync?"pending_sync":"done"};
   if(_autoTitle)entry._autoTitle=true;
   if(_twF)entry.findings=_twF;
   var _origPhoto=window._lastPhotoData||null; // full-res original (before we clear it)
@@ -8394,7 +8488,7 @@ async function saveEntry(){
   ["ai-photo","ai-voice"].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display="none";});
   ["c-title","c-desc","c-action"].forEach(function(id){document.getElementById(id).value="";});
   renderDash();renderKB();renderCounts();
-  try{ragIndex("incident",entry.id,entry.project,entry.title,[entry.title,catLabel(entry.cat),entry.desc,entry.action,entry.cause,entry.normes].filter(Boolean).join("\n"));}catch(e){}
+  try{ragIndex("incident",entry.id,entry.project,entry.title,_incRagText(entry));}catch(e){}
   if(pendingSync){
     // Deferred: cloud sync + AI happen on reconnect (syncPendingAnalyses).
     toast("💾 "+plL("Enregistré localement. Sera analysé dès le retour de la connexion.","Saved locally. Will be analysed as soon as the connection returns.","Salvo localmente. Será analisado assim que a conexão retornar."));
@@ -8886,7 +8980,7 @@ function renderKB(){
   var kbSrch=document.getElementById("kb-search-input");if(kbSrch&&S.kbSearchPlaceholder)kbSrch.placeholder=S.kbSearchPlaceholder;
   // normCat is now global
   var filtered=kbCustomCat?entries.filter(function(e){return e.cat===kbCustomCat;}):(kbIdx<0?entries:entries.filter(function(e){return normCat(e.cat)===CATS_NORM[kbIdx];}));
-  if(kbSearchQuery){var q=kbSearchQuery;filtered=filtered.filter(function(e){return (e.title||"").toLowerCase().includes(q)||(e.desc||"").toLowerCase().includes(q)||(e.action||"").toLowerCase().includes(q)||(e.cat||"").toLowerCase().includes(q)||(e.project||"").toLowerCase().includes(q);});}
+  if(kbSearchQuery){var q=kbSearchQuery;filtered=filtered.filter(function(e){return (e.title||"").toLowerCase().includes(q)||(e.desc||"").toLowerCase().includes(q)||(e.action||"").toLowerCase().includes(q)||(e.cat||"").toLowerCase().includes(q)||(e.project||"").toLowerCase().includes(q)||(e.cause||"").toLowerCase().includes(q)||_twFindingsText(_twFromEntry(e)).toLowerCase().includes(q);});}
   // Sort
   var sevOrder={critical:0,high:1,medium:2,low:3};
   if(kbSort==="sev-desc")filtered=filtered.slice().sort(function(a,b){return (sevOrder[a.sev]||4)-(sevOrder[b.sev]||4);});
@@ -8904,7 +8998,7 @@ function renderKB(){
     var statusBg=e.status==="resolved"?"rgba(99,153,34,0.1)":"rgba(44,190,255,0.1)";
     var statusColor=e.status==="resolved"?"#4ade80":"#2cbeff";
     var eid=String(e.id);
-    return "<div onclick=\"openIncModal(\'"+eid+"\')\" style=\"background:var(--navy2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;cursor:pointer;\"><div style=\"display:flex;align-items:flex-start;gap:8px;\"><div style=\"width:6px;height:6px;border-radius:50%;background:"+sc+";margin-top:5px;flex-shrink:0;\"></div><div style=\"flex:1;\"><div style=\"font-size:13px;font-weight:500;color:var(--white);line-height:1.4;margin-bottom:4px;\">"+escapeHTML(cleanTitle(e.title))+"</div><div style=\"font-size:11px;color:var(--text3);margin-bottom:6px;\">"+catLabel(e.cat||"")+" \u00b7 "+(e.date||"")+"</div><div style=\"display:flex;gap:4px;\"><span style=\"font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(44,190,255,0.08);color:"+sc+";\">"+sl+"</span><span style=\"font-size:10px;padding:2px 8px;border-radius:10px;background:"+statusBg+";color:"+statusColor+";\">"+statusTxt+"</span></div></div></div></div>";
+    return "<div onclick=\"openIncModal(\'"+eid+"\')\" style=\"background:var(--navy2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;cursor:pointer;\"><div style=\"display:flex;align-items:flex-start;gap:8px;\"><div style=\"width:6px;height:6px;border-radius:50%;background:"+sc+";margin-top:5px;flex-shrink:0;\"></div><div style=\"flex:1;\"><div style=\"font-size:13px;font-weight:500;color:var(--white);line-height:1.4;margin-bottom:4px;\">"+escapeHTML(cleanTitle(e.title))+"</div><div style=\"font-size:11px;color:var(--text3);margin-bottom:6px;\">"+catLabel(e.cat||"")+" \u00b7 "+(e.date||"")+"</div><div style=\"display:flex;gap:4px;\"><span style=\"font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(44,190,255,0.08);color:"+sc+";\">"+sl+"</span><span style=\"font-size:10px;padding:2px 8px;border-radius:10px;background:"+statusBg+";color:"+statusColor+";\">"+statusTxt+"</span>"+(function(){var _f=_twFromEntry(e);return (_f&&_f.length)?"<span title=\""+_twEsc(_twL().mapped)+"\" style=\"font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(0,229,255,0.1);color:#00e5ff;\">\u25c6 "+_f.length+"</span>":"";})()+"</div></div></div></div>";
   }).join("");
 }
 
@@ -9670,7 +9764,11 @@ async function sendChat(){
   showTyping();
   // Scope the chat's incident knowledge to the current company AND selected site.
   var _chatEntries=(typeof activeSiteEntries==="function")?activeSiteEntries():entries;
-  var kb=_chatEntries.length?_chatEntries.map(function(e,i){return "["+i+"] "+e.title+" | "+e.project+" | "+e.cat+" | "+e.sev+" | "+e.desc+" | "+e.action+" | "+e.date+" | "+e.status;}).join("\n"):"Aucun incident.";
+  var kb=_chatEntries.length?_chatEntries.map(function(e,i){
+    // Compact list of the photo's mapped elements (digital twin) so the chat can reason about them
+    var _mf=_twFromEntry(e),_mt=(_mf&&_mf.length)?" | mapped: "+_mf.map(function(x){return (x.label||"")+" ("+(x.severity||"info")+(x.norm?", "+x.norm:"")+")";}).join("; "):"";
+    return "["+i+"] "+e.title+" | "+e.project+" | "+e.cat+" | "+e.sev+" | "+e.desc+" | "+e.action+" | "+e.date+" | "+e.status+_mt;
+  }).join("\n"):"Aucun incident.";
   var projList=projects.map(function(p){return p.name+(p.location?" ("+p.location+")":"");}).join(", ")||"Aucun projet";
   var allDocCtx=Object.keys(projectDocs).map(function(p){return getProjectDocContext(p);}).filter(Boolean).join("\n");
   var docCtxStr=allDocCtx?"\n\nINDEXED PROJECT DOCUMENTS (use for precise technical answers):\n"+allDocCtx:"";
@@ -10009,7 +10107,7 @@ async function backfillRAG(){
   var btn=document.getElementById("rag-backfill-btn"); if(btn)btn.disabled=true;
   var statusEl=document.getElementById("rag-backfill-status");
   var items=[];
-  entries.forEach(function(e){items.push({type:"incident",id:e.id,project:e.project,title:e.title,content:[e.title,catLabel(e.cat),e.desc,e.action,e.cause,e.normes].filter(Boolean).join("\n")});});
+  entries.forEach(function(e){items.push({type:"incident",id:e.id,project:e.project,title:e.title,content:_incRagText(e)});});
   try{
     var r=await db.from("project_documents").select("id,project,name,summary").eq("company_id",dbCoId).limit(1000);
     if(r.data)r.data.forEach(function(d){items.push({type:"document",id:d.id,project:d.project,title:d.name,content:d.summary});});
