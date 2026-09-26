@@ -65,14 +65,26 @@ async function handleLead(req, res) {
     let stored = false, storeErr = '';
     if (!SERVICE_KEY) { storeErr = 'no_service_key'; }
     else {
+      const insert = (row) => fetch(SUPABASE_URL + '/rest/v1/leads', {
+        method: 'POST',
+        headers: { apikey: SERVICE_KEY, Authorization: 'Bearer ' + SERVICE_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+        body: JSON.stringify(row),
+      });
       try {
-        const r = await fetch(SUPABASE_URL + '/rest/v1/leads', {
-          method: 'POST',
-          headers: { apikey: SERVICE_KEY, Authorization: 'Bearer ' + SERVICE_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
-          body: JSON.stringify({ name, email, company, report_id, report_title, lang, source, ip, user_agent: ua }),
-        });
+        const r = await insert({ name, email, company, report_id, report_title, lang, source, ip, user_agent: ua });
         stored = r.ok;
-        if (!r.ok) { storeErr = r.status + ': ' + (await r.text()).slice(0, 300); console.error('[lead] supabase insert failed', storeErr); }
+        if (!r.ok) {
+          const t = await r.text();
+          storeErr = r.status + ': ' + t.slice(0, 300);
+          // Schema drift (e.g. table missing the ip/user_agent columns) → retry with core columns only,
+          // so a lead is never dropped just because an optional column is absent.
+          if (/Could not find the '.*' column/.test(t)) {
+            const r2 = await insert({ name, email, company, report_id, report_title, lang, source });
+            stored = r2.ok;
+            storeErr = r2.ok ? '' : 'retry ' + r2.status + ': ' + (await r2.text()).slice(0, 200);
+          }
+          if (!stored) console.error('[lead] supabase insert failed', storeErr);
+        }
       } catch (e) { storeErr = 'exception: ' + e.message; console.error('[lead] supabase error', e.message); }
     }
 
