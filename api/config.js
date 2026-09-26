@@ -117,20 +117,23 @@ async function handleLead(req, res) {
 
     // 3) Push to Zoho CRM via Web-to-Lead (no OAuth needed). Non-blocking.
     let zoho = false, zohoErr = '';
-    const ZWTL_URL = process.env.ZOHO_WTL_URL;      // e.g. https://crm.zoho.eu/crm/WebToLeadForm
-    const ZWTL_ID = process.env.ZOHO_WTL_ID;        // hidden field: xnQsjsdp
-    const ZWTL_TOKEN = process.env.ZOHO_WTL_TOKEN;  // hidden field: xmIwtLD
+    // Web-to-Lead tokens are public by design (embedded in the public form HTML),
+    // so they default here; env vars override if you'd rather manage them in Vercel.
+    const ZWTL_URL = process.env.ZOHO_WTL_URL || 'https://crm.zoho.eu/crm/WebToLeadForm';
+    const ZWTL_ID = process.env.ZOHO_WTL_ID || '14e7e4f4726242ce3ec3c7b29a12d336404d5e754d9d79ddaf19cad2d8512d69';
+    const ZWTL_TOKEN = process.env.ZOHO_WTL_TOKEN || 'e936c6f18af5ef20320986a2ffa3b77f9cfae828a6d5bd52e5b8691dc711c7cf9d9eab3b343bdea9952f2eae4da37f4b';
     if (ZWTL_URL && ZWTL_ID && ZWTL_TOKEN) {
       try {
         const form = new URLSearchParams();
         form.set('xnQsjsdp', ZWTL_ID);
         form.set('xmIwtLD', ZWTL_TOKEN);
         form.set('actionType', 'TGVhZHM=');          // base64("Leads")
-        form.set('returnURL', process.env.ZOHO_WTL_RETURN || 'https://pillier.com.br/recursos');
+        form.set('returnURL', process.env.ZOHO_WTL_RETURN || 'https://www.pillier.com.br');
+        form.set('aG9uZXlwb3Q', '');                  // honeypot — must stay empty
         form.set('Last Name', name || 'Lead');       // required by Zoho Leads
         form.set('Company', company || 'Não informado'); // required by Zoho Leads
         form.set('Email', email);
-        form.set('Lead Source', 'Website - Ebook');
+        form.set('Lead Source', 'Site Web');         // must match a Zoho picklist option
         form.set('Description', 'Baixou "' + (report_title || report_id) + '" (' + lang + ') · origem: ' + source);
         const zr = await fetch(ZWTL_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: form.toString(), redirect: 'manual' });
         zoho = zr.status >= 200 && zr.status < 400; // WebToLead redirects (3xx) to returnURL on success
