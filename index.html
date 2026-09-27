@@ -1065,6 +1065,25 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
   #rdo-doc .rdo-cost-badge{cursor:default !important;}
 }
 #ai-p-solution,#ai-v-solution,#imd-action{white-space:pre-line;}
+/* Pillier IA agent: platform link chips + action confirmation cards */
+.pl-chip{display:inline-flex;align-items:center;gap:6px;max-width:100%;vertical-align:middle;margin:2px 1px;padding:3px 10px;border-radius:999px;border:1px solid rgba(44,190,255,.35);background:rgba(44,190,255,.08);color:#2cbeff;font-size:12.5px;font-weight:600;line-height:1.4;cursor:pointer;}
+.pl-chip:hover{background:rgba(44,190,255,.16);}
+.pl-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.pl-tt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:260px;color:var(--white);}
+.pl-st{font-size:10.5px;font-weight:700;opacity:.75;}
+.pl-cp{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:7px;border:1px solid var(--border2);background:none;color:var(--text2);cursor:pointer;font-size:11px;vertical-align:middle;margin:0 4px 0 0;padding:0;}
+.pl-cp:hover{border-color:#2cbeff;}
+.pl-acts{margin-top:10px;display:flex;flex-direction:column;gap:8px;}
+.pl-act{border:1px solid var(--border2);border-left:3px solid #2cbeff;border-radius:10px;background:var(--navy3);padding:10px 12px;}
+.pl-act.danger{border-left-color:#f87171;}.pl-act.info{border-left-color:var(--text3);}
+.pl-act-h{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:5px;}
+.pl-act-t{font-size:13px;color:var(--text);line-height:1.5;}
+.pl-diff{display:block;font-size:12.5px;color:var(--text2);margin-top:3px;}
+.pl-diff b{color:var(--text);font-weight:600;}
+.pl-act-b{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.pl-act-r{display:inline-block;font-size:12.5px;font-weight:600;margin-top:8px;color:var(--text2);}
+.pl-act-r.ok{color:#4ade80;}.pl-act-r.err{color:#f87171;}
+.pl-act-all{align-self:flex-start;}
 .chat-sidebar-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:0 4px;}
 .chat-newbtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--navy3);border:1px solid var(--border2);color:var(--text);font-size:13px;font-weight:600;padding:10px;border-radius:10px;cursor:pointer;font-family:inherit;margin-bottom:10px;}
 .chat-newbtn:hover{border-color:var(--blue);color:#fff;}
@@ -5309,6 +5328,17 @@ function enterApp(user){
   // Restore last tab (or the deep-link target)
   var savedTab=(_goTab!==null)?_goTab:(parseInt(localStorage.getItem("bace-tab"))||0);
   showTab(savedTab,document.querySelectorAll(".sidebar-link")[savedTab]);
+  // Shared incident link (?go=incident:ID, copied from Pillier IA chat) → open that incident
+  // once it's loaded (cloud data may arrive a moment after login).
+  if(_goApp.indexOf("incident:")===0){
+    var _goInc=_goApp.slice(9),_goTries=0;
+    (function _openGoInc(){
+      var hit=(entries||[]).some(function(x){return String(x.id).toLowerCase()===_goInc;});
+      if(hit){var real=(entries||[]).filter(function(x){return String(x.id).toLowerCase()===_goInc;})[0];try{openIncModal(real.id);}catch(_e){}return;}
+      if(++_goTries<14)setTimeout(_openGoInc,700);
+      else{try{toast(plL("Incident introuvable ou sans accès.","Incident not found or no access.","Incidente não encontrado ou sem acesso."));}catch(_e){}}
+    })();
+  }
   // Update mobile tab active state
   var mtEl=document.getElementById("mt-"+savedTab);
   if(mtEl){document.querySelectorAll(".mob-tab").forEach(function(t){t.classList.remove("active");});mtEl.classList.add("active");}
@@ -9650,7 +9680,8 @@ function renderMarkdown(src){
   // them into a placeholder that survives HTML-escaping, restored to <br> at the end.
   var esc=String(src).replace(/<br\s*\/?>/gi,"BR").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   var lines=esc.split(/\r?\n/),out=[],i=0;
-  var isSep=function(l){return /^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)+\|?\s*$/.test(l);};
+  // Models often write separators with Unicode dashes (‐ ‑ ‒ – — ―) or full-width bars — normalise first
+  var isSep=function(l){l=String(l).replace(/[\u2010-\u2015\u2212\uFE63\uFF0D]/g,"-").replace(/[\uFF5C\u2502]/g,"|");return /^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)+\|?\s*$/.test(l);};
   var splitRow=function(r){r=r.trim().replace(/^\|/,"").replace(/\|$/,"");return r.split("|").map(function(c){return c.trim();});};
   var special=function(l,n){return /^\s*```/.test(l)||/^\s*#{1,4}\s+/.test(l)||/^\s*[-*•]\s+/.test(l)||/^\s*\d+\.\s+/.test(l)||/^\s*(-{3,}|\*{3,})\s*$/.test(l)||(l.indexOf("|")>=0&&n!=null&&isSep(n));};
   while(i<lines.length){
@@ -9682,7 +9713,8 @@ function addMsg(role,text){
   var time=new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
   var div=document.createElement("div");
   div.className="msg "+role;
-  var rendered=role==="bot"?mdToHtml(text):text.replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  var rendered=role==="bot"?_plLinkify(mdToHtml(text)):text.replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  try{_plBindChat();}catch(_e){}
   div.innerHTML="<div class='msg-av'>"+(role==="user"?me.av:"&#x1F477;")+"</div><div><div class='msg-bubble'>"+rendered+"</div><div class='msg-time'>"+time+"</div></div>";
   wrap.appendChild(div);
   wrap.scrollTop=wrap.scrollHeight;
@@ -9774,6 +9806,208 @@ function _addChatFinanceActions(){
     "</div>";
   wrap.appendChild(div);wrap.scrollTop=wrap.scrollHeight;
 }
+/* ── Pillier IA agent layer: platform links + VERIFIED actions ───────────────────
+   The chat model cannot change data by itself. It PROPOSES changes with
+   <pillier-action>{…}</pillier-action> blocks; the app shows a confirmation card,
+   executes through Supabase, checks the returned row and reports the verified result.
+   Links: [[incident:ID]], [[open:section]], [[folder:NAME]] render as clickable chips. */
+var _plActs={};
+function _plFind(id){id=String(id==null?"":id);return (entries||[]).filter(function(x){return String(x.id)===id;})[0]||null;}
+function _plIsLocal(e){return /^\d+$/.test(String(e.id));} // unsynced capture (temporary numeric id)
+function _plSev(s){s=String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""); // accent-insensitive (crítica, média, élevé)
+return /crit/.test(s)?"critical":/high|alt|élev|elev|haut/.test(s)?"high":/med|moy|méd/.test(s)?"medium":/low|baix|faib|bas/.test(s)?"low":"";}
+function _plFolder(v){v=String(v||"").trim().toLowerCase();if(!v)return null;var fl=[];try{fl=pillierFolders();}catch(_e){}for(var i=0;i<fl.length;i++){if(String(fl[i].value).toLowerCase()===v||String(fl[i].name).toLowerCase()===v)return fl[i];}return null;}
+function _plProject(v){v=String(v||"").trim();if(!v)return "";var p=(projects||[]).filter(function(x){return String(x.name).toLowerCase()===v.toLowerCase();})[0];return p?p.name:null;}
+var _PL_NAV={dashboard:0,capture:1,folders:2,files:2,kb:3,knowledge:3,chat:4,community:5,projects:6,documents:7,docs:7,finance:9,costs:9};
+function _plNavLabel(k){
+  var m={dashboard:["Tableau de bord","Dashboard","Painel"],capture:["Capturer","Capture","Capturar"],folders:["Mes dossiers","My folders","Minhas pastas"],files:["Mes dossiers","My folders","Minhas pastas"],kb:["Base de connaissances","Knowledge base","Base de conhecimento"],knowledge:["Base de connaissances","Knowledge base","Base de conhecimento"],chat:["Pillier IA","Pillier AI","Pillier IA"],community:["Communauté","Community","Comunidade"],projects:["Mes projets","My projects","Meus projetos"],documents:["Documents","Documents","Documentos"],docs:["Documents","Documents","Documentos"],finance:["Coûts et dépenses","Costs & expenses","Custos e despesas"],costs:["Coûts et dépenses","Costs & expenses","Custos e despesas"],rdo:["Rapport journalier (RDO)","Daily report (RDO)","RDO — Relatório diário"]};
+  var t=m[k];return t?plL(t[0],t[1],t[2]):k;
+}
+function _plStatusTxt(st){return st==="resolved"?plL("Résolu","Resolved","Resolvido"):plL("Ouvert","Open","Aberto");}
+var _PL_SEVC={critical:"#f87171",high:"#fbbf24",medium:"#2cbeff",low:"#4ade80"};
+function _plIncChip(e){
+  var id=String(e.id);
+  return "<span class='pl-chip' data-plinc=\""+escapeHTML(id)+"\" title=\""+escapeHTML(plL("Ouvrir l'incident","Open incident","Abrir incidente"))+"\"><span class='pl-dot' style='background:"+(_PL_SEVC[e.sev]||"#2cbeff")+"'></span><span class='pl-tt'>"+escapeHTML(cleanTitle(e.title||""))+"</span><span class='pl-st'>"+escapeHTML(_plStatusTxt(e.status))+"</span></span>"+
+    "<button type='button' class='pl-cp' data-plcopy=\""+escapeHTML(id)+"\" title=\""+escapeHTML(plL("Copier le lien","Copy link","Copiar link"))+"\">🔗</button>";
+}
+// Turn link tokens (already HTML-escaped by renderMarkdown) into chips. Unknown ids render nothing.
+function _plLinkify(html){
+  return String(html)
+    .replace(/\[\[incident:([A-Za-z0-9_-]{1,64})\]\]/g,function(m,id){var e=_plFind(id);return e?_plIncChip(e):"";})
+    .replace(/\[\[open:([a-z]{2,12})\]\]/g,function(m,k){if(k!=="rdo"&&!(k in _PL_NAV))return "";return "<span class='pl-chip pl-nav' data-plnav=\""+k+"\">↗ "+escapeHTML(_plNavLabel(k))+"</span>";})
+    .replace(/\[\[folder:([^\]\n]{1,60})\]\]/g,function(m,v){var f=_plFolder(v.replace(/&amp;/g,"&"));return f?"<span class='pl-chip pl-nav' data-plfolder=\""+escapeHTML(f.value)+"\">📁 "+escapeHTML(f.name)+"</span>":"";});
+}
+// Pull <pillier-action>{…}</pillier-action> (or ```pillier-action fences) out of a reply.
+function _plExtractActions(reply){
+  var acts=[],txt=String(reply||"");
+  var grab=function(m,json){try{var a=JSON.parse(String(json).trim());if(a&&typeof a==="object")acts.push(a);}catch(_e){}return "";};
+  txt=txt.replace(/<pillier-action>([\s\S]*?)<\/pillier-action>/gi,grab).replace(/```pillier-action\s*([\s\S]*?)```/gi,grab);
+  return {text:txt.replace(/\n{3,}/g,"\n\n").trim(),actions:acts.map(_plValidate).filter(Boolean).slice(0,10)};
+}
+// Validate a proposed action against the live data (unknown ids / empty edits are dropped).
+function _plValidate(a){
+  var t=String((a&&a.type)||"").toLowerCase();
+  if(["resolve","reopen","update","delete","create"].indexOf(t)<0)return null;
+  var out={type:t},e=null;
+  if(t!=="create"){e=_plFind(a.id);if(!e)return null;out.id=String(e.id);}
+  if(t==="update"||t==="create"){
+    var f=a.fields||{},c={};
+    if(f.title!=null&&String(f.title).trim())c.title=String(f.title).trim().slice(0,160);
+    if(f.desc!=null)c.desc=String(f.desc).slice(0,4000);
+    if(f.action!=null)c.action=String(f.action).slice(0,4000);
+    if(f.sev!=null){var s=_plSev(f.sev);if(s)c.sev=s;}
+    if(f.cat!=null){var fo=_plFolder(f.cat);if(fo)c.cat=fo.value;else{try{c.cat=canonCat(f.cat);}catch(_e){}}}
+    if(f.project!=null){var pj=_plProject(f.project);if(pj!==null)c.project=pj;}
+    if(t==="create"&&!c.title)return null;
+    if(t==="update"&&!Object.keys(c).length)return null;
+    out.fields=c;
+  }
+  if((t==="resolve"&&e.status==="resolved")||(t==="reopen"&&e.status!=="resolved"))out.noop=true;
+  return out;
+}
+function _plFieldLabel(k){var m={title:["Titre","Title","Título"],desc:["Description","Description","Descrição"],action:["Action recommandée","Recommended action","Ação recomendada"],sev:["Gravité","Severity","Gravidade"],cat:["Dossier","Folder","Pasta"],project:["Projet","Project","Projeto"]};var t=m[k];return t?plL(t[0],t[1],t[2]):k;}
+function _plFieldVal(k,v){if(k==="sev")return (typeof sevLabel==="function")?sevLabel(v):v;if(k==="cat")return catLabel(v);v=String(v==null?"":v);return v.length>90?v.slice(0,90)+"…":(v||"—");}
+function _plActDesc(a){
+  var e=a.id?_plFind(a.id):null,chip=e?_plIncChip(e):"";
+  if(a.noop)return {h:"Info",t:chip+"<span class='pl-diff'>"+escapeHTML(a.type==="resolve"?plL("Déjà résolu — rien à faire.","Already resolved — nothing to do.","Já está resolvido — nada a fazer."):plL("Déjà ouvert — rien à faire.","Already open — nothing to do.","Já está aberto — nada a fazer."))+"</span>"};
+  if(a.type==="resolve")return {h:plL("Marquer comme résolu","Mark as resolved","Marcar como resolvido"),t:chip};
+  if(a.type==="reopen")return {h:plL("Rouvrir","Reopen","Reabrir"),t:chip};
+  if(a.type==="delete")return {h:plL("Supprimer définitivement","Delete permanently","Excluir definitivamente"),t:chip,danger:true};
+  var rows=Object.keys(a.fields||{}).map(function(k){var old=e?e[k]:null;return "<span class='pl-diff'><b>"+escapeHTML(_plFieldLabel(k))+":</b> "+(e?escapeHTML(_plFieldVal(k,old))+" → ":"")+escapeHTML(_plFieldVal(k,a.fields[k]))+"</span>";}).join("");
+  if(a.type==="update")return {h:plL("Modifier l'incident","Edit incident","Editar incidente"),t:chip+rows};
+  return {h:plL("Créer un incident","Create incident","Criar incidente"),t:rows};
+}
+function _plActSummary(a){var e=a.id?_plFind(a.id):null;return a.type+(e?" \""+(e.title||"")+"\" (id "+e.id+")":"")+(a.fields?" "+JSON.stringify(a.fields):"");}
+// Render confirmation cards under the latest bot message.
+function _plRenderActions(actions){
+  if(!actions||!actions.length)return;
+  var wrap=document.getElementById("chat-messages");if(!wrap)return;
+  var bubbles=wrap.querySelectorAll(".msg.bot .msg-bubble"),host=bubbles[bubbles.length-1];if(!host)return;
+  var box=document.createElement("div");box.className="pl-acts";
+  var safe=0;
+  actions.forEach(function(a){
+    var key="pa"+Date.now().toString(36)+Math.random().toString(36).slice(2,8),d=_plActDesc(a);
+    var card=document.createElement("div");card.className="pl-act"+(d.danger?" danger":"")+(a.noop?" info":"");card.setAttribute("data-plkey",key);
+    var btns="";
+    if(!a.noop){
+      _plActs[key]=a;if(a.type!=="delete")safe++;
+      btns="<div class='pl-act-b'><button type='button' class='"+(d.danger?"btn-decline":"btn-accept")+"' data-placc='"+key+"'>"+escapeHTML(d.danger?plL("Supprimer","Delete","Excluir"):plL("Confirmer","Confirm","Confirmar"))+"</button><button type='button' class='btn-edit-ai' data-plcancel='"+key+"'>"+escapeHTML(plL("Annuler","Cancel","Cancelar"))+"</button></div>";
+    }
+    card.innerHTML="<div class='pl-act-h'>"+escapeHTML(d.h)+"</div><div class='pl-act-t'>"+d.t+"</div>"+btns;
+    box.appendChild(card);
+  });
+  if(safe>1){var all=document.createElement("button");all.type="button";all.className="btn-accept pl-act-all";all.setAttribute("data-plall","1");all.textContent=plL("Tout confirmer","Confirm all","Confirmar todas")+" ("+safe+")";box.appendChild(all);}
+  host.appendChild(box);
+  wrap.scrollTop=wrap.scrollHeight;
+}
+// Execute one action and VERIFY it against the database row returned by Supabase.
+async function _plExec(a){
+  var L=function(fr,en,pt){return plL(fr,en,pt);};
+  var fail=function(m){return {ok:false,msg:m};};
+  var noDb=L("Base de données indisponible — rien n'a été modifié. Réessayez.","Database unavailable — nothing was changed. Please retry.","Banco de dados indisponível — nada foi alterado. Tente novamente.");
+  var notFound=L("Introuvable dans la base (ou pas d'autorisation) — rien n'a été modifié.","Not found in the database (or no permission) — nothing was changed.","Não encontrado no banco (ou sem permissão) — nada foi alterado.");
+  var refresh=function(){saveEntriesLocal();try{renderDash();}catch(_e){}try{renderKB();}catch(_e){}try{renderCounts();}catch(_e){}};
+  if(a.type==="create"){
+    var f=a.fields||{};
+    var ne={id:Date.now(),title:f.title,project:(f.project!=null?f.project:(getActiveSite()||"")),cat:f.cat||"Structure",sev:f.sev||"medium",desc:f.desc||"",action:f.action||"",date:new Date().toLocaleDateString("fr-FR"),status:"open",ai:"",cause:"",normes:"",photo:null,photo_url:null,ai_status:"done"};
+    entries.unshift(ne);saveEntriesLocal();
+    if(dbOk&&dbCoId){try{await saveDB(ne);}catch(_e){}}
+    var synced=!_plIsLocal(ne);refresh();
+    try{ragIndex("incident",ne.id,ne.project,ne.title,_incRagText(ne));}catch(_e){}
+    return {ok:true,verified:synced,local:!synced,id:ne.id,msg:L("Incident créé","Incident created","Incidente criado")};
+  }
+  var e=_plFind(a.id);if(!e)return fail(L("Incident introuvable.","Incident not found.","Incidente não encontrado."));
+  var local=_plIsLocal(e);
+  if(!local&&!(dbOk&&dbCoId))return fail(noDb);
+  if(a.type==="delete"){
+    if(!local){var rd=await db.from("captures").delete().eq("id",e.id).select("id");if(rd.error)return fail(rd.error.message);if(!rd.data||!rd.data.length)return fail(notFound);}
+    entries=entries.filter(function(x){return String(x.id)!==String(e.id);});refresh();
+    return {ok:true,verified:!local,local:false,msg:L("Incident supprimé","Incident deleted","Incidente excluído")};
+  }
+  var patch={},lp={};
+  if(a.type==="resolve"||a.type==="reopen"){patch.status=lp.status=(a.type==="resolve"?"resolved":"open");}
+  else{
+    var col={title:"title",desc:"description",action:"action",sev:"severity",cat:"category",project:"project"};
+    Object.keys(a.fields||{}).forEach(function(k){if(col[k]){patch[col[k]]=a.fields[k];lp[k]=a.fields[k];}});
+  }
+  if(!local){
+    var ru=await db.from("captures").update(patch).eq("id",e.id).select("id,status,title,severity,category,description,action,project");
+    if(ru.error)return fail(ru.error.message);
+    if(!ru.data||!ru.data.length)return fail(notFound);
+    var row=ru.data[0]; // apply the database truth, not our intent
+    if(row.status!=null)e.status=row.status;if(row.title!=null)e.title=row.title;if(row.severity!=null)e.sev=row.severity;
+    if(row.category!=null)e.cat=canonCat(row.category);if(row.description!=null)e.desc=row.description;if(row.action!=null)e.action=row.action;if(row.project!=null)e.project=row.project;
+  }else{Object.keys(lp).forEach(function(k){e[k]=lp[k];});}
+  refresh();
+  try{ragIndex("incident",e.id,e.project,e.title,_incRagText(e));}catch(_e){}
+  var done={resolve:L("Marqué comme résolu","Marked as resolved","Marcado como resolvido"),reopen:L("Rouvert","Reopened","Reaberto"),update:L("Incident mis à jour","Incident updated","Incidente atualizado")}[a.type];
+  // Final check: the live record must now match what was requested
+  if(a.type==="resolve"&&e.status!=="resolved")return fail(L("Le statut n'a pas changé.","Status did not change.","O status não mudou."));
+  if(a.type==="reopen"&&e.status==="resolved")return fail(L("Le statut n'a pas changé.","Status did not change.","O status não mudou."));
+  return {ok:true,verified:!local,local:local,msg:done};
+}
+// Remove the "Confirm all" button once no confirmable (non-delete) action is left in the group.
+function _plTidy(box){
+  if(!box)return;
+  var left=Array.prototype.some.call(box.querySelectorAll("[data-placc]"),function(bt){var aa=_plActs[bt.getAttribute("data-placc")];return aa&&aa.type!=="delete";});
+  if(!left){var all=box.querySelector("[data-plall]");if(all)all.remove();}
+}
+async function _plRun(key){
+  var a=_plActs[key];if(!a)return;delete _plActs[key];
+  var wrap=document.getElementById("chat-messages");
+  var card=wrap&&wrap.querySelector(".pl-act[data-plkey='"+key+"']");
+  var b=card&&card.querySelector(".pl-act-b");
+  if(b)b.innerHTML="<span class='pl-act-r'>"+escapeHTML(plL("Exécution…","Running…","Executando…"))+"</span>";
+  try{_plTidy(card&&card.closest(".pl-acts"));}catch(_e){}
+  var summary=_plActSummary(a),r;
+  try{r=await _plExec(a);}catch(err){r={ok:false,msg:String((err&&err.message)||err)};}
+  var line=r.ok?("✅ "+r.msg+(r.verified?" · "+plL("vérifié dans la base de données","verified in the database","verificado no banco de dados"):(r.local?" · "+plL("enregistré localement, sera synchronisé","saved locally, will sync","salvo localmente, será sincronizado"):""))):("❌ "+plL("Échec : ","Failed: ","Falhou: ")+r.msg);
+  if(b)b.innerHTML="<span class='pl-act-r "+(r.ok?"ok":"err")+"'>"+escapeHTML(line)+"</span>";
+  // Refresh the incident chip inside the card (status/title may have changed)
+  var ne=(a.id?_plFind(a.id):(r.id?_plFind(r.id):null)),tt=card&&card.querySelector(".pl-act-t");
+  if(ne&&tt&&a.type!=="delete"){var old=tt.querySelector(".pl-chip");if(old){var tmp=document.createElement("span");tmp.innerHTML=_plIncChip(ne);var cp=old.nextElementSibling;if(cp&&cp.classList.contains("pl-cp"))cp.remove();old.replaceWith(tmp);}else if(a.type==="create"){tt.insertAdjacentHTML("afterbegin",_plIncChip(ne));}}
+  // Record the VERIFIED outcome so the assistant never relies on its own claims
+  chatHistory.push({role:"assistant",pl:1,display:line,content:"[Ação verificada] "+summary+" → "+(r.ok?("OK"+(r.verified?" (confirmado no banco de dados)":r.local?" (salvo localmente)":"")):("FALHOU: "+r.msg))});
+  try{saveChat();}catch(_e){}
+}
+// One delegated listener for chips, copy-link and action buttons in the chat.
+function _plBindChat(){
+  var wrap=document.getElementById("chat-messages");if(!wrap||wrap._plBound)return;wrap._plBound=true;
+  wrap.addEventListener("click",function(ev){
+    var t=ev.target&&ev.target.closest?ev.target.closest("[data-plinc],[data-plcopy],[data-plnav],[data-plfolder],[data-placc],[data-plcancel],[data-plall]"):null;
+    if(!t)return;
+    if(t.hasAttribute("data-plinc")){try{openIncModal(t.getAttribute("data-plinc"));}catch(_e){}return;}
+    if(t.hasAttribute("data-plcopy")){
+      var url=location.origin+"/?go=incident:"+encodeURIComponent(t.getAttribute("data-plcopy"));
+      var ok=function(){toast("🔗 "+plL("Lien copié","Link copied","Link copiado"));};
+      try{navigator.clipboard.writeText(url).then(ok,function(){window.prompt("URL",url);});}catch(_e){window.prompt("URL",url);}
+      return;
+    }
+    if(t.hasAttribute("data-plnav")){var k=t.getAttribute("data-plnav");if(k==="rdo"){try{openRDO();}catch(_e){}return;}var i=_PL_NAV[k];if(i!=null)showTab(i,document.querySelectorAll(".sidebar-link")[i]||null);return;}
+    if(t.hasAttribute("data-plfolder")){try{openFolderVal(t.getAttribute("data-plfolder"));}catch(_e){}return;}
+    if(t.hasAttribute("data-placc")){_plRun(t.getAttribute("data-placc"));return;}
+    if(t.hasAttribute("data-plcancel")){var k2=t.getAttribute("data-plcancel");delete _plActs[k2];var c=wrap.querySelector(".pl-act[data-plkey='"+k2+"'] .pl-act-b");if(c)c.innerHTML="<span class='pl-act-r'>"+escapeHTML(plL("Annulé","Cancelled","Cancelado"))+"</span>";try{_plTidy(t.closest(".pl-acts"));}catch(_e){}return;}
+    if(t.hasAttribute("data-plall")){var box=t.closest(".pl-acts");t.remove();if(box)Array.prototype.forEach.call(box.querySelectorAll("[data-placc]"),function(bt){var k3=bt.getAttribute("data-placc"),aa=_plActs[k3];if(aa&&aa.type!=="delete")_plRun(k3);});}
+  });
+}
+// Capabilities + rules appended to the chat system prompt (English; replies follow the user's language).
+function _plAgentRules(){
+  var folders="";try{folders=pillierFolders().map(function(f){return f.name+" (value: "+f.value+")";}).join(", ");}catch(_e){}
+  return "\n\nPLATFORM ACCESS — you are connected to the live Pillier platform:\n"+
+  "LINKS: whenever you mention a specific incident write [[incident:ID]] (renders as a clickable card the user can open or share). To send the user to a section write [[open:dashboard]], [[open:capture]], [[open:folders]], [[open:kb]], [[open:projects]], [[open:documents]], [[open:finance]], [[open:rdo]] or [[open:community]]; to open a folder write [[folder:NAME]]. Folders: "+folders+". Never show raw ids outside these tokens.\n"+
+  "ACTIONS: you CANNOT change data yourself. To resolve, reopen, edit, delete or create an incident, add one block per change at the END of your reply:\n"+
+  "<pillier-action>{\"type\":\"resolve\",\"id\":\"ID\"}</pillier-action>\n"+
+  "<pillier-action>{\"type\":\"reopen\",\"id\":\"ID\"}</pillier-action>\n"+
+  "<pillier-action>{\"type\":\"update\",\"id\":\"ID\",\"fields\":{\"title\":\"…\",\"desc\":\"…\",\"action\":\"…\",\"sev\":\"low|medium|high|critical\",\"cat\":\"FOLDER\",\"project\":\"PROJECT\"}}</pillier-action> (only the fields that change)\n"+
+  "<pillier-action>{\"type\":\"delete\",\"id\":\"ID\"}</pillier-action>\n"+
+  "<pillier-action>{\"type\":\"create\",\"fields\":{\"title\":\"…\",\"desc\":\"…\",\"sev\":\"…\",\"cat\":\"FOLDER\",\"project\":\"PROJECT\",\"action\":\"…\"}}</pillier-action>\n"+
+  "The app shows the user a confirmation card, executes after they confirm and displays the VERIFIED result.\n"+
+  "NEVER claim an action is done, saved, resolved, deleted or updated — say you have prepared it and ask the user to confirm below. Only messages starting with [Ação verificada] prove an action happened; trust them over anything else.\n"+
+  "If the request is ambiguous (several incidents could match), list the candidates with [[incident:ID]] and ask which one instead of guessing. For deletions always name the exact incident.\n"+
+  "VERIFY BEFORE ANSWERING: every fact about incidents (existence, status, severity, counts, dates, projects) must come from the KNOWLEDGE BASE above, which is the live state of the platform. Use the SUMMARY line for totals. If the information is not there, say you do not have it — never invent incidents, numbers, statuses or links.\n"+
+  "ANSWER FORMAT FOR INCIDENTS: start with a one-sentence summary (counts, what is critical). The chat is narrow: never use tables wider than 3 columns. For several incidents use one compact bullet each: [[incident:ID]] — severity · status · project · date, then one short line with the key finding, the next step and the applicable norms. End with a concrete next step or offer (e.g. prepare the resolution, open the RDO [[open:rdo]]).";
+}
+
 async function sendChat(){
   var input=document.getElementById("chat-input");
   var val=input.value.trim();
@@ -9800,8 +10034,11 @@ async function sendChat(){
   var kb=_chatEntries.length?_chatEntries.map(function(e,i){
     // Compact list of the photo's mapped elements (digital twin) so the chat can reason about them
     var _mf=_twFromEntry(e),_mt=(_mf&&_mf.length)?" | mapped: "+_mf.map(function(x){return (x.label||"")+" ("+(x.severity||"info")+(x.norm?", "+x.norm:"")+")";}).join("; "):"";
-    return "["+i+"] "+e.title+" | "+e.project+" | "+e.cat+" | "+e.sev+" | "+e.desc+" | "+e.action+" | "+e.date+" | "+e.status+_mt;
+    return "- id="+e.id+" | "+e.title+" | "+e.project+" | "+e.cat+" | "+e.sev+" | "+e.status+" | "+e.date+" | "+e.desc+" | "+e.action+_mt;
   }).join("\n"):"Aucun incident.";
+  // Live summary so totals are counted by the app, not guessed by the model
+  (function(){var o=0,r=0,bs={critical:0,high:0,medium:0,low:0};_chatEntries.forEach(function(e){if(e.status==="resolved")r++;else{o++;if(bs[e.sev]!=null)bs[e.sev]++;}});
+    kb="SUMMARY: "+_chatEntries.length+" incidents — "+o+" open ("+bs.critical+" critical, "+bs.high+" high, "+bs.medium+" medium, "+bs.low+" low), "+r+" resolved.\n"+kb;})();
   var projList=projects.map(function(p){return p.name+(p.location?" ("+p.location+")":"");}).join(", ")||"Aucun projet";
   var allDocCtx=Object.keys(projectDocs).map(function(p){return getProjectDocContext(p);}).filter(Boolean).join("\n");
   var docCtxStr=allDocCtx?"\n\nINDEXED PROJECT DOCUMENTS (use for precise technical answers):\n"+allDocCtx:"";
@@ -9809,6 +10046,8 @@ async function sendChat(){
   if(!window._ragOff){
     try{
       var _matches=await ragSearch(val,6);
+      // Keep deleted incidents out of the chat's memory (the RAG store has no delete)
+      if(_matches&&_matches.length)_matches=_matches.filter(function(m){return m.source_type!=="incident"||m.source_id==null||!!_plFind(m.source_id);});
       if(_matches&&_matches.length){
         docCtxStr+="\n\nMOST RELEVANT KNOWLEDGE (semantic search — ground your answer in these and mention the source when used):\n"+_matches.map(function(m,i){return "["+(i+1)+"] ("+(m.source_type||"")+(m.project?" · "+m.project:"")+(m.title?" · "+m.title:"")+")\n"+(m.content||"");}).join("\n\n");
       }
@@ -9827,6 +10066,7 @@ async function sendChat(){
   };
   var sysPrompt=_sp[lang===1?"en":lang===2?"pt":"fr"];
   try{sysPrompt+=_finCapabilities()+_finChatContext();}catch(e){} // native Financial Module + live data
+  try{sysPrompt+=_plAgentRules();}catch(e){} // platform links + verified actions
   var messages=[{role:"system",content:sysPrompt}].concat(chatHistory.slice(-10));
   try{
     var chatModel="openai/gpt-oss-120b";
@@ -9880,10 +10120,13 @@ async function sendChat(){
       btn.disabled=false;return;
     }
     var reply=data.choices[0].message.content;
-    chatHistory.push({role:"assistant",content:reply});incrementPillierUsage("ai_messages");
+    var _pa=_plExtractActions(reply);reply=_pa.text;
+    if(!reply&&_pa.actions.length)reply=plL("J'ai préparé l'action ci-dessous — confirmez pour l'exécuter.","I've prepared the action below — confirm to run it.","Preparei a ação abaixo — confirme para executar.");
+    chatHistory.push({role:"assistant",display:reply,content:reply+(_pa.actions.length?"\n[Ações propostas, aguardando confirmação do usuário: "+_pa.actions.map(_plActSummary).join("; ")+"]":"")});incrementPillierUsage("ai_messages");
     saveChat();
     try{_maybeGenerateTitle();}catch(e){} // auto-name the conversation from its content
     addMsg("bot",reply);
+    try{_plRenderActions(_pa.actions);}catch(e){console.error("action cards",e);}
     try{if(_isFinanceQuery(val)||_isFinanceQuery(reply))_addChatFinanceActions();}catch(e){} // finance quick-nav chips
   }catch(e){
     console.error("sendChat exception:",e);
@@ -10905,7 +11148,8 @@ function loadChat(id){
         else addMsg("user",txt);
       }
     } else {
-      addMsg("bot",(m.content||"").replace(/\n/g,"<br>"));
+      var _shown=(m.display!=null)?m.display:(m.content||"");
+      addMsg("bot",m.pl?_shown:_shown.replace(/\n/g,"<br>"));
     }
   });
   document.getElementById("saved-chats-panel").style.display="none";
