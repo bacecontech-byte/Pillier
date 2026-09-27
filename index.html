@@ -10067,7 +10067,17 @@ async function sendChat(){
   var sysPrompt=_sp[lang===1?"en":lang===2?"pt":"fr"];
   try{sysPrompt+=_finCapabilities()+_finChatContext();}catch(e){} // native Financial Module + live data
   try{sysPrompt+=_plAgentRules();}catch(e){} // platform links + verified actions
-  var messages=[{role:"system",content:sysPrompt}].concat(chatHistory.slice(-10));
+  // API-safe history: only {role,content} — Groq rejects any extra field (the UI-only
+  // `display` / `pl` / `image` we keep in chatHistory) — and consecutive same-role turns
+  // merged (e.g. a reply followed by its [Ação verificada] note, or a retry after an error).
+  var _apiHist=[];
+  chatHistory.slice(-10).forEach(function(m){
+    if(!m||(m.role!=="user"&&m.role!=="assistant"))return;
+    var c=(typeof m.content==="string")?m.content:"";if(!c.trim())return;
+    var last=_apiHist[_apiHist.length-1];
+    if(last&&last.role===m.role)last.content+="\n\n"+c;else _apiHist.push({role:m.role,content:c});
+  });
+  var messages=[{role:"system",content:sysPrompt}].concat(_apiHist);
   try{
     var chatModel="openai/gpt-oss-120b";
     var lastMsg=messages[messages.length-1];
