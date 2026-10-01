@@ -206,6 +206,14 @@ body.light-mode .pg-win{box-shadow:0 24px 60px rgba(16,34,43,0.10);}
   .pga-grid{grid-template-columns:1fr;}
   .pga-c{height:44px;}
 }
+.pgr-doc{max-width:760px;margin:0 auto;padding:22px 26px !important;max-height:470px;overflow-y:auto;scrollbar-width:thin;scroll-behavior:smooth;box-shadow:0 18px 40px rgba(0,0,0,.25) !important;border-radius:10px !important;font-size:13px;}
+.pgr-doc h1{font-size:17px !important;}
+.pgr-doc .rdo-in{pointer-events:auto;}
+.pgr-doc .pg-in{transition:opacity .45s ease,transform .45s ease;}
+.pgr-rc{display:inline-block;width:26px;height:34px;border-radius:3px;background:#fffef7;border:1px solid #d8e3e5;background-image:repeating-linear-gradient(#fffef7 0 5px,#cfd8db 5px 6px);background-size:70% 100%;background-repeat:no-repeat;background-position:center 4px;vertical-align:middle;}
+.pgr-padwrap{position:absolute;inset:0;z-index:6;background:rgba(4,14,18,.55);display:flex;align-items:center;justify-content:center;padding:14px;}
+.pgr-padwrap .sigp{animation:pgPop .3s;}
+@media(max-width:640px){.pgr-doc{padding:14px !important;max-height:520px;}.pgr-doc .rdo-tw{width:100% !important;}}
 @keyframes pgPulse{0%{box-shadow:0 0 0 0 currentColor}70%{box-shadow:0 0 0 6px transparent}100%{box-shadow:0 0 0 0 transparent}}
 @keyframes pgScan{0%{top:0}50%{top:calc(100% - 3px)}100%{top:0}}
 @keyframes pgBounce{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-4px);opacity:1}}
@@ -267,27 +275,6 @@ body.light-mode .pg-win{box-shadow:0 24px 60px rgba(16,34,43,0.10);}
 .pgh-in .car{width:2px;height:18px;background:#2cbeff;animation:pgBlink 1s steps(1) infinite;margin-left:-4px;}
 .pgh-in .send{width:32px;height:32px;border-radius:10px;background:#2cbeff;color:#04222f;display:flex;align-items:center;justify-content:center;font-size:16px;}
 /* rdo */
-.pgr-paper{position:relative;background:#fff;color:#1a2b33;border-radius:12px;box-shadow:0 18px 40px rgba(0,0,0,.22);padding:20px 24px 22px;max-width:600px;margin:0 auto;font-size:13px;line-height:1.45;}
-.pgr-hd{display:flex;align-items:flex-end;gap:12px;border-bottom:2px solid #1a2b33;padding-bottom:10px;margin-bottom:12px;}
-.pgr-hd .lg{font-family:var(--font-d);font-weight:800;font-size:18px;color:#0a95d6;}
-.pgr-hd h4{flex:1;margin:0;font-size:14.5px;font-weight:800;}
-.pgr-hd .no{text-align:right;font-size:11px;color:#5b6f77;}
-.pgr-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;}
-.pgr-grid b{color:#1a2b33;}
-.pgr-sec{margin-top:12px;}
-.pgr-sec h5{margin:0 0 6px;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#0a95d6;border-bottom:1px solid #e3eaee;padding-bottom:4px;}
-.pgr-w{font-weight:600;}
-.pgr-w i{font-size:16px;color:#e29a00;vertical-align:-3px;margin-right:3px;}
-.pgr-oc{display:flex;align-items:center;gap:8px;padding:3px 0;}
-.pgr-oc i{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.pgr-oc span{color:#5b6f77;margin-left:auto;font-size:11.5px;}
-.pgr-sign{display:flex;justify-content:space-between;align-items:flex-end;margin-top:46px;gap:20px;}
-.pgr-sign div{flex:1;border-top:1px solid #1a2b33;padding-top:4px;font-size:11px;color:#5b6f77;text-align:center;position:relative;}
-.pgr-sign svg{position:absolute;left:50%;bottom:calc(100% - 6px);transform:translateX(-50%);width:140px;height:40px;overflow:visible;}
-.pgr-sign path{fill:none;stroke:#1d4ed8;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:420;stroke-dashoffset:420;transition:stroke-dashoffset 1.5s ease;}
-.pgr-sign path.v{stroke-dashoffset:0;}
-.pgr-stamp{position:absolute;right:34px;bottom:30px;border:3px solid #16a34a;color:#16a34a;font-weight:900;font-size:17px;letter-spacing:.08em;padding:6px 14px;border-radius:8px;transform:rotate(-12deg) scale(2.2);opacity:0;transition:transform .35s cubic-bezier(.3,1.6,.5,1),opacity .25s;pointer-events:none;background:rgba(22,163,74,.05);}
-.pgr-stamp.v{transform:rotate(-12deg) scale(1);opacity:.92;}
 /* finance */
 .pgf{display:flex;flex-direction:column;gap:12px;}
 .pgf-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
@@ -401,10 +388,6 @@ body.light-mode .pg-win{box-shadow:0 24px 60px rgba(16,34,43,0.10);}
   .pgf-rc{max-width:220px;margin:0 auto;}
   .pgf-kpi .n{font-size:16px;}
   .pgf-kpis{gap:6px;}
-  .pgr-paper{padding:16px;font-size:12px;}
-  .pgr-grid{grid-template-columns:1fr;}
-  .pgr-stamp{font-size:13px;right:14px;bottom:52px;padding:4px 10px;}
-  .pgr-sign svg{width:110px;}
   .pgt-push{width:230px;}
   .pg-win{border-radius:16px;}
 }
@@ -1345,61 +1328,85 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
 .rdo-toolbar{display:flex;gap:8px;justify-content:flex-end;width:100%;max-width:800px;margin:0 auto 10px;position:sticky;top:0;}
 .rdo-tb-btn{background:#2cbeff;color:#04222b;border:none;border-radius:9px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
 .rdo-tb-btn.ghost{background:rgba(255,255,255,.12);color:#fff;}
-#rdo-doc{background:#fff;color:#14202a;width:100%;max-width:800px;margin:0 auto;border-radius:8px;padding:34px 38px;box-shadow:0 20px 60px rgba(0,0,0,.4);}
-#rdo-doc h1{font-family:var(--font-d);font-size:21px;margin:0;color:#0c2027;}
-#rdo-doc .rdo-hd{display:flex;align-items:center;gap:12px;border-bottom:2px solid #0c4651;padding-bottom:14px;margin-bottom:16px;}
-#rdo-doc .rdo-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;font-size:13px;margin-bottom:6px;}
-#rdo-doc .rdo-grid b{color:#0c4651;}
-#rdo-doc .rdo-sec{margin:18px 0;}
-#rdo-doc .rdo-sec h3{font-family:var(--font-d);font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:#0c4651;border-bottom:1px solid #d8e3e5;padding-bottom:5px;margin:0 0 10px;}
-#rdo-doc .rdo-in{border:1px solid #c5d5d8;border-radius:6px;padding:6px 9px;font-size:13px;font-family:inherit;color:#14202a;width:100%;box-sizing:border-box;background:#fff;}
-#rdo-doc textarea.rdo-in{min-height:60px;resize:vertical;}
-#rdo-doc .rdo-occ{border:1px solid #e0e8ea;border-radius:8px;padding:10px 12px;margin-bottom:8px;display:flex;gap:10px;}
-#rdo-doc .rdo-occ img{width:64px;height:64px;object-fit:cover;border-radius:6px;flex-shrink:0;}
-#rdo-doc .rdo-occ .oc-t{font-weight:700;font-size:13px;}
-#rdo-doc .rdo-occ .oc-m{font-size:11px;color:#5b6f77;margin:2px 0 4px;}
-#rdo-doc .rdo-occ .oc-d{font-size:12px;color:#2d3d45;}
+:is(#rdo-doc,.pgr-doc){background:#fff;color:#14202a;width:100%;max-width:800px;margin:0 auto;border-radius:8px;padding:34px 38px;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+:is(#rdo-doc,.pgr-doc) h1{font-family:var(--font-d);font-size:21px;margin:0;color:#0c2027;}
+:is(#rdo-doc,.pgr-doc) .rdo-hd{display:flex;align-items:center;gap:12px;border-bottom:2px solid #0c4651;padding-bottom:14px;margin-bottom:16px;}
+:is(#rdo-doc,.pgr-doc) .rdo-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;font-size:13px;margin-bottom:6px;}
+:is(#rdo-doc,.pgr-doc) .rdo-grid b{color:#0c4651;}
+:is(#rdo-doc,.pgr-doc) .rdo-sec{margin:18px 0;}
+:is(#rdo-doc,.pgr-doc) .rdo-sec h3{font-family:var(--font-d);font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:#0c4651;border-bottom:1px solid #d8e3e5;padding-bottom:5px;margin:0 0 10px;}
+:is(#rdo-doc,.pgr-doc) .rdo-in{border:1px solid #c5d5d8;border-radius:6px;padding:6px 9px;font-size:13px;font-family:inherit;color:#14202a;width:100%;box-sizing:border-box;background:#fff;}
+:is(#rdo-doc,.pgr-doc) textarea.rdo-in{min-height:60px;resize:vertical;}
+:is(#rdo-doc,.pgr-doc) .rdo-occ{border:1px solid #e0e8ea;border-radius:8px;padding:10px 12px;margin-bottom:8px;display:flex;gap:10px;}
+:is(#rdo-doc,.pgr-doc) .rdo-occ img{width:64px;height:64px;object-fit:cover;border-radius:6px;flex-shrink:0;}
+:is(#rdo-doc,.pgr-doc) .rdo-occ .oc-t{font-weight:700;font-size:13px;}
+:is(#rdo-doc,.pgr-doc) .rdo-occ .oc-m{font-size:11px;color:#5b6f77;margin:2px 0 4px;}
+:is(#rdo-doc,.pgr-doc) .rdo-occ .oc-d{font-size:12px;color:#2d3d45;}
 /* RDO: print-friendly digital twin — mapped photo (brackets + numbered badges) + element list */
-#rdo-doc .rdo-tw{position:relative;width:250px;flex-shrink:0;align-self:flex-start;line-height:0;border-radius:6px;overflow:hidden;border:1px solid #d8e3e5;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-#rdo-doc .rdo-occ .rdo-tw img{width:100%;height:auto;object-fit:contain;border-radius:0;display:block;}
-#rdo-doc .rdo-tw .tm{position:absolute;}
-#rdo-doc .rdo-tw .tc{position:absolute;width:9px;height:9px;border:0 solid var(--c);}
-#rdo-doc .rdo-tw .t1{top:0;left:0;border-top-width:2px;border-left-width:2px;}
-#rdo-doc .rdo-tw .t2{top:0;right:0;border-top-width:2px;border-right-width:2px;}
-#rdo-doc .rdo-tw .t3{bottom:0;left:0;border-bottom-width:2px;border-left-width:2px;}
-#rdo-doc .rdo-tw .t4{bottom:0;right:0;border-bottom-width:2px;border-right-width:2px;}
-#rdo-doc .rdo-tw .tn,#rdo-doc .rdo-twl .tn{display:inline-block;min-width:16px;height:16px;padding:0 4px;border-radius:4px;background:var(--c);color:#fff;font:700 10px/16px Arial,sans-serif;text-align:center;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-#rdo-doc .rdo-tw .tn{position:absolute;top:2px;left:2px;box-shadow:0 0 0 1.5px #fff;}
-#rdo-doc .rdo-twl{margin-top:7px;font-size:11.5px;line-height:1.45;color:#2d3d45;}
-#rdo-doc .rdo-twl .th{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#0c4651;margin-bottom:3px;}
-#rdo-doc .rdo-twl .ti2{display:flex;gap:6px;margin-bottom:3px;}
-#rdo-doc .rdo-twl .ti2 .tn{flex-shrink:0;margin-top:1px;}
-@media (max-width:640px){#rdo-doc .rdo-occ{flex-wrap:wrap;}#rdo-doc .rdo-tw{width:calc(100% - 18px);}}
-#rdo-doc .rdo-sev{width:8px;border-radius:4px;flex-shrink:0;}
-#rdo-doc .rdo-sign{margin-top:34px;display:flex;justify-content:space-between;gap:30px;}
-#rdo-doc .rdo-sign div{flex:1;border-top:1px solid #14202a;padding-top:6px;font-size:12px;text-align:center;color:#5b6f77;}
-#rdo-doc .rdo-empty{color:#5b6f77;font-size:13px;font-style:italic;}
-#rdo-doc .rdo-cost-sum{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
-#rdo-doc .rdo-cost-sum>div{flex:1;min-width:130px;background:#f2f8f9;border:1px solid #d8e3e5;border-radius:8px;padding:9px 12px;}
-#rdo-doc .rdo-cost-sum span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:#5b6f77;margin-bottom:3px;}
-#rdo-doc .rdo-cost-sum b{font-size:15px;color:#0c4651;}
-#rdo-doc .rdo-cost-add{background:#0ea5e9;color:#fff;border:none;border-radius:8px;padding:8px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
-#rdo-doc .rdo-cost-tbl{width:100%;border-collapse:collapse;font-size:12px;}
-#rdo-doc .rdo-cost-tbl th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:#5b6f77;border-bottom:1px solid #d8e3e5;padding:6px 8px;}
-#rdo-doc .rdo-cost-tbl td{border-bottom:1px solid #eef3f4;padding:7px 8px;color:#14202a;vertical-align:middle;}
-#rdo-doc .rdo-cost-cat{color:#5b6f77;font-size:11px;}
-#rdo-doc .rdo-cost-thumb{width:34px;height:34px;object-fit:cover;border-radius:6px;border:1px solid #d8e3e5;cursor:pointer;}
-#rdo-doc .rdo-cost-reclink{color:#178fbe;cursor:pointer;font-weight:600;}
-#rdo-doc .rdo-cost-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;cursor:pointer;white-space:nowrap;}
-#rdo-doc .rdo-cost-badge.pend{color:#b45309;background:#fef3c7;}
-#rdo-doc .rdo-cost-badge.rev{color:#15803d;background:#dcfce7;}
-#rdo-doc .rdo-cost-break{font-size:12px;color:#2d3d45;margin-top:10px;padding:8px 10px;background:#f7fafb;border-radius:6px;}
-#rdo-doc .rdo-cost-appendix{display:none;margin-top:14px;border-top:1px dashed #c5d5d8;padding-top:10px;}
-#rdo-doc .rdo-cost-appendix-h{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#0c4651;font-weight:700;margin-bottom:8px;}
-#rdo-doc .rdo-cost-appendix-grid{display:flex;flex-wrap:wrap;gap:10px;}
-#rdo-doc .rdo-cost-proof{width:120px;font-size:10px;color:#5b6f77;}
-#rdo-doc .rdo-cost-proof img{width:120px;height:150px;object-fit:cover;border-radius:6px;border:1px solid #d8e3e5;display:block;margin-bottom:3px;}
-#rdo-doc .rdo-cost-proof-ref .rdo-cost-proof-icon{font-size:26px;color:#c5d5d8;}
+:is(#rdo-doc,.pgr-doc) .rdo-tw{position:relative;width:250px;flex-shrink:0;align-self:flex-start;line-height:0;border-radius:6px;overflow:hidden;border:1px solid #d8e3e5;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+:is(#rdo-doc,.pgr-doc) .rdo-occ .rdo-tw img{width:100%;height:auto;object-fit:contain;border-radius:0;display:block;}
+:is(#rdo-doc,.pgr-doc) .rdo-tw .tm{position:absolute;}
+:is(#rdo-doc,.pgr-doc) .rdo-tw .tc{position:absolute;width:9px;height:9px;border:0 solid var(--c);}
+:is(#rdo-doc,.pgr-doc) .rdo-tw .t1{top:0;left:0;border-top-width:2px;border-left-width:2px;}
+:is(#rdo-doc,.pgr-doc) .rdo-tw .t2{top:0;right:0;border-top-width:2px;border-right-width:2px;}
+:is(#rdo-doc,.pgr-doc) .rdo-tw .t3{bottom:0;left:0;border-bottom-width:2px;border-left-width:2px;}
+:is(#rdo-doc,.pgr-doc) .rdo-tw .t4{bottom:0;right:0;border-bottom-width:2px;border-right-width:2px;}
+:is(#rdo-doc,.pgr-doc) .rdo-tw .tn,:is(#rdo-doc,.pgr-doc) .rdo-twl .tn{display:inline-block;min-width:16px;height:16px;padding:0 4px;border-radius:4px;background:var(--c);color:#fff;font:700 10px/16px Arial,sans-serif;text-align:center;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+:is(#rdo-doc,.pgr-doc) .rdo-tw .tn{position:absolute;top:2px;left:2px;box-shadow:0 0 0 1.5px #fff;}
+:is(#rdo-doc,.pgr-doc) .rdo-twl{margin-top:7px;font-size:11.5px;line-height:1.45;color:#2d3d45;}
+:is(#rdo-doc,.pgr-doc) .rdo-twl .th{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#0c4651;margin-bottom:3px;}
+:is(#rdo-doc,.pgr-doc) .rdo-twl .ti2{display:flex;gap:6px;margin-bottom:3px;}
+:is(#rdo-doc,.pgr-doc) .rdo-twl .ti2 .tn{flex-shrink:0;margin-top:1px;}
+@media (max-width:640px){:is(#rdo-doc,.pgr-doc) .rdo-occ{flex-wrap:wrap;}:is(#rdo-doc,.pgr-doc) .rdo-tw{width:calc(100% - 18px);}:is(#rdo-doc,.pgr-doc) .rdo-grid{grid-template-columns:1fr;}}
+:is(#rdo-doc,.pgr-doc) .rdo-sev{width:8px;border-radius:4px;flex-shrink:0;}
+:is(#rdo-doc,.pgr-doc) .rdo-sign{margin-top:34px;display:flex;justify-content:space-between;gap:30px;}
+:is(#rdo-doc,.pgr-doc) .rdo-empty{color:#5b6f77;font-size:13px;font-style:italic;}
+:is(#rdo-doc,.pgr-doc) .rdo-cost-sum{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+:is(#rdo-doc,.pgr-doc) .rdo-cost-sum>div{flex:1;min-width:130px;background:#f2f8f9;border:1px solid #d8e3e5;border-radius:8px;padding:9px 12px;}
+:is(#rdo-doc,.pgr-doc) .rdo-cost-sum span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:#5b6f77;margin-bottom:3px;}
+:is(#rdo-doc,.pgr-doc) .rdo-cost-sum b{font-size:15px;color:#0c4651;}
+:is(#rdo-doc,.pgr-doc) .rdo-cost-add{background:#0ea5e9;color:#fff;border:none;border-radius:8px;padding:8px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
+:is(#rdo-doc,.pgr-doc) .rdo-cost-tbl{width:100%;border-collapse:collapse;font-size:12px;}
+:is(#rdo-doc,.pgr-doc) .rdo-cost-tbl th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:#5b6f77;border-bottom:1px solid #d8e3e5;padding:6px 8px;}
+:is(#rdo-doc,.pgr-doc) .rdo-cost-tbl td{border-bottom:1px solid #eef3f4;padding:7px 8px;color:#14202a;vertical-align:middle;}
+:is(#rdo-doc,.pgr-doc) .rdo-cost-cat{color:#5b6f77;font-size:11px;}
+:is(#rdo-doc,.pgr-doc) .rdo-cost-thumb{width:34px;height:34px;object-fit:cover;border-radius:6px;border:1px solid #d8e3e5;cursor:pointer;}
+:is(#rdo-doc,.pgr-doc) .rdo-cost-reclink{color:#178fbe;cursor:pointer;font-weight:600;}
+:is(#rdo-doc,.pgr-doc) .rdo-cost-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;cursor:pointer;white-space:nowrap;}
+:is(#rdo-doc,.pgr-doc) .rdo-cost-badge.pend{color:#b45309;background:#fef3c7;}
+:is(#rdo-doc,.pgr-doc) .rdo-cost-badge.rev{color:#15803d;background:#dcfce7;}
+:is(#rdo-doc,.pgr-doc) .rdo-cost-break{font-size:12px;color:#2d3d45;margin-top:10px;padding:8px 10px;background:#f7fafb;border-radius:6px;}
+:is(#rdo-doc,.pgr-doc) .rdo-cost-appendix{display:none;margin-top:14px;border-top:1px dashed #c5d5d8;padding-top:10px;}
+:is(#rdo-doc,.pgr-doc) .rdo-cost-appendix-h{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#0c4651;font-weight:700;margin-bottom:8px;}
+:is(#rdo-doc,.pgr-doc) .rdo-cost-appendix-grid{display:flex;flex-wrap:wrap;gap:10px;}
+:is(#rdo-doc,.pgr-doc) .rdo-cost-proof{width:120px;font-size:10px;color:#5b6f77;}
+:is(#rdo-doc,.pgr-doc) .rdo-cost-proof img{width:120px;height:150px;object-fit:cover;border-radius:6px;border:1px solid #d8e3e5;display:block;margin-bottom:3px;}
+:is(#rdo-doc,.pgr-doc) .rdo-cost-proof-ref .rdo-cost-proof-icon{font-size:26px;color:#c5d5d8;}
+/* RDO signatures (electronic, drawn) */
+:is(#rdo-doc,.pgr-doc) .rdo-sig{flex:1;text-align:center;min-width:0;}
+:is(#rdo-doc,.pgr-doc) .rdo-sig-img{height:66px;display:flex;align-items:flex-end;justify-content:center;}
+:is(#rdo-doc,.pgr-doc) .rdo-sig-img img{max-height:66px;max-width:100%;display:block;}
+:is(#rdo-doc,.pgr-doc) .rdo-sig-line{border-top:1px solid #14202a;padding-top:6px;font-size:12px;color:#5b6f77;}
+:is(#rdo-doc,.pgr-doc) .rdo-sig-meta{font-size:10.5px;color:#15803d;margin-top:3px;min-height:14px;}
+:is(#rdo-doc,.pgr-doc) .rdo-sig-btn{margin-top:6px;display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid #0ea5e9;color:#0a95d6;border-radius:999px;padding:5px 14px;font:700 12px var(--font-b);cursor:pointer;transition:transform .1s,background .15s;}
+:is(#rdo-doc,.pgr-doc) .rdo-sig-btn:hover{background:#eef9ff;}
+:is(#rdo-doc,.pgr-doc) .rdo-sig-btn.press{transform:scale(.92);background:#d8f1ff;}
+#rdo-sig-modal{position:fixed;inset:0;z-index:100070;background:rgba(4,14,18,.6);display:flex;align-items:center;justify-content:center;padding:16px;}
+.sigp{background:#fff;color:#14202a;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.45);padding:16px;width:min(480px,100%);font-family:var(--font-b);}
+.sigp-h{font-family:var(--font-d);font-weight:800;font-size:16px;color:#0c2027;margin-bottom:8px;}
+.sigp-name{width:100%;box-sizing:border-box;border:1px solid #c5d5d8;border-radius:8px;padding:8px 10px;font:500 13.5px var(--font-b);color:#14202a;margin-bottom:8px;background:#fff;}
+.sigp-cv{position:relative;height:160px;border:1px dashed #9db4ba;border-radius:10px;background:#fbfdfd;touch-action:none;}
+.sigp-cv canvas{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair;}
+.sigp-base{position:absolute;left:18px;right:18px;bottom:34px;border-bottom:1px solid #c5d5d8;pointer-events:none;}
+.sigp-hint{position:absolute;left:20px;bottom:12px;font-size:11.5px;color:#8aa1a7;pointer-events:none;}
+.sigp-row{display:flex;gap:8px;align-items:center;margin-top:10px;}
+.sigp-row button{height:34px;padding:0 14px;border-radius:999px;font:700 13px var(--font-b);cursor:pointer;border:1px solid #c5d5d8;background:#fff;color:#14202a;}
+.sigp-row .sigp-ok{background:#2cbeff;border-color:#2cbeff;color:#04222f;}
+.sigp-row .sigp-ok:disabled{opacity:.45;cursor:not-allowed;}
+.sigp-row .sigp-ok.press{transform:scale(.94);}
+.sigp-legal{font-size:10.5px;color:#7a8f95;margin-top:8px;line-height:1.4;}
+.sigp-row button{white-space:nowrap;}
+@media(max-width:480px){.sigp-row{gap:6px;}.sigp-row button{padding:0 10px;font-size:12px;}.sigp-row .sigp-ok{margin-left:auto;}.sigp-row>span{display:none;}}
 @media print{
   body *{visibility:hidden !important;}
   #rdo-overlay,#rdo-overlay *{visibility:visible !important;}
@@ -1411,6 +1418,7 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
   #rdo-doc .rdo-in{border:none !important;padding-left:0 !important;}
   #rdo-doc .rdo-cost-appendix{display:block !important;}
   #rdo-doc .rdo-cost-badge{cursor:default !important;}
+  #rdo-doc .rdo-sig-meta{color:#14202a !important;}
 }
 #ai-p-solution,#ai-v-solution,#imd-action{white-space:pre-line;}
 /* Pillier IA agent: platform link chips + action confirmation cards */
@@ -6022,55 +6030,92 @@ var PG_SCENES=[
  }
 },
 
-/* ---------- scene 3: RDO (daily site report) ---------- */
-{id:"rdo",icon:"file-description",url:"rdo",dur:11500,
+/* ---------- scene 3: RDO (daily site report) — same document as the platform ---------- */
+{id:"rdo",icon:"file-description",url:"rdo",dur:17000,
  tab:function(){return _pgL("Rapport journalier","Daily report","RDO");},
  title:function(){return _pgL("Le rapport journalier s'écrit tout seul.","The daily report writes itself.","O RDO que se escreve sozinho.");},
- desc:function(){return _pgL("Météo, effectif, occurrences avec photos cartographiées et dépenses du jour : tout arrive tout seul. Vous relisez, signez, envoyez en PDF.","Weather, crew, incidents with mapped photos and the day's expenses all fill in automatically. You review, sign and send the PDF.","Clima, efetivo, ocorrências com fotos mapeadas e custos do dia entram sozinhos. Você revisa, assina e manda o PDF.");},
- quip:function(){return _pgL("Le stylo, c'est seulement pour la signature.","The pen is just for the signature now.","A caneta agora é só pra assinatura.");},
+ desc:function(){return _pgL("Conditions, occurrences avec photos cartographiées et dépenses du jour arrivent toutes seules. Vous relisez, signez à l'écran et envoyez le PDF.","Conditions, incidents with mapped photos and the day's expenses fill in on their own. You review, sign on screen and send the PDF.","Condições, ocorrências com fotos mapeadas e custos do dia entram sozinhos. Você revisa, assina na tela e manda o PDF.");},
+ quip:function(){return _pgL("Le stylo, c'est seulement pour la signature. Et même ça, c'est sur l'écran.","The pen is just for the signature. And even that's on screen now.","A caneta agora é só pra assinatura. E até ela é na tela.");},
  tries:function(){return [
   {i:"cloud-rain",l:_pgL("Changer la météo","Change the weather","Trocar o clima"),a:"wx"},
-  {i:"signature",l:_pgL("Signer","Sign it","Assinar"),a:"sign"},
+  {i:"signature",l:_pgL("Signer vous-même","Sign it yourself","Assine você mesmo"),a:"sign"},
   {i:"file-type-pdf",l:_pgL("Générer le PDF","Generate PDF","Gerar PDF"),a:"pdf"}];},
  html:function(){
-  var d=new Date(),ds=d.toLocaleDateString(lang===1?"en-GB":lang===0?"fr-FR":"pt-BR"),no=d.toISOString().slice(0,10).replace(/-/g,"");
-  return '<div class="pgr-paper">'+
-   '<div class="pgr-hd"><span class="lg">Pillier</span><h4>'+_pgL("Rapport journalier de chantier","Daily Site Report","Relatório Diário de Obra (RDO)")+'</h4><div class="no">Nº '+no+'<br>'+ds+'</div></div>'+
-   '<div class="pgr-grid">'+
-    '<div class="pg-in" data-r="1"><b>'+_pgL("Chantier","Site","Obra")+':</b> Residencial Aurora</div>'+
-    '<div class="pg-in" data-r="1"><b>'+_pgL("Responsable","Site manager","Responsável")+':</b> Eng. Ana Luiza</div>'+
-    '<div class="pg-in" data-r="2"><b>'+_pgL("Météo","Weather","Clima")+':</b> <span class="pgr-w">'+_pgI("sun")+'<span class="pgr-wt">'+_pgL("Ensoleillé · praticable","Sunny · workable","Ensolarado · praticável")+'</span></span></div>'+
-    '<div class="pg-in" data-r="2"><b>'+_pgL("Effectif","Crew","Efetivo")+':</b> <span class="pgr-n">0</span> '+_pgL("ouvriers","workers","trabalhadores")+'</div>'+
-   '</div>'+
-   '<div class="pgr-sec pg-in" data-r="3"><h5>'+_pgL("Occurrences","Incidents","Ocorrências")+' (3)</h5>'+
-    '<div class="pgr-oc"><i style="background:#e5484d"></i>'+_pgL("Corrosion longrine V14","Waler corrosion bay 14","Corrosão longarina V14")+'<span>'+_pgL("photo cartographiée","mapped photo","foto mapeada")+'</span></div>'+
-    '<div class="pgr-oc"><i style="background:#f59e0b"></i>'+_pgL("Infiltration joint — rideau B","Joint leak — wall B","Infiltração na junta — cortina B")+'<span>NBR 9575</span></div>'+
-    '<div class="pgr-oc"><i style="background:#4ade80"></i>'+_pgL("Fissure poteau C4 — résolue","Crack in column C4 — resolved","Fissura coluna C4 — resolvida")+'<span>NBR 6118</span></div></div>'+
-   '<div class="pgr-sec pg-in" data-r="4"><h5>'+_pgL("Dépenses du jour","Today's expenses","Custos do dia")+'</h5><b class="pgr-c">'+_pgMoney(0)+'</b> · 4 '+_pgL("reçus lus par l'IA","receipts read by AI","recibos lidos pela IA")+'</div>'+
-   '<div class="pgr-sign"><div><svg viewBox="0 0 150 46"><path d="M6 32c10-18 18-24 22-16s-6 22 2 18 14-26 20-22-4 20 4 18 10-14 16-12 2 10 10 8 12-12 20-10 8 6 16 2 12-6 22-8"/></svg>Eng. Ana Luiza · '+_pgL("Responsable","Site manager","Responsável")+'</div><div>'+_pgL("Visa client","Client sign-off","Visto do cliente")+'</div></div>'+
-   '<div class="pgr-stamp">'+_pgL("SIGNÉ","SIGNED","ASSINADO")+'</div></div>';
+  var d=new Date(),ds=d.toLocaleDateString(lang===1?"en-GB":lang===0?"fr-FR":"pt-BR"),iso=d.toISOString().slice(0,10),no=iso.replace(/-/g,"");
+  var twc={risco:"#c8372f",attention:"#c96a12",info:"#178fbe"};
+  var F=[{c:twc.risco,b:_PG_CAP_BOX[0],l:_pgL("Corrosion de la longrine V14","Waler corrosion bay 14","Corrosão na longarina V14"),m:_pgL("Risque élevé","High risk","Risco alto")+" · NBR 5629 · 94%",f:_pgL("nettoyage + traitement anticorrosion","clean + anti-corrosion treatment","limpeza + tratamento anticorrosivo")},
+         {c:twc.info,b:_PG_CAP_BOX[1],l:_pgL("Tirants ligne 2 (42/42)","Tiebacks row 2 (42/42)","Tirantes linha 2 (42/42)"),m:_pgL("Informatif","Info","Informativo")+" · NBR 5629 · 91%",f:""},
+         {c:twc.attention,b:_PG_CAP_BOX[2],l:_pgL("Foreuse sans zone balisée","Drill rig without fenced area","Perfuratriz sem isolamento de área"),m:_pgL("Attention","Attention","Atenção")+" · NR-18 · 88%",f:_pgL("baliser le rayon de giration","fence off the swing radius","isolar e sinalizar o raio de giro")}];
+  var tw='<div class="rdo-tw"><img src="/assets/hero-obra.jpg" alt="">'+F.map(function(f,k){return '<div class="tm pg-in" data-tw="'+k+'" style="--c:'+f.c+';left:'+f.b.l+';top:'+f.b.t+';width:'+f.b.w+';height:'+f.b.h+'"><i class="tc t1"></i><i class="tc t2"></i><i class="tc t3"></i><i class="tc t4"></i><span class="tn">'+(k+1)+'</span></div>';}).join("")+'</div>';
+  var twl='<div class="rdo-twl pg-in" data-r="twl"><div class="th">'+_pgL("Éléments cartographiés","Mapped elements","Elementos mapeados")+' · 3</div>'+F.map(function(f,k){return '<div class="ti2"><span class="tn" style="--c:'+f.c+'">'+(k+1)+'</span><div><b>'+f.l+'</b> — '+f.m+(f.f?'<br><span style="color:#5b6f77">'+_pgL("Action recommandée","Recommended action","Ação recomendada")+': '+f.f+'</span>':'')+'</div></div>';}).join("")+'</div>';
+  var sol=function(t){return '<div style="white-space:pre-line;margin-top:5px;font-size:12px;color:#2d3d45"><b style="color:#0c4651">'+_pgL("Solution recommandée","Recommended solution","Solução recomendada")+' :</b>\n'+t+'</div>';};
+  var occ=
+   '<div class="rdo-occ pg-in" data-r="o1"><div class="rdo-sev" style="background:#c8372f"></div>'+tw+'<div style="min-width:0"><div class="oc-t">'+_pgL("Corrosion longrine V14","Waler corrosion bay 14","Corrosão longarina V14")+'</div><div class="oc-m">'+_pgL("Paroi","Retaining wall","Contenção")+' · '+_pgL("Critique","Critical","Crítica")+' · '+_pgL("Ouvert","Open","Aberto")+' · '+ds+'</div><div class="oc-d">'+_pgL("Paroi berlinoise tirantée : corrosion superficielle sur la longrine de la travée 14. Tirants de la ligne 2 conformes.","Anchored retaining wall: surface corrosion on the bay 14 waler. Row 2 tiebacks look sound.","Contenção atirantada: corrosão superficial na longarina do vão 14. Tirantes da linha 2 sem anomalias.")+'</div>'+sol(_pgL("1. Nettoyage mécanique\n2. Traitement anticorrosion\n3. Contrôle des tirants sous 7 jours","1. Mechanical cleaning\n2. Anti-corrosion treatment\n3. Inspect tiebacks within 7 days","1. Limpeza mecânica\n2. Tratamento anticorrosivo\n3. Inspeção dos tirantes em até 7 dias"))+twl+'</div></div>'+
+   '<div class="rdo-occ pg-in" data-r="o2"><div class="rdo-sev" style="background:#c96a12"></div><img src="/assets/hero-obra.jpg" alt="" style="object-position:12% 78%"><div style="min-width:0"><div class="oc-t">'+_pgL("Infiltration joint — rideau B","Joint leak — wall B","Infiltração na junta — cortina B")+'</div><div class="oc-m">'+_pgL("Étanchéité","Waterproofing","Impermeabilização")+' · '+_pgL("Élevé","High","Alta")+' · '+_pgL("Ouvert","Open","Aberto")+' · '+ds+'</div><div class="oc-d">'+_pgL("Venue d'eau ponctuelle au joint entre panneaux après la pluie.","Water seeping at the panel joint after the rain.","Umidade pontual na junta entre painéis após a chuva.")+'</div>'+sol(_pgL("Injection de résine hydro-expansive (NBR 9575).","Hydro-expansive resin injection (NBR 9575).","Injeção de resina hidroexpansiva (NBR 9575)."))+'</div></div>'+
+   '<div class="rdo-occ pg-in" data-r="o3"><div class="rdo-sev" style="background:#2f8f63"></div><div style="min-width:0"><div class="oc-t">'+_pgL("Fissure poteau C4","Crack in column C4","Fissura coluna C4")+'</div><div class="oc-m">'+_pgL("Structure","Structural","Estrutura")+' · '+_pgL("Moyen","Medium","Média")+' · '+_pgL("Résolu","Resolved","Resolvido")+' · '+ds+'</div><div class="oc-d">'+_pgL("Fissure de retrait superficielle, traitée et scellée.","Superficial shrinkage crack, treated and sealed.","Fissura superficial de retração, tratada e selada.")+'</div></div></div>';
+  var C=[[_pgL("Casa do Construtor","Casa do Construtor","Casa do Construtor"),_pgL("Matériaux · Ciment","Materials · Cement","Materiais · Cimento"),"R$ 1.284,90","Pix",1,1],
+         [_pgL("Location Échafaudage Fort","Strong Scaffold Rentals","Locadora Andaime Forte"),_pgL("Équipements · Location","Equipment · Rental","Equipamentos · Locação"),"R$ 2.150,00",_pgL("Virement","Transfer","Transferência"),1,1],
+         ["TotalEnergies",_pgL("Transport · Carburant","Transport · Fuel","Transporte · Combustível"),"R$ 47,20",_pgL("Carte","Card","Cartão"),1,0]];
+  var costs='<div class="rdo-cost-sum"><div><span>'+_pgL("Total dépensé","Total spent","Total Gasto no Dia")+'</span><b class="pgr-tot">R$ 0,00</b></div><div><span>'+_pgL("Reçus joints","Receipts attached","Recibos Anexados")+'</span><b>3</b></div><div><span>'+_pgL("Statut","Status","Status")+'</span><b>2 '+_pgL("validés","reviewed","Revisados")+' • 1 '+_pgL("en attente","pending","Pendentes")+'</b></div></div>'+
+   '<table class="rdo-cost-tbl"><thead><tr><th>'+_pgL("Fournisseur","Vendor","Fornecedor")+'</th><th>'+_pgL("Catégorie","Category","Categoria")+'</th><th style="text-align:right">'+_pgL("Valeur","Amount","Valor")+'</th><th>'+_pgL("Paiement","Payment","Pagamento")+'</th><th>'+_pgL("Reçu","Receipt","Comprovante")+'</th><th>'+_pgL("Statut","Status","Status")+'</th></tr></thead><tbody>'+
+   C.map(function(r){return '<tr><td>'+r[0]+'</td><td class="rdo-cost-cat">'+r[1]+'</td><td style="text-align:right;white-space:nowrap;font-weight:700">'+r[2]+'</td><td>'+r[3]+'</td><td><span class="pgr-rc"></span></td><td><span class="rdo-cost-badge '+(r[5]?'rev':'pend')+'">'+(r[5]?'✓ '+_pgL("Validé","Reviewed","Revisado"):_pgL("En attente","Pending","Pendente"))+'</span></td></tr>';}).join("")+'</tbody></table>'+
+   '<div class="rdo-cost-break"><b>'+_pgL("Répartition","Breakdown","Resumo por categoria")+':</b> '+_pgL("Matériaux","Materials","Materiais")+': R$ 1.284,90  |  '+_pgL("Équipements","Equipment","Equipamentos")+': R$ 2.150,00  |  '+_pgL("Transport","Transport","Transporte")+': R$ 47,20</div>';
+  var wk=_pgL("Praticable","Workable","Praticável");
+  return '<div class="pgr-doc">'+
+   '<div class="rdo-hd pg-in" data-r="h"><div style="font-family:var(--font-d);font-weight:800;font-size:20px;color:#2cbeff">Pillier</div><div style="flex:1"><h1>'+_pgL("Rapport journalier de chantier","Daily Site Report","Relatório Diário de Obra (RDO)")+'</h1></div><div style="text-align:right;font-size:12px;color:#5b6f77">Nº '+no+'<br>'+ds+'</div></div>'+
+   '<div class="rdo-grid pg-in" data-r="h">'+
+    '<div><b>'+_pgL("Chantier","Site","Obra")+':</b> Residencial Aurora</div>'+
+    '<div><b>'+_pgL("Adresse","Address","Endereço")+':</b> Av. Paulista, 1500 · São Paulo, SP</div>'+
+    '<div><b>'+_pgL("Client","Client","Cliente")+':</b> <input class="rdo-in" style="display:inline-block;width:auto;min-width:150px" value="Construtora Horizonte"></div>'+
+    '<div><b>'+_pgL("Responsable","Site manager","Responsável")+':</b> Eng. Ana Luiza</div>'+
+    '<div><b>CREA / RNP nº:</b> <input class="rdo-in" style="display:inline-block;width:auto;min-width:120px" value="SP-5063214"></div>'+
+    '<div><b>'+_pgL("Date du rapport","Report date","Data do relatório")+':</b> <input type="date" class="rdo-in" style="display:inline-block;width:auto;min-width:140px" value="'+iso+'"></div>'+
+    '<div><b>'+_pgL("Début du chantier","Site start","Início da obra")+':</b> 2026-03-02</div>'+
+    '<div><b>'+_pgL("Fin prévue","Planned end","Término previsto")+':</b> 2027-08-30</div></div>'+
+   '<div class="rdo-sec pg-in" data-r="cond"><h3>'+_pgL("Conditions","Conditions","Condições")+'</h3><div class="rdo-grid">'+
+    '<div><b>'+_pgL("Météo matin","Weather AM","Clima manhã")+':</b> <input class="rdo-in pgr-wam" value="'+wk+'"></div>'+
+    '<div><b>'+_pgL("Météo après-midi","Weather PM","Clima tarde")+':</b> <input class="rdo-in pgr-wpm" value="'+wk+'"></div>'+
+    '<div><b>'+_pgL("Température","Temperature","Temperatura")+':</b> <input class="rdo-in pgr-temp" placeholder="°C"></div>'+
+    '<div><b>'+_pgL("Effectif","Workforce","Efetivo")+':</b> <input class="rdo-in pgr-crew" placeholder="'+_pgL("ex : 12 ouvriers","e.g. 12 workers","ex: 12 trabalhadores")+'"></div></div></div>'+
+   '<div class="rdo-sec pgr-occ"><h3 class="pg-in" data-r="oh">'+_pgL("Occurrences","Occurrences","Ocorrências")+' (3)</h3>'+occ+'</div>'+
+   '<div class="rdo-sec pgr-costs pg-in" data-r="c"><h3>'+_pgL("Dépenses & Reçus du Jour","Daily Expenses & Receipts","Custos e Despesas do Dia")+' (3)</h3>'+costs+'</div>'+
+   '<div class="rdo-sec pgr-obs pg-in" data-r="obs"><h3>'+_pgL("Observations","Observations","Observações")+'</h3><textarea class="rdo-in pgr-obst" placeholder="'+_pgL("Notes additionnelles…","Additional notes…","Observações adicionais…")+'"></textarea></div>'+
+   '<div class="rdo-sign pg-in" data-r="sg">'+_pgSigBlock("resp","Eng. Ana Luiza",_pgL("Responsable","Site manager","Responsável"))+_pgSigBlock("cli","Construtora Horizonte",_pgL("Visa client","Client sign-off","Visto do cliente"))+'</div>'+
+  '</div>';
+ },
+ mount:function(I){
+  I.stage.querySelectorAll(".rdo-sig-btn").forEach(function(b){b.addEventListener("click",function(){pgPause(I);_pgSignOpen(I,b.getAttribute("data-w"));});});
+  I.stage.querySelectorAll(".pgr-doc input,.pgr-doc textarea").forEach(function(x){x.addEventListener("focus",function(){pgPause(I);});});
  },
  steps:[
-  [300,function(st){_pgV(st,'[data-r="1"]');}],
-  [1100,function(st){_pgV(st,'[data-r="2"]');}],
-  [1300,function(st,I){var n=_pgQ(st,".pgr-n");_pgTween(I,1400,function(p){n.textContent=Math.round(12*p);});}],
-  [2600,function(st){_pgV(st,'[data-r="3"]');}],
-  [4000,function(st,I){_pgV(st,'[data-r="4"]');var c=_pgQ(st,".pgr-c");_pgTween(I,1500,function(p){c.textContent=_pgMoney(3482.1*p);});}],
-  [6200,function(st){_pgV(st,".pgr-sign path");}],
-  [8200,function(st){_pgV(st,".pgr-stamp");}]
+  [200,function(st){_pgV(st,'[data-r="h"]');}],
+  [900,function(st,I){_pgV(st,'[data-r="cond"]');_pgType(I,_pgFld(_pgQ(st,".pgr-temp")),"24 °C",500);}],
+  [1500,function(st,I){_pgType(I,_pgFld(_pgQ(st,".pgr-crew")),_pgL("12 ouvriers","12 workers","12 trabalhadores"),700);}],
+  [2400,function(st){_pgV(st,'[data-r="oh"]');_pgV(st,'[data-r="o1"]');_pgDocTo(st,".pgr-occ");}],
+  [3000,function(st){_pgV(st,'[data-tw="0"]');}],
+  [3350,function(st){_pgV(st,'[data-tw="1"]');}],
+  [3700,function(st){_pgV(st,'[data-tw="2"]');}],
+  [4200,function(st){_pgV(st,'[data-r="twl"]');}],
+  [5600,function(st){_pgV(st,'[data-r="o2"]');_pgDocTo(st,'[data-r="o2"]');}],
+  [6300,function(st){_pgV(st,'[data-r="o3"]');}],
+  [7400,function(st,I){_pgV(st,'[data-r="c"]');_pgDocTo(st,".pgr-costs");var t=_pgQ(st,".pgr-tot");_pgTween(I,1300,function(p){t.textContent=_pgMoney(3482.1*p);});}],
+  [9300,function(st,I){_pgV(st,'[data-r="obs"]');_pgDocTo(st,".pgr-obs");_pgType(I,_pgFld(_pgQ(st,".pgr-obst")),_pgL("Bétonnage de la dalle L4 reporté à demain (pluie prévue). La bétonnière est d'accord.","L4 slab pour moved to tomorrow (rain forecast). The mixer agrees.","Concretagem da laje L4 adiada para amanhã (previsão de chuva). A betoneira concordou."),1300);}],
+  [11000,function(st){_pgV(st,'[data-r="sg"]');_pgDocTo(st,".rdo-sign");}],
+  [11700,function(st){var b=_pgQ(st,'.rdo-sig-btn[data-w="resp"]');if(b)b.classList.add("press");}],
+  [12000,function(st,I){var b=_pgQ(st,'.rdo-sig-btn[data-w="resp"]');if(b)b.classList.remove("press");_pgSignOpen(I,"resp",true);}],
+  [12400,function(st,I){var pad=I.pad,pts=sigScribble();if(pad)_pgTween(I,1700,function(p){pad.stroke(pts,p);});}],
+  [14400,function(st,I){if(I.pad)I.pad.confirm();}]
  ],
  act:function(I,a){
-  pgPause(I);var st=I.stage;
+  pgPause(I);var st=I.stage;_pgV(st,".pgr-doc .pg-in");
   if(a==="wx"){
-   var W=[["sun",_pgL("Ensoleillé · praticable","Sunny · workable","Ensolarado · praticável")],
-          ["cloud-rain",_pgL("Pluie · impraticable — la bétonnière fait la sieste","Rain · not workable — the mixer takes a nap","Chuva · impraticável — a betoneira tirou folga")],
-          ["cloud",_pgL("Nuageux · praticable","Cloudy · workable","Nublado · praticável")],
-          ["snowflake",_pgL("Neige ?! Noté quand même.","Snow?! Noted anyway.","Neve?! No Brasil?! Anotado mesmo assim.")]];
-   I.wx=((I.wx||0)+1)%W.length;var w=_pgQ(st,".pgr-w");
-   w.innerHTML=_pgI(W[I.wx][0])+'<span class="pgr-wt">'+W[I.wx][1]+'</span>';w.style.animation="pgPop .35s";setTimeout(function(){w.style.animation="";},400);
+   var W=[_pgL("Praticable","Workable","Praticável"),_pgL("Pluie · impraticable — la bétonnière fait la sieste","Rain · not workable — the mixer takes a nap","Chuva · impraticável — a betoneira tirou folga"),_pgL("Nuageux · praticable","Cloudy · workable","Nublado · praticável"),_pgL("Neige ?! Noté quand même.","Snow?! Noted anyway.","Neve?! No Brasil?! Anotado mesmo assim.")];
+   I.wx=((I.wx||0)+1)%W.length;var am=_pgQ(st,".pgr-wam"),pm=_pgQ(st,".pgr-wpm");am.value=W[I.wx];pm.value=W[(I.wx+1)%W.length];
+   _pgDocTo(st,'[data-r="cond"]');[am,pm].forEach(function(x){x.style.animation="none";void x.offsetWidth;x.style.animation="pgFlash 1s ease";});
   }
-  if(a==="sign"){_pgV(st,".pgr-sign path");}
-  if(a==="pdf"){_pgV(st,".pgr-sign path");setTimeout(function(){_pgV(st,".pgr-stamp");},500);setTimeout(function(){_pgToast(I,_pgL("PDF prêt · 2 pages · envoyé au client","PDF ready · 2 pages · sent to client","PDF pronto · 2 páginas · enviado ao cliente"));},900);}
+  if(a==="sign"){_pgDocTo(st,".rdo-sign");_pgSignOpen(I,"resp");}
+  if(a==="pdf"){_pgDocTo(st,".pgr-doc .rdo-hd");var ok=!!_pgQ(st,'#pgsig-resp .rdo-sig-img img');
+   _pgToast(I,ok?_pgL("PDF prêt · signé · envoyé au client","PDF ready · signed · sent to the client","PDF pronto · assinado · enviado ao cliente"):_pgL("PDF prêt · il manque juste votre signature","PDF ready · it just needs your signature","PDF pronto · só falta a sua assinatura"));}
  }
 },
 
@@ -6281,6 +6326,31 @@ var PG_SCENES=[
 ];
 
 /* ---------- scene helpers ---------- */
+function _pgFld(el){return {set textContent(v){if(el)el.value=v;}};}
+function _pgDocTo(st,sel){var d=_pgQ(st,".pgr-doc"),t=_pgQ(st,sel);if(!d||!t)return;var top=t.getBoundingClientRect().top-d.getBoundingClientRect().top+d.scrollTop-12;d.scrollTo({top:Math.max(0,top),behavior:"smooth"});}
+function _pgSigBlock(who,name,role){
+  return '<div class="rdo-sig" id="pgsig-'+who+'"><div class="rdo-sig-img"></div><div class="rdo-sig-line"><span class="rdo-sig-nm">'+name+'</span><br>'+role+'</div><div class="rdo-sig-meta"></div><button class="rdo-sig-btn" data-w="'+who+'">'+_pgI("signature")+'<span>'+_pgL("Signer","Sign","Assinar")+'</span></button></div>';
+}
+function _pgSignOpen(I,who,auto){
+  var st=I.stage,old=_pgQ(st,".pgr-padwrap");if(old)old.remove();
+  var w=document.createElement("div");w.className="pgr-padwrap";st.appendChild(w);
+  w.addEventListener("click",function(e){if(e.target===w){pgPause(I);w.remove();I.pad=null;}});
+  var blk=_pgQ(st,"#pgsig-"+who),nm=blk?_pgQ(blk,".rdo-sig-nm").textContent:"";
+  I.pad=sigPadMount(w,{
+    title:who==="resp"?_pgL("Signature du responsable","Site manager signature","Assinatura do responsável"):_pgL("Visa du client","Client sign-off","Visto do cliente"),
+    name:nm,
+    onTouch:function(){pgPause(I);},
+    onCancel:function(){pgPause(I);w.remove();I.pad=null;},
+    onDone:function(d){
+      if(blk){_pgQ(blk,".rdo-sig-img").innerHTML='<img src="'+d.img+'" alt="">';if(d.name)_pgQ(blk,".rdo-sig-nm").textContent=d.name;
+        _pgQ(blk,".rdo-sig-meta").textContent=_pgL("Signé électroniquement le ","Signed electronically on ","Assinado eletronicamente em ")+_sigWhen(d.at);
+        _pgQ(blk,".rdo-sig-btn span").textContent=_pgL("Refaire","Redo","Refazer");}
+      w.remove();I.pad=null;
+      if(!auto)_pgToast(I,_pgL("Signature ajoutée au RDO","Signature added to the RDO","Assinatura adicionada ao RDO"));
+    }
+  });
+}
+
 var _PG_PRICE_GROUPS=[["all",["Tous","All","Todos"]],["mat",["Matériaux","Materials","Materiais"]],["loc",["Équipements / Locations","Equipment / Rentals","Equipamentos / Locações"]],["labor",["Main-d'œuvre / Journées","Labor / Day rates","Mão de Obra / Diárias"]],["log",["Logistique & Divers","Logistics & Supplies","Transporte & Outros"]]];
 function _pgPriceData(){return [
  {g:"mat",n:_pgL("Ciment CP-II 50 kg","Cement CP-II 50 kg","Cimento CP-II 50 kg"),u:_pgL("sac","bag","saco"),v:[34.5,35.2,35.9,36.8,37.6,38.9],sup:"Casa do Construtor",tip:_pgL("+12,8 % en 60 jours. Dépôt Pedra Boa le vend 36,20 R$ — 54 R$ d'économie par commande de 20 sacs.","+12.8% in 60 days. Depósito Pedra Boa sells it at R$ 36.20 — R$ 54 saved per 20-bag order.","+12,8% em 60 dias. O Depósito Pedra Boa vende a R$ 36,20 — economia de R$ 54 por pedido de 20 sacos.")},
@@ -6433,7 +6503,7 @@ function _pgShell(I){
   _pgSyncCtl(I);
 }
 function pgGo(I,i,play){
-  var sc=PG_SCENES[i];I.i=i;I.t=0;I.fired=0;I.tw=[];I.wx=0;I.fr=null;I.blown=false;I.likes=0;I.ulikes=0;I.psel=null;
+  var sc=PG_SCENES[i];I.i=i;I.t=0;I.fired=0;I.tw=[];I.wx=0;I.fr=null;I.blown=false;I.likes=0;I.ulikes=0;I.psel=null;I.pad=null;
   if(play)I.playing=true;
   I.host.querySelectorAll(".pg-tab").forEach(function(b,k){b.classList.toggle("on",k===i);b.setAttribute("aria-selected",k===i?"true":"false");var f=_pgQ(b,".pg-tf");if(f)f.style.width="0";});
   var on=_pgQ(I.host,".pg-tab.on");if(on&&on.parentNode.scrollWidth>on.parentNode.clientWidth){on.parentNode.scrollTo({left:on.offsetLeft-24,behavior:"smooth"});}
@@ -8634,6 +8704,7 @@ function renderRDODay(){
   if(sec)sec.innerHTML="<h3>"+L("Occurrences","Occurrences","Ocorrências")+" ("+built.count+")</h3>"+built.html;
   var dl=document.getElementById("rdo-date-lbl");if(dl)dl.textContent=_rdoDayLabel(dayIso);
   try{renderRDOCosts();}catch(e){}
+  try{_rdoSigPaint();}catch(e){}
 }
 /* ── RDO ⇄ Financeiro: the day's expenses & receipts inside the site diary ───── */
 // Aggregate the expenses for the RDO's site + day into totals, breakdown and HTML.
@@ -8742,7 +8813,7 @@ function openRDO(){
   h+="<div class='rdo-grid'>"+
     "<div><b>"+L("Chantier","Site","Obra")+":</b> "+escapeHTML(site||L("Tous les chantiers","All sites","Todos os canteiros"))+"</div>"+
     "<div><b>"+L("Adresse","Address","Endereço")+":</b> "+escapeHTML(addr)+"</div>"+
-    "<div><b>"+L("Client","Client","Cliente")+":</b> <input class='rdo-in' style='display:inline-block;width:auto;min-width:150px' placeholder='"+L("Nom du client","Client name","Nome do cliente")+"'></div>"+
+    "<div><b>"+L("Client","Client","Cliente")+":</b> <input class='rdo-in' id='rdo-client' style='display:inline-block;width:auto;min-width:150px' placeholder='"+L("Nom du client","Client name","Nome do cliente")+"' oninput='_rdoSigPaint()'></div>"+
     "<div><b>"+L("Responsable","Site manager","Responsável")+":</b> "+escapeHTML(proj.owner||proj.lead||me.name||"—")+"</div>"+
     "<div><b>"+regLabel+":</b> <input class='rdo-in' style='display:inline-block;width:auto;min-width:120px' placeholder='"+regLabel+"'></div>"+
     "<div><b>"+L("Date du rapport","Report date","Data do relatório")+":</b> <input type='date' id='rdo-date' class='rdo-in no-print' style='display:inline-block;width:auto;min-width:140px' value='"+todayIso+"' onchange='renderRDODay()'><span class='rdo-print-only' id='rdo-date-lbl' style='display:none'>"+_rdoDayLabel(todayIso)+"</span></div>"+
@@ -8757,14 +8828,92 @@ function openRDO(){
   var costs=_rdoBuildCosts(todayIso);
   h+="<div class='rdo-sec' id='rdo-costs-sec'><h3>"+L("Dépenses & Reçus du Jour","Daily Expenses & Receipts","Custos e Despesas do Dia")+" ("+costs.count+")</h3>"+costs.html+"</div>";
   h+="<div class='rdo-sec'><h3>"+L("Observations","Observations","Observações")+"</h3><textarea class='rdo-in' placeholder='"+L("Notes additionnelles…","Additional notes…","Observações adicionais…")+"'></textarea></div>";
-  h+="<div class='rdo-sign'><div>"+escapeHTML(proj.owner||me.name||"")+"<br>"+L("Responsable","Site manager","Responsável")+"</div><div>&nbsp;<br>"+L("Visa client","Client sign-off","Visto do cliente")+"</div></div>";
+  h+="<div class='rdo-sign'>"+_rdoSigBlock("resp",proj.owner||me.name||"",L("Responsable","Site manager","Responsável"))+_rdoSigBlock("cli","",L("Visa client","Client sign-off","Visto do cliente"))+"</div>";
   document.getElementById("rdo-doc").innerHTML=h;
+  _rdoSigPaint();
   var pb=document.getElementById("rdo-print-btn");pb.style.display="";pb.textContent=L("Imprimer / Enregistrer PDF","Print / Save PDF","Imprimir / Salvar PDF");
   document.getElementById("rdo-close-btn").textContent=L("Fermer","Close","Fechar");
   document.getElementById("rdo-overlay").classList.add("open");
 }
 function printRDO(){window.print();}
-function closeRDO(){var o=document.getElementById("rdo-overlay");if(o)o.classList.remove("open");}
+/* ── Signature pad (shared by the RDO and the site demo) ─────────────────────── */
+function sigPadMount(host,o){
+  var L=function(fr,en,pt){return lang===0?fr:lang===2?pt:en;};
+  host.innerHTML="<div class='sigp'><div class='sigp-h'>"+escapeHTML(o.title||L("Signature","Signature","Assinatura"))+"</div>"+
+    "<input class='sigp-name' maxlength='80' placeholder='"+L("Nom complet","Full name","Nome completo")+"'>"+
+    "<div class='sigp-cv'><canvas></canvas><div class='sigp-base'></div><span class='sigp-hint'>"+L("Signez ici avec le doigt ou la souris","Sign here with your finger or mouse","Assine aqui com o dedo ou o mouse")+"</span></div>"+
+    "<div class='sigp-row'><button class='sigp-clear'>"+L("Effacer","Clear","Limpar")+"</button><span style='flex:1'></span><button class='sigp-cancel'>"+L("Annuler","Cancel","Cancelar")+"</button><button class='sigp-ok' disabled>"+L("Confirmer la signature","Confirm signature","Confirmar assinatura")+"</button></div>"+
+    "<div class='sigp-legal'>"+L("Signature électronique : nom, date et heure sont enregistrés dans le rapport.","Electronic signature: name, date and time are recorded on the report.","Assinatura eletrônica: nome, data e hora ficam registrados no relatório.")+"</div></div>";
+  var cv=host.querySelector("canvas"),box=host.querySelector(".sigp-cv"),ok=host.querySelector(".sigp-ok"),nm=host.querySelector(".sigp-name");
+  nm.value=o.name||"";
+  var ctx,dpr=Math.max(1,window.devicePixelRatio||1),inked=false,drawing=false,last=null,bx=null;
+  function fit(){var W=box.offsetWidth,H=box.offsetHeight;cv.width=Math.max(10,W*dpr);cv.height=Math.max(10,H*dpr);ctx=cv.getContext("2d");ctx.scale(dpr,dpr);ctx.lineCap="round";ctx.lineJoin="round";ctx.strokeStyle="#1d3a8a";ctx.lineWidth=2.4;}
+  fit();
+  function ink(){if(!inked){inked=true;ok.disabled=false;var h=host.querySelector(".sigp-hint");if(h)h.style.display="none";}}
+  function seg(a,b){ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();ink();bx=bx||[1e9,1e9,-1e9,-1e9];[a,b].forEach(function(q){bx[0]=Math.min(bx[0],q[0]);bx[1]=Math.min(bx[1],q[1]);bx[2]=Math.max(bx[2],q[0]);bx[3]=Math.max(bx[3],q[1]);});}
+  function pt(e){var r=cv.getBoundingClientRect(),sx=box.offsetWidth/(r.width||1),sy=box.offsetHeight/(r.height||1);return [(e.clientX-r.left)*sx,(e.clientY-r.top)*sy];}
+  cv.addEventListener("pointerdown",function(e){drawing=true;last=pt(e);try{cv.setPointerCapture(e.pointerId);}catch(_){}e.preventDefault();if(o.onTouch)o.onTouch();});
+  cv.addEventListener("pointermove",function(e){if(!drawing)return;var q=pt(e);seg(last,q);last=q;e.preventDefault();});
+  ["pointerup","pointercancel","pointerleave"].forEach(function(ev){cv.addEventListener(ev,function(){drawing=false;});});
+  function clear(){ctx.clearRect(0,0,cv.width,cv.height);inked=false;bx=null;ok.disabled=true;var h=host.querySelector(".sigp-hint");if(h)h.style.display="";}
+  host.querySelector(".sigp-clear").addEventListener("click",clear);
+  host.querySelector(".sigp-cancel").addEventListener("click",function(){if(o.onCancel)o.onCancel();});
+  function crop(){if(!bx)return cv.toDataURL("image/png");var pd=6,x=Math.max(0,bx[0]-pd)*dpr,y=Math.max(0,bx[1]-pd)*dpr,w=Math.min(cv.width-x,(bx[2]-bx[0]+pd*2)*dpr),h=Math.min(cv.height-y,(bx[3]-bx[1]+pd*2)*dpr);var c2=document.createElement("canvas");c2.width=Math.max(1,w);c2.height=Math.max(1,h);c2.getContext("2d").drawImage(cv,x,y,w,h,0,0,w,h);return c2.toDataURL("image/png");}
+  function done(){if(!inked)return;o.onDone&&o.onDone({img:crop(),name:(nm.value||"").trim(),at:Date.now()});}
+  ok.addEventListener("click",done);
+  // Programmatic stroke (used by the animated demo): pts in 0..1 box coordinates.
+  return {
+    stroke:function(pts,p){var w=box.offsetWidth,h=box.offsetHeight,n=Math.max(2,Math.round(pts.length*p));
+      clear();for(var k=1;k<n;k++){seg([pts[k-1][0]*w,pts[k-1][1]*h],[pts[k][0]*w,pts[k][1]*h]);}},
+    confirm:function(){ok.classList.add("press");setTimeout(done,180);},
+    clear:clear
+  };
+}
+// A handwriting-like scribble (normalized 0..1) for the animated demo.
+function sigScribble(){
+  var pts=[],k,t,w=Math.PI*2*6;
+  for(k=0;k<=220;k++){t=k/220;var env=0.55+0.45*Math.sin(t*Math.PI);
+    pts.push([0.14+t*0.62+0.045*Math.cos(w*t+Math.PI),0.5-0.2*env*Math.sin(w*t)+t*0.06]);}
+  for(k=0;k<=40;k++){t=k/40;pts.push([0.78-t*0.6,0.72+0.03*Math.sin(t*Math.PI*1.5)]);}
+  return pts;
+}
+function _sigWhen(at){try{return new Date(at).toLocaleString(lang===1?"en-GB":lang===0?"fr-FR":"pt-BR",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"});}catch(e){return "";}}
+/* ── RDO signatures: stored per site + report day ── */
+function _rdoSigKey(){var di=document.getElementById("rdo-date");return "pillier_rdo_sig|"+(getActiveSite()||"*")+"|"+(di?di.value:_rdoIsoDay(new Date()));}
+function _rdoSigGet(){try{return JSON.parse(localStorage.getItem(_rdoSigKey())||"{}")||{};}catch(e){return {};}}
+function _rdoSigSave(o){try{localStorage.setItem(_rdoSigKey(),JSON.stringify(o));return true;}catch(e){toast(plL("Stockage plein : signature non conservée","Storage full: signature not kept","Armazenamento cheio: assinatura não guardada"));return false;}}
+function _rdoSigBlock(who,name,role){
+  return "<div class='rdo-sig' id='rdo-sig-"+who+"' data-def=\""+escapeHTML(name||"")+"\"><div class='rdo-sig-img'></div><div class='rdo-sig-line'><span class='rdo-sig-nm'>"+(name?escapeHTML(name):"&nbsp;")+"</span><br>"+role+"</div><div class='rdo-sig-meta'></div>"+
+    "<button class='rdo-sig-btn no-print' onclick=\"rdoSign('"+who+"')\"><i class='ti ti-signature'></i><span>"+plL("Signer","Sign","Assinar")+"</span></button></div>";
+}
+function _rdoSigPaint(){
+  var all=_rdoSigGet();
+  ["resp","cli"].forEach(function(who){
+    var el=document.getElementById("rdo-sig-"+who);if(!el)return;var d=all[who];
+    el.querySelector(".rdo-sig-img").innerHTML=d?"<img src=\""+d.img+"\" alt=''>":"";
+    var nm=d&&d.name?d.name:el.getAttribute("data-def");
+    if(who==="cli"&&!d){var ci=document.getElementById("rdo-client");if(ci&&ci.value)nm=ci.value;}
+    el.querySelector(".rdo-sig-nm").innerHTML=nm?escapeHTML(nm):"&nbsp;";
+    el.querySelector(".rdo-sig-meta").textContent=d?plL("Signé électroniquement le ","Signed electronically on ","Assinado eletronicamente em ")+_sigWhen(d.at):"";
+    el.querySelector(".rdo-sig-btn span").textContent=d?plL("Refaire","Redo","Refazer"):plL("Signer","Sign","Assinar");
+  });
+}
+function rdoSign(who){
+  var old=document.getElementById("rdo-sig-modal");if(old)old.remove();
+  var m=document.createElement("div");m.id="rdo-sig-modal";document.body.appendChild(m);
+  m.addEventListener("click",function(e){if(e.target===m)m.remove();});
+  var el=document.getElementById("rdo-sig-"+who),def=el?el.getAttribute("data-def"):"";
+  if(who==="cli"){var ci=document.getElementById("rdo-client");def=(ci&&ci.value)||def;}
+  var cur=_rdoSigGet()[who];if(cur&&cur.name)def=cur.name;
+  sigPadMount(m,{
+    title:who==="resp"?plL("Signature du responsable","Site manager signature","Assinatura do responsável"):plL("Visa du client","Client sign-off","Visto do cliente"),
+    name:def,
+    onCancel:function(){m.remove();},
+    onDone:function(d){var all=_rdoSigGet();all[who]=d;if(_rdoSigSave(all)){_rdoSigPaint();toast(plL("Signature ajoutée au RDO","Signature added to the RDO","Assinatura adicionada ao RDO"));}m.remove();}
+  });
+}
+
+function closeRDO(){var o=document.getElementById("rdo-overlay");if(o)o.classList.remove("open");var m=document.getElementById("rdo-sig-modal");if(m)m.remove();}
 /* ── Inspection checklists (norm-tied) → signed inspection record ────────────── */
 var CHECKLISTS=[
  {id:"nr18",jur:"BR",title:["Sécurité chantier (NR-18)","Site safety (NR-18)","Segurança no canteiro (NR-18)"],items:[
