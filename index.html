@@ -79,6 +79,259 @@ body.light-mode .ch-out{border-color:rgba(16,34,43,0.2);color:#10222b;}
 body.light-mode .ch-out:hover{border-color:#10222b;background:rgba(16,34,43,0.03);}
 @media(max-width:1180px){.ch-nav .content-tab{padding:8px 10px;font-size:14px;}.ch-nav{margin-left:12px;}.ch-out,.ch-solid{padding:0 16px;font-size:14px;}}
 @media(min-width:769px) and (max-width:1080px){#content-tabs{display:none !important;}#content-mob-menu{display:inline-flex !important;}.ch-right{margin-left:auto;}}
+/* ── Product playground (interactive, pausable demo) ── */
+.pg{--pg-bg:#132a33;--pg-bg2:#0e1f27;--pg-line:rgba(255,255,255,0.08);--pg-line2:rgba(255,255,255,0.14);--pg-tx:#e6edf0;--pg-tx2:#93a6af;--pg-chip:rgba(255,255,255,0.05);--pg-card:#16323b;max-width:1100px;margin:0 auto;color:var(--pg-tx);font-family:var(--font-b);}
+body.light-mode .pg{--pg-bg:#ffffff;--pg-bg2:#f3f7f9;--pg-line:rgba(16,34,43,0.09);--pg-line2:rgba(16,34,43,0.16);--pg-tx:#10222b;--pg-tx2:#5b6f77;--pg-chip:#eef3f5;--pg-card:#ffffff;}
+.pg *{box-sizing:border-box;}
+.pg-head{text-align:center;max-width:720px;margin:0 auto 26px;}
+.pg-head h2{font-family:var(--font-d);font-size:clamp(28px,4vw,42px);font-weight:800;color:var(--white);letter-spacing:-0.02em;line-height:1.08;margin:0;}
+.pg-head p{color:var(--text2);font-size:16px;line-height:1.6;margin:14px auto 0;max-width:600px;}
+.pg-tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:18px;}
+.pg-tab{position:relative;overflow:hidden;flex-shrink:0;display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 16px;border-radius:999px;border:1px solid var(--pg-line2);background:transparent;color:var(--pg-tx2);font:600 14px var(--font-b);cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s,background .15s,transform .15s;}
+.pg-tab i{font-size:16px;}
+.pg-tab:hover{color:var(--pg-tx);transform:translateY(-1px);}
+.pg-tab.on{color:#2cbeff;border-color:rgba(44,190,255,0.55);background:rgba(44,190,255,0.08);}
+.pg-tab .pg-tf{position:absolute;left:0;bottom:0;height:2px;width:0;background:#2cbeff;}
+.pg-tab .pg-new{font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;background:#fbbf24;color:#3a2a00;border-radius:999px;padding:2px 6px;}
+.pg-win{border-radius:20px;background:var(--pg-bg);border:1px solid var(--pg-line);box-shadow:0 30px 70px rgba(0,0,0,0.28);overflow:hidden;}
+body.light-mode .pg-win{box-shadow:0 24px 60px rgba(16,34,43,0.10);}
+.pg-bar{display:flex;align-items:center;gap:12px;height:50px;padding:0 14px;border-bottom:1px solid var(--pg-line);}
+.pg-dots{display:flex;gap:6px;flex-shrink:0;}
+.pg-dots i{width:11px;height:11px;border-radius:50%;display:block;}
+.pg-url{flex:1;max-width:380px;margin:0 auto;height:30px;border-radius:9px;background:var(--pg-chip);display:flex;align-items:center;justify-content:center;gap:6px;font-size:12.5px;font-weight:500;color:var(--pg-tx2);overflow:hidden;white-space:nowrap;}
+.pg-url i{font-size:13px;color:#4ade80;}
+.pg-live{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#4ade80;flex-shrink:0;min-width:86px;justify-content:flex-end;}
+.pg-live b{width:7px;height:7px;border-radius:50%;background:currentColor;animation:pgPulse 1.4s infinite;}
+.pg.paused .pg-live{color:#fbbf24;}
+.pg.paused .pg-live b{animation:none;}
+.pg-ctl{display:flex;gap:6px;flex-shrink:0;}
+.pg-cb{width:34px;height:34px;border-radius:999px;border:1px solid var(--pg-line2);background:none;color:var(--pg-tx);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:16px;transition:border-color .15s,color .15s,transform .15s;}
+.pg-cb:hover{border-color:#2cbeff;color:#2cbeff;}
+.pg-cb.pp{background:#2cbeff;border-color:#2cbeff;color:#04222f;}
+.pg-cb.pp:hover{color:#04222f;transform:scale(1.06);}
+.pg-body{display:grid;grid-template-columns:310px 1fr;min-height:450px;}
+.pg-side{padding:26px 24px;border-right:1px solid var(--pg-line);display:flex;flex-direction:column;gap:12px;}
+.pg-k{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:#2cbeff;}
+.pg-t{font-family:var(--font-d);font-size:23px;font-weight:800;line-height:1.15;letter-spacing:-0.01em;color:var(--pg-tx);margin:0;}
+.pg-d{font-size:14px;line-height:1.6;color:var(--pg-tx2);margin:0;}
+.pg-tryl{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--pg-tx2);margin-top:6px;}
+.pg-tries{display:flex;flex-wrap:wrap;gap:7px;}
+.pg-btn{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 13px;border-radius:999px;border:1px solid rgba(44,190,255,0.45);background:rgba(44,190,255,0.06);color:#2cbeff;font:600 13px var(--font-b);cursor:pointer;transition:background .15s,transform .1s;}
+.pg-btn:hover{background:rgba(44,190,255,0.14);}
+.pg-btn:active{transform:scale(.96);}
+.pg-btn i{font-size:15px;}
+.pg-quip{margin-top:auto;display:flex;gap:10px;align-items:flex-start;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.28);border-radius:14px;padding:12px 14px;font-size:13px;line-height:1.5;color:var(--pg-tx);}
+.pg-quip i{font-size:18px;color:#fbbf24;flex-shrink:0;margin-top:1px;}
+.pg-stage{position:relative;padding:22px;background:var(--pg-bg2);overflow:hidden;min-width:0;}
+.pg-foot{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:22px;}
+.pg-foot span{font-size:14px;color:var(--text2);}
+.pg-in{opacity:0;transform:translateY(8px);transition:opacity .45s ease,transform .45s ease;}
+.pg-in.v{opacity:1;transform:none;}
+.pg-toast{position:absolute;left:50%;bottom:18px;transform:translate(-50%,20px);opacity:0;background:#10222b;color:#fff;border:1px solid rgba(44,190,255,0.4);border-radius:999px;padding:9px 16px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;white-space:nowrap;transition:opacity .3s,transform .3s;z-index:5;pointer-events:none;box-shadow:0 10px 30px rgba(0,0,0,.3);}
+.pg-toast.v{opacity:1;transform:translate(-50%,0);}
+.pg-toast i{color:#4ade80;font-size:16px;}
+@keyframes pgPulse{0%{box-shadow:0 0 0 0 currentColor}70%{box-shadow:0 0 0 6px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@keyframes pgScan{0%{top:0}50%{top:calc(100% - 3px)}100%{top:0}}
+@keyframes pgBounce{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-4px);opacity:1}}
+@keyframes pgPop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.12);opacity:1}100%{transform:scale(1)}}
+@keyframes pgRing{0%{box-shadow:0 0 0 0 rgba(229,72,77,.55)}100%{box-shadow:0 0 0 14px rgba(229,72,77,0)}}
+@keyframes pgBlink{50%{opacity:0}}
+@keyframes pgFlash{0%{background:rgba(44,190,255,.28)}100%{background:transparent}}
+/* capture */
+.pgc{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;height:100%;}
+.pgc-photo{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:4/3;background:#1b2b31 url(/assets/hero-obra.jpg) center/cover;align-self:start;}
+.pgc-photo:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,20,26,.05),rgba(6,20,26,.35));pointer-events:none;}
+.pgc-grid{position:absolute;inset:0;opacity:0;transition:opacity .5s;background-image:linear-gradient(rgba(44,190,255,.22) 1px,transparent 1px),linear-gradient(90deg,rgba(44,190,255,.22) 1px,transparent 1px);background-size:28px 28px;z-index:1;}
+.pgc-grid.v{opacity:.55;}
+.pgc-scan{position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,transparent,#2cbeff,transparent);box-shadow:0 0 18px 2px #2cbeff;opacity:0;z-index:3;}
+.pgc-scan.v{opacity:1;animation:pgScan 1.9s ease-in-out infinite;}
+.pgc-box{position:absolute;border:2px solid var(--c);border-radius:7px;background:color-mix(in srgb,var(--c) 12%,transparent);opacity:0;transform:scale(.85);transition:opacity .35s,transform .35s cubic-bezier(.3,1.6,.5,1);z-index:2;}
+.pgc-box.v{opacity:1;transform:none;}
+.pgc-box.ring.v{animation:pgRing 1.6s infinite;}
+.pgc-lb{position:absolute;left:-2px;top:-25px;background:var(--c);color:#fff;font-size:10.5px;font-weight:700;padding:4px 8px;border-radius:6px;white-space:nowrap;letter-spacing:.01em;}
+.pgc-box.r .pgc-lb{left:auto;right:-2px;}
+.pgc-box.b .pgc-lb{top:auto;bottom:-25px;}
+.pgc-chip{position:absolute;left:10px;bottom:10px;z-index:4;background:rgba(6,20,26,.78);color:#fff;border:1px solid rgba(44,190,255,.45);border-radius:999px;padding:6px 11px;font-size:11.5px;font-weight:700;display:flex;align-items:center;gap:6px;}
+.pgc-chip i{color:#2cbeff;font-size:14px;}
+.pgc-panel{display:flex;flex-direction:column;gap:9px;min-width:0;}
+.pgc-card{background:var(--pg-card);border:1px solid var(--pg-line);border-radius:12px;padding:10px 12px;}
+.pgc-h{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--pg-tx2);margin-bottom:4px;}
+.pgc-h i{font-size:14px;color:#2cbeff;}
+.pgc-card p{margin:0;font-size:13px;line-height:1.5;color:var(--pg-tx);}
+.pgc-sol{border-color:rgba(74,222,128,.35);}
+.pgc-sol .pgc-h i{color:#4ade80;}
+.pgc-norms{display:flex;gap:6px;flex-wrap:wrap;}
+.pgc-norms span,.pg-norm{font-size:11px;font-weight:700;color:#2cbeff;background:rgba(44,190,255,.1);border:1px solid rgba(44,190,255,.25);border-radius:6px;padding:3px 8px;}
+.pgc-saved{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12px;font-weight:600;color:var(--pg-tx2);}
+.pgc-saved span{display:inline-flex;align-items:center;gap:4px;}
+.pgc-saved i{color:#4ade80;font-size:15px;}
+/* chat */
+.pgh{display:flex;flex-direction:column;height:100%;min-height:400px;}
+.pgh-msgs{flex:1;display:flex;flex-direction:column;gap:10px;overflow:hidden;justify-content:flex-end;padding-bottom:10px;}
+.pgh-u{align-self:flex-end;background:#2cbeff;color:#04222f;border-radius:18px 18px 4px 18px;padding:10px 14px;max-width:78%;font-size:14px;font-weight:500;line-height:1.45;}
+.pgh-b{align-self:flex-start;background:var(--pg-card);border:1px solid var(--pg-line);color:var(--pg-tx);border-radius:18px 18px 18px 4px;padding:12px 14px;max-width:88%;font-size:14px;line-height:1.55;}
+.pgh-b .who{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#2cbeff;margin-bottom:5px;}
+.pgh-dots{display:inline-flex;gap:4px;padding:4px 2px;}
+.pgh-dots span{width:7px;height:7px;border-radius:50%;background:var(--pg-tx2);animation:pgBounce 1.1s infinite;}
+.pgh-dots span:nth-child(2){animation-delay:.15s}.pgh-dots span:nth-child(3){animation-delay:.3s}
+.pgh-link{display:inline-flex;align-items:center;gap:5px;margin:6px 6px 0 0;padding:5px 10px;border-radius:999px;border:1px solid rgba(44,190,255,.35);background:rgba(44,190,255,.07);color:#2cbeff;font-size:12.5px;font-weight:600;}
+.pgh-link .sev{width:7px;height:7px;border-radius:50%;background:#e5484d;}
+.pgh-link.done{border-color:rgba(74,222,128,.4);color:#4ade80;background:rgba(74,222,128,.08);}
+.pgh-link.done .sev{background:#4ade80;}
+.pgh-act{border:1px dashed rgba(251,191,36,.6);background:rgba(251,191,36,.06);border-radius:14px;padding:12px 14px;max-width:88%;align-self:flex-start;font-size:13.5px;color:var(--pg-tx);}
+.pgh-act .t{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#fbbf24;margin-bottom:6px;display:flex;gap:6px;align-items:center;}
+.pgh-act .row{display:flex;gap:8px;margin-top:10px;}
+.pgh-act button{height:32px;padding:0 14px;border-radius:999px;font:700 13px var(--font-b);cursor:pointer;border:1px solid var(--pg-line2);background:none;color:var(--pg-tx);}
+.pgh-act button.ok{background:#2cbeff;border-color:#2cbeff;color:#04222f;}
+.pgh-act button.press{transform:scale(.93);filter:brightness(.9);}
+.pgh-done{display:flex;align-items:center;gap:7px;color:#4ade80;font-weight:700;margin-top:8px;font-size:13.5px;}
+.pgh-in{display:flex;align-items:center;gap:8px;height:46px;border-radius:14px;border:1px solid var(--pg-line2);background:var(--pg-card);padding:0 8px 0 14px;font-size:14px;color:var(--pg-tx);}
+.pgh-in .tx{flex:1;white-space:nowrap;overflow:hidden;color:var(--pg-tx);}
+.pgh-in .tx:empty:before{content:attr(data-ph);color:var(--pg-tx2);}
+.pgh-in .car{width:2px;height:18px;background:#2cbeff;animation:pgBlink 1s steps(1) infinite;margin-left:-4px;}
+.pgh-in .send{width:32px;height:32px;border-radius:10px;background:#2cbeff;color:#04222f;display:flex;align-items:center;justify-content:center;font-size:16px;}
+/* rdo */
+.pgr-paper{position:relative;background:#fff;color:#1a2b33;border-radius:12px;box-shadow:0 18px 40px rgba(0,0,0,.22);padding:20px 24px 22px;max-width:600px;margin:0 auto;font-size:13px;line-height:1.45;}
+.pgr-hd{display:flex;align-items:flex-end;gap:12px;border-bottom:2px solid #1a2b33;padding-bottom:10px;margin-bottom:12px;}
+.pgr-hd .lg{font-family:var(--font-d);font-weight:800;font-size:18px;color:#0a95d6;}
+.pgr-hd h4{flex:1;margin:0;font-size:14.5px;font-weight:800;}
+.pgr-hd .no{text-align:right;font-size:11px;color:#5b6f77;}
+.pgr-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;}
+.pgr-grid b{color:#1a2b33;}
+.pgr-sec{margin-top:12px;}
+.pgr-sec h5{margin:0 0 6px;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#0a95d6;border-bottom:1px solid #e3eaee;padding-bottom:4px;}
+.pgr-w{font-weight:600;}
+.pgr-w i{font-size:16px;color:#e29a00;vertical-align:-3px;margin-right:3px;}
+.pgr-oc{display:flex;align-items:center;gap:8px;padding:3px 0;}
+.pgr-oc i{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.pgr-oc span{color:#5b6f77;margin-left:auto;font-size:11.5px;}
+.pgr-sign{display:flex;justify-content:space-between;align-items:flex-end;margin-top:46px;gap:20px;}
+.pgr-sign div{flex:1;border-top:1px solid #1a2b33;padding-top:4px;font-size:11px;color:#5b6f77;text-align:center;position:relative;}
+.pgr-sign svg{position:absolute;left:50%;bottom:calc(100% - 6px);transform:translateX(-50%);width:140px;height:40px;overflow:visible;}
+.pgr-sign path{fill:none;stroke:#1d4ed8;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:420;stroke-dashoffset:420;transition:stroke-dashoffset 1.5s ease;}
+.pgr-sign path.v{stroke-dashoffset:0;}
+.pgr-stamp{position:absolute;right:34px;bottom:30px;border:3px solid #16a34a;color:#16a34a;font-weight:900;font-size:17px;letter-spacing:.08em;padding:6px 14px;border-radius:8px;transform:rotate(-12deg) scale(2.2);opacity:0;transition:transform .35s cubic-bezier(.3,1.6,.5,1),opacity .25s;pointer-events:none;background:rgba(22,163,74,.05);}
+.pgr-stamp.v{transform:rotate(-12deg) scale(1);opacity:.92;}
+/* finance */
+.pgf{display:flex;flex-direction:column;gap:12px;}
+.pgf-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.pgf-kpi{background:var(--pg-card);border:1px solid var(--pg-line);border-radius:12px;padding:10px 12px;}
+.pgf-kpi .l{font-size:11px;font-weight:700;color:var(--pg-tx2);display:flex;gap:5px;align-items:center;}
+.pgf-kpi .l i{font-size:14px;color:#0ea5e9;}
+.pgf-kpi .n{font-family:var(--font-d);font-size:21px;font-weight:800;margin-top:3px;color:var(--pg-tx);}
+.pgf-bar{height:6px;border-radius:99px;background:var(--pg-chip);margin-top:8px;overflow:hidden;}
+.pgf-bar b{display:block;height:100%;width:0;background:#0ea5e9;border-radius:99px;transition:background .3s;}
+.pgf-bar.hot b{background:#e5484d;}
+.pgf-mid{display:grid;grid-template-columns:170px 1fr;gap:12px;}
+.pgf-rc{position:relative;background:#fffef7;color:#333;border-radius:6px 6px 0 0;padding:12px 12px 18px;font:11px/1.55 "Courier New",monospace;box-shadow:0 10px 24px rgba(0,0,0,.2);overflow:hidden;transform:rotate(-2deg);}
+.pgf-rc:after{content:"";position:absolute;left:0;right:0;bottom:0;height:8px;background:linear-gradient(135deg,transparent 50%,var(--pg-bg2) 50%) 0 0/10px 10px,linear-gradient(225deg,transparent 50%,var(--pg-bg2) 50%) 0 0/10px 10px;}
+.pgf-rc b{display:block;text-align:center;font-size:11.5px;}
+.pgf-rc .tot{border-top:1px dashed #999;margin-top:5px;padding-top:4px;font-weight:700;}
+.pgf-laser{position:absolute;left:0;right:0;top:0;height:2px;background:#e5484d;box-shadow:0 0 12px 2px rgba(229,72,77,.8);opacity:0;}
+.pgf-laser.v{opacity:1;animation:pgScan 1.4s linear infinite;}
+.pgf-right{display:flex;flex-direction:column;gap:8px;min-width:0;}
+.pgf-fields{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.pgf-f{background:var(--pg-card);border:1px solid var(--pg-line);border-radius:10px;padding:6px 10px;font-size:12.5px;}
+.pgf-f .l{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--pg-tx2);}
+.pgf-f .x{font-weight:700;color:var(--pg-tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pgf-f.v{animation:pgFlash 1s ease;}
+.pgf-chart{background:var(--pg-card);border:1px solid var(--pg-line);border-radius:12px;padding:8px 10px 4px;}
+.pgf-chart .l{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--pg-tx2);display:flex;justify-content:space-between;}
+.pgf-chart svg{width:100%;height:84px;display:block;}
+.pgf-line{fill:none;stroke:#0ea5e9;stroke-width:2.5;stroke-linecap:round;stroke-dasharray:520;stroke-dashoffset:520;transition:stroke-dashoffset 1.6s ease;}
+.pgf-line.v{stroke-dashoffset:0;}
+.pgf-led{display:flex;flex-direction:column;gap:5px;}
+.pgf-row{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;background:var(--pg-card);border:1px solid var(--pg-line);border-radius:10px;padding:7px 11px;font-size:12.5px;}
+.pgf-row .v1{font-weight:600;color:var(--pg-tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pgf-row .v1 small{display:block;font-weight:500;color:var(--pg-tx2);font-size:11px;}
+.pgf-row .amt{font-weight:800;color:var(--pg-tx);}
+.pgf-row .st{font-size:10.5px;font-weight:800;color:#4ade80;background:rgba(74,222,128,.1);border-radius:999px;padding:3px 8px;display:inline-flex;gap:3px;align-items:center;}
+.pgf-alert{display:none;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:#e5484d;background:rgba(229,72,77,.08);border:1px solid rgba(229,72,77,.3);border-radius:10px;padding:8px 11px;}
+.pgf-alert.v{display:flex;animation:pgPop .4s;}
+/* knowledge base */
+.pgk-s{display:flex;align-items:center;gap:8px;height:46px;border-radius:14px;border:1px solid var(--pg-line2);background:var(--pg-card);padding:0 14px;margin-bottom:10px;}
+.pgk-s i{font-size:18px;color:var(--pg-tx2);}
+.pgk-s input{flex:1;min-width:0;background:none;border:none;outline:none;font:500 14.5px var(--font-b);color:var(--pg-tx);}
+.pgk-s input::placeholder{color:var(--pg-tx2);}
+.pgk-cnt{font-size:12px;color:var(--pg-tx2);margin:0 2px 8px;font-weight:600;}
+.pgk-list{display:flex;flex-direction:column;gap:7px;}
+.pgk-it{display:flex;gap:10px;align-items:flex-start;background:var(--pg-card);border:1px solid var(--pg-line);border-radius:12px;padding:9px 12px;transition:opacity .25s,transform .25s;}
+.pgk-it .d{width:9px;height:9px;border-radius:50%;margin-top:5px;flex-shrink:0;}
+.pgk-it .tt{font-size:13.5px;font-weight:700;color:var(--pg-tx);}
+.pgk-it .mt{font-size:11.5px;color:var(--pg-tx2);margin-top:1px;}
+.pgk-it .pg-norm{margin-left:auto;align-self:center;flex-shrink:0;}
+.pgk-it mark{background:rgba(251,191,36,.35);color:inherit;border-radius:3px;padding:0 1px;}
+.pgk-empty{font-size:13.5px;color:var(--pg-tx2);padding:18px;text-align:center;border:1px dashed var(--pg-line2);border-radius:12px;}
+.pgk-ins{margin-top:10px;display:flex;gap:10px;align-items:flex-start;border:1px solid rgba(44,190,255,.35);background:rgba(44,190,255,.06);border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.5;color:var(--pg-tx);}
+.pgk-ins i{color:#2cbeff;font-size:18px;flex-shrink:0;}
+/* team */
+.pgt{position:relative;display:flex;flex-direction:column;gap:9px;padding-top:6px;}
+.pgt-n{display:flex;gap:11px;align-items:flex-start;background:var(--pg-card);border:1px solid var(--pg-line);border-radius:14px;padding:11px 13px;opacity:0;transform:translateX(-18px);transition:opacity .4s,transform .4s;}
+.pgt-n.v{opacity:1;transform:none;}
+.pgt-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0;}
+.pgt-n .m{font-size:13.5px;line-height:1.45;color:var(--pg-tx);}
+.pgt-n .m b{font-weight:700;}
+.pgt-n .tm{font-size:11.5px;color:var(--pg-tx2);margin-top:2px;}
+.pgt-n .ic{margin-left:auto;font-size:18px;flex-shrink:0;}
+.pgt-rx{display:none;align-items:center;gap:6px;margin-top:6px;font-size:12px;font-weight:600;color:var(--pg-tx2);}
+.pgt-rx.v{display:flex;}
+.pgt-rx b{display:inline-flex;align-items:center;gap:4px;color:#2cbeff;background:rgba(44,190,255,.1);border-radius:999px;padding:2px 8px;}
+.pgt-rx b.pop{animation:pgPop .35s;}
+.pgt-on{display:flex;align-items:center;gap:10px;margin-top:4px;font-size:12.5px;font-weight:600;color:var(--pg-tx2);}
+.pgt-on .avs{display:flex;}
+.pgt-on .avs span{width:28px;height:28px;border-radius:50%;border:2px solid var(--pg-bg2);margin-left:-8px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;}
+.pgt-on .avs span:first-child{margin-left:0;}
+.pgt-on b{width:8px;height:8px;border-radius:50%;background:#4ade80;color:#4ade80;animation:pgPulse 1.4s infinite;}
+.pgt-push{position:absolute;right:0;top:-6px;width:270px;background:rgba(16,34,43,.96);color:#fff;border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start;box-shadow:0 16px 40px rgba(0,0,0,.35);transform:translateY(-130%);opacity:0;transition:transform .45s cubic-bezier(.3,1.4,.5,1),opacity .3s;z-index:4;}
+.pgt-push.v{transform:none;opacity:1;}
+.pgt-push .lg{width:30px;height:30px;border-radius:8px;background:#2cbeff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pgt-push .h{font-size:11px;font-weight:800;color:#93a6af;letter-spacing:.04em;text-transform:uppercase;}
+.pgt-push .x{font-size:13px;line-height:1.4;}
+/* documents */
+.pgd{display:grid;grid-template-columns:1.35fr 1fr;gap:14px;}
+.pgd-page{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:4/3;background:#0b3550;background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px);background-size:20px 20px;border:1px solid rgba(44,190,255,.25);}
+.pgd-page svg{position:absolute;inset:0;width:100%;height:100%;}
+.pgd-scan{position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,transparent,#7dd3fc,transparent);box-shadow:0 0 16px 2px #38bdf8;opacity:0;}
+.pgd-scan.v{opacity:1;animation:pgScan 2s ease-in-out infinite;}
+.pgd-tag{position:absolute;transform:translate(-50%,-50%) scale(.5);opacity:0;background:#fbbf24;color:#2b1d00;font-size:11.5px;font-weight:800;padding:5px 9px;border-radius:7px;white-space:nowrap;cursor:pointer;border:none;font-family:var(--font-b);transition:transform .35s cubic-bezier(.3,1.6,.5,1),opacity .25s;box-shadow:0 6px 16px rgba(0,0,0,.3);z-index:2;}
+.pgd-tag.v{opacity:1;transform:translate(-50%,-50%) scale(1);}
+.pgd-tag:hover{filter:brightness(1.06);}
+.pgd-pop{position:absolute;z-index:3;background:#10222b;color:#fff;border:1px solid rgba(44,190,255,.4);border-radius:10px;padding:8px 11px;font-size:12px;line-height:1.45;width:190px;box-shadow:0 12px 30px rgba(0,0,0,.35);transform:translate(-50%,14px);display:none;}
+.pgd-pop.v{display:block;animation:pgPop .3s;}
+.pgd-side{display:flex;flex-direction:column;gap:9px;min-width:0;}
+.pgd-file{display:flex;gap:10px;align-items:center;background:var(--pg-card);border:1px solid var(--pg-line);border-radius:12px;padding:10px 12px;}
+.pgd-file .ic{width:34px;height:42px;border-radius:6px;background:rgba(229,72,77,.12);color:#e5484d;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.pgd-file .n{font-size:13px;font-weight:700;color:var(--pg-tx);word-break:break-all;}
+.pgd-file .s{font-size:11.5px;color:var(--pg-tx2);}
+.pgd-prog{height:6px;border-radius:99px;background:var(--pg-chip);overflow:hidden;}
+.pgd-prog b{display:block;height:100%;width:0;background:#2cbeff;}
+.pgd-st{font-size:12px;font-weight:600;color:var(--pg-tx2);}
+.pgd-ans{background:var(--pg-card);border:1px solid var(--pg-line);border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.5;color:var(--pg-tx);}
+.pgd-ans .who{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#2cbeff;margin-bottom:3px;}
+@media(max-width:900px){
+  .pg-body{grid-template-columns:1fr;}
+  .pg-side{border-right:none;border-bottom:1px solid var(--pg-line);padding:20px 18px;}
+  .pg-quip{margin-top:4px;}
+  .pg-stage{padding:16px;}
+}
+@media(max-width:640px){
+  .pg-tabs{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;padding:2px 2px 6px;margin:0 -16px 14px;padding-left:16px;padding-right:16px;scrollbar-width:none;}
+  .pg-tabs::-webkit-scrollbar{display:none;}
+  .pg-url{display:none;}
+  .pg-stage{order:-1;border-bottom:1px solid var(--pg-line);}
+  .pg-side{border-bottom:none;}
+  .pg-bar{justify-content:space-between;}
+  .pgc,.pgd,.pgf-mid{grid-template-columns:1fr;}
+  .pgf-rc{max-width:220px;margin:0 auto;}
+  .pgf-kpi .n{font-size:16px;}
+  .pgf-kpis{gap:6px;}
+  .pgr-paper{padding:16px;font-size:12px;}
+  .pgr-grid{grid-template-columns:1fr;}
+  .pgr-stamp{font-size:13px;right:14px;bottom:52px;padding:4px 10px;}
+  .pgr-sign svg{width:110px;}
+  .pgt-push{width:230px;}
+  .pg-win{border-radius:16px;}
+}
 /* ===== Marketing redesign design-system (mk-) ===== */
 .mk-eyebrow{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#2cbeff;}
 .mk-section{max-width:1280px;margin:0 auto;padding:72px 48px;}
@@ -229,13 +482,6 @@ body.light-mode .auth-right-panel{background:#eef4f6 !important;}
 body.light-mode .auth-right-panel .feat-tab{color:#6b7280 !important;border-color:rgba(0,0,0,0.15) !important;}
 body.light-mode .auth-right-panel .feat-tab.active{color:#2cbeff !important;background:rgba(44,190,255,0.08) !important;border-color:#2cbeff !important;}
 body.light-mode .auth-right-panel #feat-preview-wrap{background:rgba(0,0,0,0.03) !important;border-color:rgba(0,0,0,0.1) !important;}
-body.light-mode #hyub-preview-wrap{background:rgba(0,0,0,0.03) !important;border-color:rgba(0,0,0,0.1) !important;}
-body.light-mode #hyub-preview-wrap .fp-title{color:#1a1a2e !important;}
-body.light-mode #hyub-preview-wrap .fp-desc{color:#6b7280 !important;}
-body.light-mode #hyub-preview-wrap b{color:#2d2d3f !important;}
-body.light-mode #hyub-tabs .feat-tab{color:#6b7280 !important;border-color:rgba(0,0,0,0.15) !important;}
-body.light-mode #hyub-tabs .feat-tab.active{color:#2cbeff !important;background:rgba(44,190,255,0.08) !important;border-color:#2cbeff !important;}
-body.light-mode #use-bace-title{color:#1a1a2e !important;}
 body.light-mode #landing-mobile-menu{background:#ffffff !important;}
 body.light-mode #landing-mobile-menu a{color:#2d2d3f !important;}
 body.light-mode #landing-mobile-cta button{color:#2cbeff !important;border-color:rgba(0,0,0,0.15) !important;}
@@ -1819,7 +2065,7 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
     </a>
     <div id="content-tabs" class="ch-nav">
       <button onclick="showContentTab(0)" class="content-tab active" id="ctab-0">Home</button>
-      <button onclick="showContentTab(1)" class="content-tab" id="ctab-1">Solutions</button>
+      <button onclick="showContentTab(1)" class="content-tab" id="ctab-1">Product</button>
       <div style="position:relative;display:none;">
         <div id="sol-tab-dropdown" style="display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);background:var(--navy2);border:1px solid var(--border2);border-radius:14px;padding:20px;min-width:640px;box-shadow:0 20px 60px rgba(0,0,0,0.4);z-index:300;">
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;">
@@ -1985,11 +2231,9 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
       <div style="text-align:center;margin-top:20px;font-size:13.5px;color:var(--text3);font-style:italic;" id="about-tagline">Built by engineers, for engineers.</div>
     </div>
 
-    <!-- How you can use Pillier showcase -->
+    <!-- Product playground (interactive demo) -->
     <div class="mk-section" style="padding-top:0;">
-      <div class="mk-head"><h2 id="use-bace-title">How you can use Pillier</h2></div>
-      <div id="hyub-tabs" style="display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin-bottom:18px;"></div>
-      <div id="hyub-preview-wrap" style="border-radius:16px;background:rgba(255,255,255,0.03);border:0.5px solid rgba(44,190,255,0.1);padding:28px 32px;min-height:200px;max-width:980px;margin:0 auto;"></div>
+      <div data-pg></div>
     </div>
 
     <!-- Final CTA -->
@@ -2010,6 +2254,11 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
       <div style="font-family:var(--font-d);font-size:clamp(32px,5vw,52px);font-weight:800;color:var(--white);line-height:1.05;letter-spacing:-0.02em;margin:0 auto;max-width:820px;" id="sol-title">The frontier, on every site</div>
       <div style="font-size:17px;color:var(--text2);line-height:1.6;max-width:600px;margin:18px auto 28px;" id="sol-sub">Deploy Pillier across your construction sites. Help every team capture instantly, file automatically, and build without friction.</div>
       <button class="mk-btn mk-btn-primary" onclick="showContentTab(2)" id="sol-cta">Get your Pillier Plan</button>
+    </div>
+
+    <!-- Product playground (interactive demo) -->
+    <div class="mk-section" style="padding-top:24px;padding-bottom:24px;">
+      <div data-pg></div>
     </div>
 
     <!-- AI Agents -->
@@ -3982,9 +4231,9 @@ document.addEventListener('click',function(e){
 var _suppressUrlPush=false,_curContentTab=0;
 // Localized clean slugs per language (Home is "/").
 var _LAND_SLUGS={
-  pt:['/','/solucoes','/planos','/recursos'],
-  en:['/','/solutions','/plans','/resources'],
-  fr:['/','/solutions','/plans','/ressources']
+  pt:['/','/produto','/planos','/recursos'],
+  en:['/','/product','/plans','/resources'],
+  fr:['/','/produit','/plans','/ressources']
 };
 function _landPaths(){return lang===1?_LAND_SLUGS.en:lang===0?_LAND_SLUGS.fr:_LAND_SLUGS.pt;}
 // SEO: keep <link rel=canonical> + hreflang alternates pointing at the current
@@ -4009,7 +4258,7 @@ function _updateSeoTags(idx){
 }
 function _landPathToTab(p){
   p=String(p||'/').toLowerCase().replace(/\/{2,}/g,'/').replace(/\/+$/,'');if(!p)p='/';
-  var m={'/':0,'/home':0,'/solucoes':1,'/solucao':1,'/solutions':1,
+  var m={'/':0,'/home':0,'/produto':1,'/product':1,'/produit':1,'/produtos':1,'/products':1,'/solucoes':1,'/solucao':1,'/solutions':1,
          '/planos':2,'/plans':2,'/pricing':2,
          '/recursos':3,'/resources':3,'/ressources':3};
   if(p in m)return m[p];
@@ -4017,7 +4266,7 @@ function _landPathToTab(p){
   var seg=p.split('/').filter(Boolean);
   if(seg.length){
     if(/^(recursos|resources|ressources)$/.test(seg[0]))return 3;
-    if(/^(solucoes|solucao|solutions)$/.test(seg[0]))return 1;
+    if(/^(produto|produtos|product|products|produit|solucoes|solucao|solutions)$/.test(seg[0]))return 1;
     if(/^(planos|plans|pricing)$/.test(seg[0]))return 2;
     if(/^(home)$/.test(seg[0]))return 0;
   }
@@ -4459,9 +4708,9 @@ function downloadReport(){
 
 function translateNav(){
   var t={
-    0:{home:"Home",solutions:"Solutions",pricing:"Plans",connexion:"Connexion",resources:"Ressources",demo:"Réserver une démo",capT:"Capture IA",capD:"Photo ou voix — l'IA analyse automatiquement",dashT:"Dashboard",dashD:"KPIs, insights IA et statut en temps réel",chatT:"Pillier IA Chat",chatD:"Chatbot spécialisé en construction",projT:"Gestion de Projets",projD:"Chantiers organisés avec équipe et documents",docsT:"Documents",docsD:"Plans PDF indexés et analysés par l'IA",teamT:"Collaboration",teamD:"Notifications en temps réel entre l'équipe"},
-    1:{home:"Home",solutions:"Solutions",pricing:"Plans",connexion:"Sign in",resources:"Resources",demo:"Schedule a demo",capT:"AI Capture",capD:"Photo or voice — AI analyzes automatically",dashT:"Dashboard",dashD:"KPIs, AI insights and real-time status",chatT:"Pillier IA Chat",chatD:"Construction-specialized chatbot",projT:"Project Management",projD:"Organized sites with team and documents",docsT:"Documents",docsD:"PDF plans indexed and analyzed by AI",teamT:"Collaboration",teamD:"Real-time notifications across the team"},
-    2:{home:"Home",solutions:"Soluções",pricing:"Planos",connexion:"Entrar",resources:"Recursos",demo:"Agendar uma demo",capT:"Captura IA",capD:"Foto ou voz — a IA analisa automaticamente",dashT:"Dashboard",dashD:"KPIs, insights IA e status em tempo real",chatT:"Pillier IA Chat",chatD:"Chatbot especializado em construção",projT:"Gestão de Projetos",projD:"Canteiros organizados com equipe e documentos",docsT:"Documentos",docsD:"Planos PDF indexados e analisados pela IA",teamT:"Colaboração",teamD:"Notificações em tempo real entre a equipe"}
+    0:{home:"Home",solutions:"Produit",pricing:"Plans",connexion:"Connexion",resources:"Ressources",demo:"Réserver une démo",capT:"Capture IA",capD:"Photo ou voix — l'IA analyse automatiquement",dashT:"Dashboard",dashD:"KPIs, insights IA et statut en temps réel",chatT:"Pillier IA Chat",chatD:"Chatbot spécialisé en construction",projT:"Gestion de Projets",projD:"Chantiers organisés avec équipe et documents",docsT:"Documents",docsD:"Plans PDF indexés et analysés par l'IA",teamT:"Collaboration",teamD:"Notifications en temps réel entre l'équipe"},
+    1:{home:"Home",solutions:"Product",pricing:"Plans",connexion:"Sign in",resources:"Resources",demo:"Schedule a demo",capT:"AI Capture",capD:"Photo or voice — AI analyzes automatically",dashT:"Dashboard",dashD:"KPIs, AI insights and real-time status",chatT:"Pillier IA Chat",chatD:"Construction-specialized chatbot",projT:"Project Management",projD:"Organized sites with team and documents",docsT:"Documents",docsD:"PDF plans indexed and analyzed by AI",teamT:"Collaboration",teamD:"Real-time notifications across the team"},
+    2:{home:"Home",solutions:"Produto",pricing:"Planos",connexion:"Entrar",resources:"Recursos",demo:"Agendar uma demo",capT:"Captura IA",capD:"Foto ou voz — a IA analisa automaticamente",dashT:"Dashboard",dashD:"KPIs, insights IA e status em tempo real",chatT:"Pillier IA Chat",chatD:"Chatbot especializado em construção",projT:"Gestão de Projetos",projD:"Canteiros organizados com equipe e documentos",docsT:"Documentos",docsD:"Planos PDF indexados e analisados pela IA",teamT:"Colaboração",teamD:"Notificações em tempo real entre a equipe"}
   };
   var l=t[lang]||t[2];
   var ids={"nav-home":"home","nav-solutions":"solutions","nav-pricing":"pricing","nav-resources":"resources","nav-demo":"demo"};
@@ -4478,7 +4727,7 @@ function translateNav(){
   var mobRes=document.getElementById("mob-menu-resources");if(mobRes)mobRes.innerHTML=l.resources+' &#9662;';
   var mobCtaD=document.getElementById("mob-cta-demo");if(mobCtaD)mobCtaD.textContent=l.demo;
   // Content page tabs
-  var tabLabels=lang===0?['Home','Solutions','Plans','Ressources']:lang===2?['Home','Soluções','Planos','Recursos']:['Home','Solutions','Plans','Resources'];
+  var tabLabels=lang===0?['Home','Produit','Plans','Ressources']:lang===2?['Home','Produto','Planos','Recursos']:['Home','Product','Plans','Resources'];
   for(var ti=0;ti<4;ti++){var tb=document.getElementById('ctab-'+ti);if(tb)tb.textContent=tabLabels[ti];}
   var loginTab=document.getElementById('ctab-login');if(loginTab)loginTab.textContent=lang===0?'Connexion':lang===2?'Entrar':'Log in';
   var _capTxt=lang===0?'Capturer':lang===2?'Capturar agora':'Capture now';
@@ -4508,7 +4757,7 @@ function translateNav(){
   var askInput=document.getElementById('about-ask-input');if(askInput)askInput.placeholder=aboutT.inputPlaceholder;
   var askBtn=document.getElementById('about-ask-btn');if(askBtn)askBtn.innerHTML=aboutT.askBtn+' <span style="font-size:15px;">↑</span>';
   // Footer translations
-  var ftT=lang===0?{tag:'Capturez le terrain. Conservez le savoir.',h1:'Produit',h2:'Entreprise',h3:'Légal',l1:'Solutions',l2:'Tarifs',l3:'Ressources',l4:'Se connecter',l5:'Home',l6:'Réserver une démo',l7:'Contact',l8:'Politique de confidentialité',l9:'Conditions d\'utilisation',l10:'Politique des cookies',cr:'© 2026 Pillier. Tous droits réservés.',mw:'Conçu par des ingénieurs, pour des ingénieurs.'}:lang===2?{tag:'Capture o campo. Preserve o conhecimento.',h1:'Produto',h2:'Empresa',h3:'Legal',l1:'Soluções',l2:'Planos',l3:'Recursos',l4:'Entrar',l5:'Home',l6:'Agendar uma demo',l7:'Contato',l8:'Política de Privacidade',l9:'Termos de Serviço',l10:'Política de Cookies',cr:'© 2026 Pillier. Todos os direitos reservados.',mw:'Desenvolvido por engenheiros, para engenheiros.'}:{tag:'Capture the field. Keep the knowledge.',h1:'Product',h2:'Company',h3:'Legal',l1:'Solutions',l2:'Plans',l3:'Resources',l4:'Sign in',l5:'Home',l6:'Schedule a demo',l7:'Contact',l8:'Privacy Policy',l9:'Terms of Service',l10:'Cookie Policy',cr:'© 2026 Pillier. All rights reserved.',mw:'Built by engineers, for engineers.'};
+  var ftT=lang===0?{tag:'Capturez le terrain. Conservez le savoir.',h1:'Produit',h2:'Entreprise',h3:'Légal',l1:'Produit',l2:'Tarifs',l3:'Ressources',l4:'Se connecter',l5:'Home',l6:'Réserver une démo',l7:'Contact',l8:'Politique de confidentialité',l9:'Conditions d\'utilisation',l10:'Politique des cookies',cr:'© 2026 Pillier. Tous droits réservés.',mw:'Conçu par des ingénieurs, pour des ingénieurs.'}:lang===2?{tag:'Capture o campo. Preserve o conhecimento.',h1:'Produto',h2:'Empresa',h3:'Legal',l1:'Produto',l2:'Planos',l3:'Recursos',l4:'Entrar',l5:'Home',l6:'Agendar uma demo',l7:'Contato',l8:'Política de Privacidade',l9:'Termos de Serviço',l10:'Política de Cookies',cr:'© 2026 Pillier. Todos os direitos reservados.',mw:'Desenvolvido por engenheiros, para engenheiros.'}:{tag:'Capture the field. Keep the knowledge.',h1:'Product',h2:'Company',h3:'Legal',l1:'Product',l2:'Plans',l3:'Resources',l4:'Sign in',l5:'Home',l6:'Schedule a demo',l7:'Contact',l8:'Privacy Policy',l9:'Terms of Service',l10:'Cookie Policy',cr:'© 2026 Pillier. All rights reserved.',mw:'Built by engineers, for engineers.'};
   var ftIds={'footer-tagline':'tag','footer-h1':'h1','footer-h2':'h2','footer-h3':'h3','footer-l1':'l1','footer-l2':'l2','footer-l3':'l3','footer-l4':'l4','footer-l5':'l5','footer-l6':'l6','footer-l7':'l7','footer-l8':'l8','footer-l9':'l9','footer-l10':'l10','footer-copyright':'cr','footer-madewith':'mw'};
   Object.keys(ftIds).forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=ftT[ftIds[id]];});
   // Solutions tab translations
@@ -4559,8 +4808,6 @@ function translateNav(){
   var srch=document.getElementById('cmp-search');if(srch)srch.placeholder=plT.cmpSearch;
   setT('cmp-cta-starter',plT.tryBt);setT('cmp-cta-pro',plT.tryBt);setT('cmp-cta-team',plT.tryBt);setT('cmp-cta-ent',plT.contact);
   setT('cta-banner-t',plT.ctaT);setT('cta-banner-sub',plT.ctaSub);setT('cta-banner-btn',plT.ctaBtn);
-  var hyub=document.getElementById('use-bace-title');
-  if(hyub)hyub.textContent=lang===0?'Comment utiliser Pillier':lang===2?'Como você pode usar a Pillier':'How you can use Pillier';
 }
 
 function setLang(i,btn){
@@ -5603,24 +5850,441 @@ function autoNextFeat(){
   renderHYUB();
 }
 
-// HYUB: How You Use Pillier showcase on About Us tab
-var hyubTimer=null;
-function renderHYUB(){
-  var lk=getLangKey();
-  var tabs=document.getElementById("hyub-tabs");
-  var wrap=document.getElementById("hyub-preview-wrap");
-  if(!tabs||!wrap)return;
-  tabs.innerHTML="";
-  FEAT_DATA.forEach(function(f,i){
-    var btn=document.createElement("button");
-    btn.className="feat-tab"+(i===currentFeat?" active":"");
-    btn.textContent=f[lk].tab;
-    btn.onclick=(function(idx){return function(){currentFeat=idx;renderFeatTabs();renderFeatPreview(currentFeat);renderHYUB();clearInterval(featTimer);featTimer=setInterval(autoNextFeat,4000);};})(i);
-    tabs.appendChild(btn);
-  });
-  var f=FEAT_DATA[currentFeat][lk];
-  wrap.innerHTML='<div class="fp-title">'+f.title+'</div><div class="fp-desc">'+f.desc+'</div>'+buildFeatContent(f.content,lk);
+// ── Product playground: interactive, pausable demo (Home + Product tabs) ────
+var PG_INST=[],_pgRaf=0;
+function _pgL(fr,en,pt){return lang===0?fr:lang===2?pt:en;}
+function _pgI(n,st){return '<i class="ti ti-'+n+'"'+(st?' style="'+st+'"':'')+'></i>';}
+function _pgQ(st,sel){return st.querySelector(sel);}
+function _pgV(st,sel){st.querySelectorAll(sel).forEach(function(el){el.classList.add("v");});}
+function _pgMoney(n){return (lang===1?"R$ ":"R$ ")+n.toLocaleString(lang===1?"en-US":"pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});}
+function _pgNorm(s){return String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();}
+function _pgEl(html){var d=document.createElement("div");d.innerHTML=html;return d.firstChild;}
+function _pgAppear(el){requestAnimationFrame(function(){requestAnimationFrame(function(){el.classList.add("v");});});}
+// Tween bound to the scene clock (freezes on pause) or to real time (user actions).
+function _pgTween(I,dur,fn,real){I.tw.push({s:real?performance.now():I.t,d:dur,f:fn,r:!!real});}
+function _pgToast(I,html){
+  var t=_pgQ(I.stage,".pg-toast");if(!t){t=_pgEl('<div class="pg-toast"></div>');I.stage.appendChild(t);}
+  t.innerHTML=_pgI("circle-check")+html;t.classList.add("v");
+  clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove("v");},2600);
 }
+function _pgType(I,el,text,dur,real){_pgTween(I,dur,function(p){el.textContent=text.slice(0,Math.round(text.length*p));},real);}
+
+/* ---------- scene 1: AI capture → mapped photo ---------- */
+var _PG_CAP_BOX=[
+  {c:"#e5484d",l:"70%",t:"21%",w:"27%",h:"19%",cls:"r ring",lb:function(){return _pgL("Corrosion · longrine V14","Corrosion · waler bay 14","Corrosão · longarina V14")+" · 94%";}},
+  {c:"#2cbeff",l:"36%",t:"54%",w:"34%",h:"11%",cls:"b",lb:function(){return _pgL("Tirants L2 · 42/42","Tiebacks row 2 · 42/42","Tirantes L2 · 42/42")+" · 91%";}},
+  {c:"#f59e0b",l:"9%",t:"38%",w:"11%",h:"46%",cls:"",lb:function(){return _pgL("Foreuse · zone balisée ?","Drill rig · area fenced?","Perfuratriz · área isolada?")+" · 88%";}}
+];
+var PG_SCENES=[
+{id:"cap",icon:"camera",url:"capturar",dur:10500,
+ tab:function(){return _pgL("Capture IA","AI capture","Captura IA");},
+ title:function(){return _pgL("Une photo. Un diagnostic complet.","One photo. A full diagnosis.","Uma foto. Um diagnóstico completo.");},
+ desc:function(){return _pgL("L'IA cartographie chaque élément de la photo, trouve la cause, propose la solution et cite la norme — puis range tout au bon endroit.","The AI maps every element in the photo, finds the cause, proposes the fix and cites the norm — then files everything in the right place.","A IA mapeia cada elemento da foto, encontra a causa, propõe a solução e cita a norma — e guarda tudo no lugar certo.");},
+ quip:function(){return _pgL("La longrine n'a rien demandé. Elle vous remercie quand même.","The waler didn't ask to be photographed. It's grateful anyway.","A longarina não pediu pra ser fotografada. Mas agradece.");},
+ tries:function(){return [{i:"refresh",l:_pgL("Reprendre la photo","Retake the photo","Fotografar de novo"),a:"replay"}];},
+ html:function(){
+  var b=_PG_CAP_BOX.map(function(x,k){return '<div class="pgc-box '+x.cls+'" data-b="'+k+'" style="--c:'+x.c+';left:'+x.l+';top:'+x.t+';width:'+x.w+';height:'+x.h+'"><span class="pgc-lb">'+x.lb()+'</span></div>';}).join("");
+  return '<div class="pgc"><div class="pgc-photo"><div class="pgc-grid"></div><div class="pgc-scan"></div>'+b+
+   '<div class="pgc-chip pg-in">'+_pgI("scan")+'<span class="pgc-chipt">'+_pgL("Analyse en cours…","Analysing…","IA analisando…")+'</span></div></div>'+
+   '<div class="pgc-panel">'+
+   '<div class="pgc-card pg-in" data-p="1"><div class="pgc-h">'+_pgI("stethoscope")+_pgL("Diagnostic général","Overall diagnosis","Diagnóstico geral")+'</div><p>'+_pgL("Paroi berlinoise tirantée : corrosion superficielle sur la longrine de la travée 14. Tirants de la ligne 2 conformes.","Anchored retaining wall: surface corrosion on the bay 14 waler. Row 2 tiebacks look sound.","Contenção atirantada: corrosão superficial na longarina do vão 14. Tirantes da linha 2 sem anomalias.")+'</p></div>'+
+   '<div class="pgc-card pg-in" data-p="2"><div class="pgc-h">'+_pgI("zoom-question")+_pgL("Cause probable","Probable cause","Causa provável")+'</div><p>'+_pgL("Humidité + drainage obstrué derrière la paroi.","Moisture + blocked drainage behind the wall.","Umidade + drenagem obstruída atrás da cortina.")+'</p></div>'+
+   '<div class="pgc-card pgc-sol pg-in" data-p="3"><div class="pgc-h">'+_pgI("tool")+_pgL("Solution recommandée","Recommended fix","Solução recomendada")+'</div><p>'+_pgL("Nettoyage, traitement anticorrosion et contrôle des tirants sous 7 jours.","Clean, apply anti-corrosion treatment and inspect tiebacks within 7 days.","Limpeza, tratamento anticorrosivo e inspeção dos tirantes em até 7 dias.")+'</p></div>'+
+   '<div class="pgc-norms pg-in" data-p="4"><span>NBR 5629</span><span>NBR 11682</span><span>NR-18</span></div>'+
+   '<div class="pgc-saved pg-in" data-p="5"><span>'+_pgI("circle-check")+_pgL("Dossier « Paroi »","“Retaining wall” folder","Pasta “Contenção”")+'</span><span>'+_pgI("circle-check")+_pgL("Base de connaissances","Knowledge base","Base de conhecimento")+'</span><span>'+_pgI("circle-check")+'Pillier IA</span></div>'+
+   '</div></div>';
+ },
+ steps:[
+  [300,function(st){_pgV(st,".pgc-chip");_pgV(st,".pgc-scan");_pgV(st,".pgc-grid");}],
+  [2600,function(st){_pgQ(st,".pgc-scan").classList.remove("v");_pgQ(st,".pgc-grid").classList.remove("v");_pgV(st,'[data-b="0"]');}],
+  [3100,function(st){_pgV(st,'[data-b="1"]');}],
+  [3600,function(st){_pgV(st,'[data-b="2"]');_pgQ(st,".pgc-chipt").textContent=_pgL("3 éléments cartographiés","3 elements mapped","3 elementos mapeados");}],
+  [4300,function(st){_pgV(st,'[data-p="1"]');}],
+  [5000,function(st){_pgV(st,'[data-p="2"]');}],
+  [5700,function(st){_pgV(st,'[data-p="3"]');}],
+  [6300,function(st){_pgV(st,'[data-p="4"]');}],
+  [7200,function(st){_pgV(st,'[data-p="5"]');}]
+ ],
+ act:function(I,a){if(a==="replay")pgGo(I,I.i,true);}
+},
+
+/* ---------- scene 2: Pillier IA chat agent ---------- */
+{id:"chat",icon:"message-chatbot",url:"chat",dur:12000,
+ tab:function(){return "Pillier IA";},
+ title:function(){return _pgL("Elle répond. Et elle agit, pour de vrai.","It answers. And it actually does things.","Ela responde. E faz, de verdade.");},
+ desc:function(){return _pgL("Pillier IA connaît chaque incident, document et dépense. Elle crée des liens, modifie, résout — et vérifie dans la base avant de dire « fait ».","Pillier IA knows every incident, document and expense. It links, edits, resolves — and checks the database before saying “done”.","A Pillier IA conhece cada incidente, documento e despesa. Ela cria links, edita, resolve — e confere no banco antes de dizer “feito”.");},
+ quip:function(){return _pgL("Elle ne dit jamais « fait » si ce n'est pas fait. Rare, on sait.","It never says “done” unless it's done. Rare, we know.","Ela não diz “feito” se não fez. Raro, né?");},
+ tries:function(){return [
+  {i:"ruler-2",l:_pgL("Quelle norme pour les tirants ?","Which norm covers tiebacks?","Qual norma vale pra tirantes?"),a:"q1"},
+  {i:"cash",l:_pgL("Combien j'ai dépensé cette semaine ?","How much did I spend this week?","Quanto gastei esta semana?"),a:"q2"},
+  {i:"mood-smile",l:_pgL("Raconte une blague de chantier","Tell me a site joke","Conta uma piada de obra"),a:"q3"}];},
+ html:function(){
+  return '<div class="pgh"><div class="pgh-msgs"></div><div class="pgh-in"><span class="tx" data-ph="'+_pgL("Demandez à Pillier IA…","Ask Pillier IA…","Pergunte à Pillier IA…")+'"></span><span class="car"></span><span class="send">'+_pgI("arrow-up")+'</span></div></div>';
+ },
+ steps:[
+  [300,function(st,I){_pgType(I,_pgQ(st,".pgh-in .tx"),_pgL("Quels incidents critiques sont ouverts ?","Which critical incidents are still open?","Quais incidentes críticos estão abertos?"),1300);}],
+  [1900,function(st){_pgChatUser(st,_pgQ(st,".pgh-in .tx").textContent);_pgQ(st,".pgh-in .tx").textContent="";}],
+  [2200,function(st){_pgChatDots(st);}],
+  [3300,function(st){_pgChatBot(st,_pgL("2 incidents critiques ouverts. Je commencerais par la longrine — la corrosion avance avec la pluie.","2 critical incidents open. I'd start with the waler — corrosion spreads with the rain.","2 incidentes críticos abertos. Eu começaria pela longarina — a corrosão avança com a chuva.")+'<div><span class="pgh-link">'+'<i class="sev"></i>'+_pgL("Corrosion longrine V14","Waler corrosion bay 14","Corrosão longarina V14")+'</span><span class="pgh-link pgh-c4"><i class="sev"></i>'+_pgL("Fissure poteau C4","Crack in column C4","Fissura coluna C4")+'</span></div>');}],
+  [5300,function(st,I){_pgType(I,_pgQ(st,".pgh-in .tx"),_pgL("Marque la C4 comme résolue.","Mark C4 as resolved.","Marca a C4 como resolvida."),900);}],
+  [6400,function(st){_pgChatUser(st,_pgQ(st,".pgh-in .tx").textContent);_pgQ(st,".pgh-in .tx").textContent="";}],
+  [6700,function(st){_pgChatDots(st);}],
+  [7600,function(st,I){_pgChatAction(st,I);}],
+  [9300,function(st,I){var b=_pgQ(st,".pgh-act button.ok");if(b&&!b.disabled){b.classList.add("press");_pgChatConfirm(st,I);}}]
+ ],
+ act:function(I,a){
+  pgPause(I);
+  var st=I.stage,q={q1:_pgL("Quelle norme pour les tirants ?","Which norm covers tiebacks?","Qual norma vale pra tirantes?"),q2:_pgL("Combien j'ai dépensé cette semaine ?","How much did I spend this week?","Quanto gastei esta semana?"),q3:_pgL("Raconte une blague de chantier","Tell me a site joke","Conta uma piada de obra")}[a];
+  var ans={
+   q1:_pgL("NBR 5629 (tirants d'ancrage) + NBR 11682 (stabilité des talus). Je les ai déjà jointes aux 2 occurrences de la paroi.","NBR 5629 (ground anchors) + NBR 11682 (slope stability). I've already attached both to the 2 retaining-wall records.","NBR 5629 (tirantes ancorados no terreno) + NBR 11682 (estabilidade de encostas). Já anexei às 2 ocorrências da contenção.")+'<div><span class="pgh-link">'+_pgI("file-certificate")+'NBR 5629</span><span class="pgh-link">'+_pgI("file-certificate")+'NBR 11682</span></div>',
+   q2:_pgL("12 480,30 R$ en 9 dépenses — 61 % en matériaux. Le béton gagne, comme toujours.","R$ 12,480.30 across 9 expenses — 61% materials. Concrete wins, as usual.","R$ 12.480,30 em 9 despesas — 61% em materiais. O concreto ganhou de novo.")+'<div><span class="pgh-link">'+_pgI("chart-line")+_pgL("Ouvrir Finances","Open Finance","Abrir Financeiro")+'</span></div>',
+   q3:_pgL("Pourquoi le béton a quitté l'armature ? Il avait besoin d'espace pour durcir. …OK, je retourne aux normes.","Why did the concrete break up with the rebar? It needed space to cure. …OK, back to the norms.","Por que o concreto terminou com a armadura? Precisava de espaço pra curar. …Tá bom, volto pras normas.")
+  }[a];
+  if(!q)return;
+  _pgChatUser(st,q);_pgChatDots(st);
+  setTimeout(function(){_pgChatBot(st,ans);},900);
+ }
+},
+
+/* ---------- scene 3: RDO (daily site report) ---------- */
+{id:"rdo",icon:"file-description",url:"rdo",dur:11500,isNew:true,
+ tab:function(){return _pgL("Rapport journalier","Daily report","RDO");},
+ title:function(){return _pgL("Le rapport journalier s'écrit tout seul.","The daily report writes itself.","O RDO que se escreve sozinho.");},
+ desc:function(){return _pgL("Météo, effectif, occurrences avec photos cartographiées et dépenses du jour : tout arrive tout seul. Vous relisez, signez, envoyez en PDF.","Weather, crew, incidents with mapped photos and the day's expenses all fill in automatically. You review, sign and send the PDF.","Clima, efetivo, ocorrências com fotos mapeadas e custos do dia entram sozinhos. Você revisa, assina e manda o PDF.");},
+ quip:function(){return _pgL("Le stylo, c'est seulement pour la signature.","The pen is just for the signature now.","A caneta agora é só pra assinatura.");},
+ tries:function(){return [
+  {i:"cloud-rain",l:_pgL("Changer la météo","Change the weather","Trocar o clima"),a:"wx"},
+  {i:"signature",l:_pgL("Signer","Sign it","Assinar"),a:"sign"},
+  {i:"file-type-pdf",l:_pgL("Générer le PDF","Generate PDF","Gerar PDF"),a:"pdf"}];},
+ html:function(){
+  var d=new Date(),ds=d.toLocaleDateString(lang===1?"en-GB":lang===0?"fr-FR":"pt-BR"),no=d.toISOString().slice(0,10).replace(/-/g,"");
+  return '<div class="pgr-paper">'+
+   '<div class="pgr-hd"><span class="lg">Pillier</span><h4>'+_pgL("Rapport journalier de chantier","Daily Site Report","Relatório Diário de Obra (RDO)")+'</h4><div class="no">Nº '+no+'<br>'+ds+'</div></div>'+
+   '<div class="pgr-grid">'+
+    '<div class="pg-in" data-r="1"><b>'+_pgL("Chantier","Site","Obra")+':</b> Residencial Aurora</div>'+
+    '<div class="pg-in" data-r="1"><b>'+_pgL("Responsable","Site manager","Responsável")+':</b> Eng. Ana Luiza</div>'+
+    '<div class="pg-in" data-r="2"><b>'+_pgL("Météo","Weather","Clima")+':</b> <span class="pgr-w">'+_pgI("sun")+'<span class="pgr-wt">'+_pgL("Ensoleillé · praticable","Sunny · workable","Ensolarado · praticável")+'</span></span></div>'+
+    '<div class="pg-in" data-r="2"><b>'+_pgL("Effectif","Crew","Efetivo")+':</b> <span class="pgr-n">0</span> '+_pgL("ouvriers","workers","trabalhadores")+'</div>'+
+   '</div>'+
+   '<div class="pgr-sec pg-in" data-r="3"><h5>'+_pgL("Occurrences","Incidents","Ocorrências")+' (3)</h5>'+
+    '<div class="pgr-oc"><i style="background:#e5484d"></i>'+_pgL("Corrosion longrine V14","Waler corrosion bay 14","Corrosão longarina V14")+'<span>'+_pgL("photo cartographiée","mapped photo","foto mapeada")+'</span></div>'+
+    '<div class="pgr-oc"><i style="background:#f59e0b"></i>'+_pgL("Infiltration joint — rideau B","Joint leak — wall B","Infiltração na junta — cortina B")+'<span>NBR 9575</span></div>'+
+    '<div class="pgr-oc"><i style="background:#4ade80"></i>'+_pgL("Fissure poteau C4 — résolue","Crack in column C4 — resolved","Fissura coluna C4 — resolvida")+'<span>NBR 6118</span></div></div>'+
+   '<div class="pgr-sec pg-in" data-r="4"><h5>'+_pgL("Dépenses du jour","Today's expenses","Custos do dia")+'</h5><b class="pgr-c">'+_pgMoney(0)+'</b> · 4 '+_pgL("reçus lus par l'IA","receipts read by AI","recibos lidos pela IA")+'</div>'+
+   '<div class="pgr-sign"><div><svg viewBox="0 0 150 46"><path d="M6 32c10-18 18-24 22-16s-6 22 2 18 14-26 20-22-4 20 4 18 10-14 16-12 2 10 10 8 12-12 20-10 8 6 16 2 12-6 22-8"/></svg>Eng. Ana Luiza · '+_pgL("Responsable","Site manager","Responsável")+'</div><div>'+_pgL("Visa client","Client sign-off","Visto do cliente")+'</div></div>'+
+   '<div class="pgr-stamp">'+_pgL("SIGNÉ","SIGNED","ASSINADO")+'</div></div>';
+ },
+ steps:[
+  [300,function(st){_pgV(st,'[data-r="1"]');}],
+  [1100,function(st){_pgV(st,'[data-r="2"]');}],
+  [1300,function(st,I){var n=_pgQ(st,".pgr-n");_pgTween(I,1400,function(p){n.textContent=Math.round(12*p);});}],
+  [2600,function(st){_pgV(st,'[data-r="3"]');}],
+  [4000,function(st,I){_pgV(st,'[data-r="4"]');var c=_pgQ(st,".pgr-c");_pgTween(I,1500,function(p){c.textContent=_pgMoney(3482.1*p);});}],
+  [6200,function(st){_pgV(st,".pgr-sign path");}],
+  [8200,function(st){_pgV(st,".pgr-stamp");}]
+ ],
+ act:function(I,a){
+  pgPause(I);var st=I.stage;
+  if(a==="wx"){
+   var W=[["sun",_pgL("Ensoleillé · praticable","Sunny · workable","Ensolarado · praticável")],
+          ["cloud-rain",_pgL("Pluie · impraticable — la bétonnière fait la sieste","Rain · not workable — the mixer takes a nap","Chuva · impraticável — a betoneira tirou folga")],
+          ["cloud",_pgL("Nuageux · praticable","Cloudy · workable","Nublado · praticável")],
+          ["snowflake",_pgL("Neige ?! Noté quand même.","Snow?! Noted anyway.","Neve?! No Brasil?! Anotado mesmo assim.")]];
+   I.wx=((I.wx||0)+1)%W.length;var w=_pgQ(st,".pgr-w");
+   w.innerHTML=_pgI(W[I.wx][0])+'<span class="pgr-wt">'+W[I.wx][1]+'</span>';w.style.animation="pgPop .35s";setTimeout(function(){w.style.animation="";},400);
+  }
+  if(a==="sign"){_pgV(st,".pgr-sign path");}
+  if(a==="pdf"){_pgV(st,".pgr-sign path");setTimeout(function(){_pgV(st,".pgr-stamp");},500);setTimeout(function(){_pgToast(I,_pgL("PDF prêt · 2 pages · envoyé au client","PDF ready · 2 pages · sent to client","PDF pronto · 2 páginas · enviado ao cliente"));},900);}
+ }
+},
+
+/* ---------- scene 4: Finance ---------- */
+{id:"fin",icon:"chart-line",url:"financeiro",dur:11500,isNew:true,
+ tab:function(){return _pgL("Finances","Finance","Financeiro");},
+ title:function(){return _pgL("Le reçu froissé devient une donnée.","The crumpled receipt becomes data.","A nota amassada vira dado.");},
+ desc:function(){return _pgL("Photographiez le reçu : l'IA lit fournisseur, montant et catégorie, l'affecte au chantier et suit le budget en temps réel.","Snap the receipt: the AI reads vendor, amount and category, assigns it to the site and tracks the budget live.","Fotografe a nota: a IA lê fornecedor, valor e categoria, lança na obra certa e acompanha o orçamento em tempo real.");},
+ quip:function(){return _pgL("Le reçu au fond de la poche ? L'IA le lit. (Lavez le pantalon après.)","That receipt in your back pocket? The AI reads it. (Do the laundry after.)","Aquela nota no bolso da calça? A IA lê. (Lava a calça depois.)");},
+ tries:function(){return [
+  {i:"receipt",l:_pgL("Saisir une dépense","Log an expense","Registrar despesa"),a:"add"},
+  {i:"alert-triangle",l:_pgL("Exploser le budget ?","Blow the budget?","Estourar o orçamento?"),a:"blow"}];},
+ html:function(){
+  return '<div class="pgf">'+
+   '<div class="pgf-kpis pg-in" data-f="k">'+
+    '<div class="pgf-kpi"><div class="l">'+_pgI("cash")+_pgL("Coûts du mois","Costs this month","Custos este mês")+'</div><div class="n pgf-cost">'+_pgMoney(0)+'</div></div>'+
+    '<div class="pgf-kpi"><div class="l">'+_pgI("receipt")+_pgL("Reçus (OCR)","Receipts (OCR)","Recibos (OCR)")+'</div><div class="n pgf-ocr">0</div></div>'+
+    '<div class="pgf-kpi"><div class="l">'+_pgI("target-arrow")+_pgL("Budget utilisé","Budget used","Orçamento usado")+'</div><div class="n pgf-pct">0%</div><div class="pgf-bar"><b></b></div></div>'+
+   '</div>'+
+   '<div class="pgf-mid">'+
+    '<div class="pgf-rc pg-in" data-f="r"><div class="pgf-laser"></div><b>CASA DO CONSTRUTOR</b>CNPJ 12.345.678/0001-90<br>'+_pgL("CIMENT CP-II 50KG","CEMENT CP-II 50KG","CIMENTO CP-II 50KG")+' x20<br>'+_pgL("ACIER 10MM","REBAR 10MM","VERGALHÃO 10MM")+' x12<br>'+_pgL("FIL DE LIGATURE","TIE WIRE","ARAME RECOZIDO")+' x3<div class="tot">TOTAL R$ 1.284,90</div></div>'+
+    '<div class="pgf-right">'+
+     '<div class="pgf-fields">'+
+      '<div class="pgf-f pg-in" data-f="1"><div class="l">'+_pgL("Fournisseur","Vendor","Fornecedor")+'</div><div class="x">Casa do Construtor</div></div>'+
+      '<div class="pgf-f pg-in" data-f="2"><div class="l">'+_pgL("Montant","Amount","Valor")+'</div><div class="x">R$ 1.284,90</div></div>'+
+      '<div class="pgf-f pg-in" data-f="3"><div class="l">'+_pgL("Catégorie","Category","Categoria")+'</div><div class="x">'+_pgL("Matériaux","Materials","Materiais")+'</div></div>'+
+      '<div class="pgf-f pg-in" data-f="4"><div class="l">'+_pgL("Chantier","Site","Obra")+'</div><div class="x">Residencial Aurora</div></div>'+
+     '</div>'+
+     '<div class="pgf-chart pg-in" data-f="c"><div class="l"><span>'+_pgL("Consommation 30 j vs budget","30-day burn vs budget","Consumo 30 dias vs orçamento")+'</span><span style="color:#f59e0b">- - '+_pgL("budget","budget","orçamento")+'</span></div>'+
+      '<svg viewBox="0 0 300 84" preserveAspectRatio="none"><line x1="0" y1="80" x2="300" y2="14" stroke="#f59e0b" stroke-width="2" stroke-dasharray="6 5"/><polyline class="pgf-line" points="0,80 30,76 60,71 90,69 120,60 150,57 180,49 210,45 240,40 270,36 300,33"/></svg></div>'+
+     '<div class="pgf-alert">'+_pgI("alert-triangle")+'<span>'+_pgL("Alerte envoyée au gestionnaire : budget dépassé. (Calme, c'est la démo.)","Alert sent to the manager: budget blown. (Relax, it's the demo.)","Alerta enviado ao gestor: orçamento estourado. (Calma, é só a demo.)")+'</span></div>'+
+    '</div>'+
+   '</div>'+
+   '<div class="pgf-led"></div>'+
+  '</div>';
+ },
+ steps:[
+  [300,function(st,I){_pgV(st,'[data-f="k"]');I.cost=0;var c=_pgQ(st,".pgf-cost"),o=_pgQ(st,".pgf-ocr"),p=_pgQ(st,".pgf-pct"),b=_pgQ(st,".pgf-bar b");
+    _pgTween(I,1700,function(x){I.cost=47035.1*x;c.textContent=_pgMoney(I.cost);o.textContent=Math.round(36*x);p.textContent=Math.round(64*x)+"%";b.style.width=(64*x)+"%";});}],
+  [1500,function(st){_pgV(st,'[data-f="r"]');_pgV(st,".pgf-laser");}],
+  [3300,function(st){_pgQ(st,".pgf-laser").classList.remove("v");_pgV(st,'[data-f="1"]');}],
+  [3650,function(st){_pgV(st,'[data-f="2"]');}],
+  [4000,function(st){_pgV(st,'[data-f="3"]');}],
+  [4350,function(st){_pgV(st,'[data-f="4"]');}],
+  [5000,function(st){_pgV(st,'[data-f="c"]');setTimeout(function(){_pgV(st,".pgf-line");},80);}],
+  [7300,function(st,I){_pgFinRow(I,{v:"Casa do Construtor",s:_pgL("Matériaux · OCR","Materials · OCR","Materiais · OCR"),a:1284.9});}]
+ ],
+ act:function(I,a){
+  pgPause(I);var st=I.stage;
+  if(a==="add"){
+   var R=[{v:_pgL("Boulangerie du coin","Corner bakery","Padaria do Zé"),s:_pgL("Café de l'équipe · le plus vital","Crew coffee · most critical item","Café da equipe · item mais crítico"),a:86},
+          {v:_pgL("Location Échafaudage Fort","Strong Scaffold Rentals","Locadora Andaime Forte"),s:_pgL("Équipement","Equipment","Equipamentos"),a:2150},
+          {v:_pgL("Dépôt Bonne Pierre","Good Stone Depot","Depósito Pedra Boa"),s:_pgL("Sable 6 m³","Sand 6 m³","Areia 6 m³"),a:640},
+          {v:_pgL("Quincaillerie 24h","24h Hardware","Ferragens 24h"),s:_pgL("1 mètre ruban (le 4e du mois)","1 tape measure (4th this month)","1 trena (a 4ª do mês)"),a:39.9}];
+   I.fr=((I.fr==null?-1:I.fr)+1)%R.length;_pgFinRow(I,R[I.fr]);
+   _pgToast(I,_pgL("Dépense lue et affectée au chantier","Expense read and assigned to the site","Despesa lida e lançada na obra"));
+  }
+  if(a==="blow"){
+   var bar=_pgQ(st,".pgf-bar"),b=_pgQ(st,".pgf-bar b"),p=_pgQ(st,".pgf-pct"),al=_pgQ(st,".pgf-alert");
+   I.blown=!I.blown;bar.classList.toggle("hot",I.blown);al.classList.toggle("v",I.blown);
+   b.style.transition="width .6s ease";b.style.width=I.blown?"100%":"64%";p.textContent=I.blown?"104%":"64%";
+  }
+ }
+},
+
+/* ---------- scene 5: Knowledge base ---------- */
+{id:"kb",icon:"database",url:"base",dur:9500,
+ tab:function(){return _pgL("Base de connaissances","Knowledge base","Base de conhecimento");},
+ title:function(){return _pgL("La mémoire de tous vos chantiers.","The memory of every site you've built.","A memória de todas as suas obras.");},
+ desc:function(){return _pgL("Chaque capture devient un savoir consultable : cherchez un mot, retrouvez le problème, la cause et comment il a été résolu.","Every capture becomes searchable knowledge: type a word, find the problem, the cause and how it was solved.","Cada captura vira conhecimento pesquisável: digite uma palavra e encontre o problema, a causa e como foi resolvido.");},
+ quip:function(){return _pgL("La mémoire du chantier qui ne prend pas de congés et ne perd jamais le mètre.","Site memory that never takes vacation or loses the tape measure.","A memória da obra que não tira férias nem perde a trena.");},
+ tries:function(){return [{i:"search",l:_pgL("fissure","crack","fissura"),a:"s1"},{i:"search",l:"NR-18",a:"s2"},{i:"search",l:_pgL("électrique","electrical","elétrica"),a:"s3"}];},
+ data:function(){return [
+  {d:"#e5484d",t:_pgL("Corrosion longrine — travée 14","Waler corrosion — bay 14","Corrosão na longarina — vão 14"),m:_pgL("Paroi · Critique · aujourd'hui","Retaining wall · Critical · today","Contenção · Crítico · hoje"),n:"NBR 5629"},
+  {d:"#f59e0b",t:_pgL("Infiltration joint — rideau B","Joint leak — wall B","Infiltração na junta — cortina B"),m:_pgL("Paroi · Moyen · hier","Retaining wall · Medium · yesterday","Contenção · Médio · ontem"),n:"NBR 9575"},
+  {d:"#4ade80",t:_pgL("Fissure poteau C4 — Bloc B","Crack in column C4 — Block B","Fissura coluna C4 — Bloco B"),m:_pgL("Structure · Résolu · 27/09","Structural · Resolved · 27/09","Estrutura · Resolvido · 27/09"),n:"NBR 6118"},
+  {d:"#f59e0b",t:_pgL("Tableau électrique surchargé — étage 2","Overloaded electrical panel — floor 2","Quadro elétrico sobrecarregado — andar 2"),m:_pgL("Électrique · Moyen · 25/09","Electrical · Medium · 25/09","Elétrica · Médio · 25/09"),n:"NBR 5410"},
+  {d:"#4ade80",t:_pgL("Corrosion armature exposée — dalle L3","Exposed rebar corrosion — slab L3","Corrosão em armadura exposta — laje L3"),m:_pgL("Structure · Résolu en 3 jours · 12/09","Structural · Resolved in 3 days · 12/09","Estrutura · Resolvido em 3 dias · 12/09"),n:"NBR 6118"},
+  {d:"#e5484d",t:_pgL("Garde-corps absent — étage 5","Missing guardrail — floor 5","Guarda-corpo ausente — andar 5"),m:_pgL("Sécurité · Critique · 10/09","Safety · Critical · 10/09","Segurança · Crítico · 10/09"),n:"NR-18"}];},
+ html:function(){
+  return '<div class="pgk"><div class="pgk-s">'+_pgI("search")+'<input type="text" class="pgk-q" placeholder="'+_pgL("Rechercher dans tous vos chantiers…","Search across all your sites…","Pesquise em todas as suas obras…")+'" aria-label="search"></div><div class="pgk-cnt"></div><div class="pgk-list"></div>'+
+   '<div class="pgk-ins pg-in">'+_pgI("sparkles")+'<span>'+_pgL("Pillier IA : la corrosion de la L3 a été résolue en 3 jours par traitement anticorrosion. Appliquer la même procédure à la V14 ?","Pillier IA: the L3 corrosion was fixed in 3 days with anti-corrosion treatment. Apply the same procedure to bay 14?","Pillier IA: a corrosão da L3 foi resolvida em 3 dias com tratamento anticorrosivo. Aplicar o mesmo procedimento na V14?")+'</span></div></div>';
+ },
+ mount:function(I){var inp=_pgQ(I.stage,".pgk-q");_pgKbFilter(I,"");inp.addEventListener("input",function(){pgPause(I);_pgKbFilter(I,inp.value);});inp.addEventListener("focus",function(){pgPause(I);});},
+ steps:[
+  [600,function(st,I){var inp=_pgQ(st,".pgk-q"),w=_pgL("corrosion","corrosion","corrosão");_pgTween(I,1100,function(p){inp.value=w.slice(0,Math.round(w.length*p));_pgKbFilter(I,inp.value);});}],
+  [3800,function(st){_pgV(st,".pgk-ins");}]
+ ],
+ act:function(I,a){
+  pgPause(I);var w={s1:_pgL("fissure","crack","fissura"),s2:"NR-18",s3:_pgL("électrique","electrical","elétrica")}[a];var inp=_pgQ(I.stage,".pgk-q");
+  _pgQ(I.stage,".pgk-ins").classList.remove("v");
+  inp.value="";_pgType(I,{set textContent(v){inp.value=v;_pgKbFilter(I,v);}},w,500,true);
+ }
+},
+
+/* ---------- scene 6: Team ---------- */
+{id:"team",icon:"users",url:"equipe",dur:9500,
+ tab:function(){return _pgL("Équipe","Team","Equipe");},
+ title:function(){return _pgL("Toute l'équipe au courant, à l'instant.","The whole team in the loop, instantly.","A equipe inteira sabendo, na hora.");},
+ desc:function(){return _pgL("Chaque capture, résolution ou reçu notifie les bonnes personnes, sur le chantier ou au bureau.","Every capture, fix or receipt notifies the right people, on site or at the office.","Cada captura, resolução ou nota avisa as pessoas certas, na obra ou no escritório.");},
+ quip:function(){return _pgL("Tout le monde est au courant. Même celui qui a oublié son casque.","Everyone knows everything. Including who forgot their hard hat.","Todo mundo fica sabendo. Inclusive quem esqueceu o capacete.");},
+ tries:function(){return [{i:"thumb-up",l:_pgL("Envoyer un pouce","Send a thumbs-up","Mandar um joinha"),a:"like"},{i:"speakerphone",l:_pgL("Appeler l'équipe","Call the team","Chamar a equipe"),a:"call"}];},
+ html:function(){
+  var N=[
+   {av:"DK",bg:"#e5484d",m:'<b>Dyken</b> '+_pgL("a capturé un incident critique — Corrosion longrine V14","captured a critical incident — Waler corrosion bay 14","capturou um incidente crítico — Corrosão longarina V14"),tm:_pgL("à l'instant","just now","agora"),ic:'<i class="ti ti-alert-octagon ic" style="color:#e5484d"></i>',rx:1},
+   {av:"MR",bg:"#16a34a",m:'<b>Marcos</b> '+_pgL("a résolu — Fissure poteau C4","resolved — Crack in column C4","resolveu — Fissura coluna C4"),tm:"14 min",ic:'<i class="ti ti-circle-check ic" style="color:#4ade80"></i>'},
+   {av:"AL",bg:"#7c3aed",m:'<b>Ana Luiza</b> '+_pgL("a joint 4 reçus aux Finances","attached 4 receipts to Finance","anexou 4 recibos ao Financeiro"),tm:"1 h",ic:'<i class="ti ti-receipt ic" style="color:#0ea5e9"></i>'},
+   {av:"IA",bg:"#2cbeff",m:'<b>Pillier IA</b> '+_pgL("a généré le rapport journalier — Residencial Aurora","generated today's daily report — Residencial Aurora","gerou o RDO de hoje — Residencial Aurora"),tm:_pgL("à l'instant","just now","agora"),ic:'<i class="ti ti-file-description ic" style="color:#2cbeff"></i>'}];
+  return '<div class="pgt">'+
+   '<div class="pgt-push"><div class="lg"><svg width="16" height="15" viewBox="0 0 322.71 305.81"><path fill="#04222f" d="M67.65,200.75H0v105.05h67.66v-9.23s.12-52.48,0-95.83ZM67.66,305.81V56.54h136.2c10.68,0,19.73,1.78,27.15,5.34,7.41,3.55,13.05,8.6,16.91,15.13,3.86,6.54,5.78,14.39,5.78,23.59,0,13.65-4.38,24.33-13.14,32.05-8.75,7.73-20.98,11.57-36.71,11.57h-79.66l-56.55,56.51,154.91.03c20.18,0,37.74-4.3,52.73-12.9,14.99-8.62,26.63-20.55,34.94-35.83,8.3-15.28,12.48-32.56,12.48-51.86s-4.09-36.87-12.25-51.87c-8.16-14.97-19.59-26.77-34.27-35.38-14.68-8.6-31.97-12.91-51.86-12.91H62C27.77,0,0,27.77,0,62v82.22l67.61,56.53"/></svg></div><div><div class="h">Pillier · '+_pgL("maintenant","now","agora")+'</div><div class="x">'+_pgL("Incident critique sur la paroi — Dyken vient de l'enregistrer.","Critical incident on the retaining wall — Dyken just logged it.","Incidente crítico na contenção — Dyken acabou de registrar.")+'</div></div></div>'+
+   N.map(function(n,k){return '<div class="pgt-n" data-n="'+k+'"><div class="pgt-av" style="background:'+n.bg+'">'+n.av+'</div><div style="min-width:0;flex:1"><div class="m">'+n.m+'</div><div class="tm">'+n.tm+'</div>'+(n.rx?'<div class="pgt-rx"><b class="pgt-rc">'+_pgI("thumb-up")+'<span>0</span></b><span class="pgt-rt"></span></div>':'')+'</div>'+n.ic+'</div>';}).join("")+
+   '<div class="pgt-on pg-in"><b></b>'+_pgL("Sur le chantier maintenant","On site right now","Na obra agora")+'<div class="avs"><span style="background:#e5484d">DK</span><span style="background:#16a34a">MR</span><span style="background:#7c3aed">AL</span><span style="background:#0ea5e9">JP</span><span style="background:#475569">+5</span></div></div>'+
+  '</div>';
+ },
+ steps:[
+  [300,function(st){_pgV(st,'[data-n="2"]');_pgV(st,".pgt-on");}],
+  [800,function(st){_pgV(st,'[data-n="1"]');}],
+  [1500,function(st){_pgV(st,'[data-n="0"]');}],
+  [2300,function(st){_pgV(st,".pgt-push");}],
+  [5200,function(st){_pgQ(st,".pgt-push").classList.remove("v");}],
+  [5600,function(st){_pgV(st,'[data-n="3"]');}],
+  [6800,function(st,I){_pgTeamLike(I);}]
+ ],
+ act:function(I,a){
+  pgPause(I);
+  if(a==="like"){_pgTeamLike(I,true);}
+  if(a==="call"){_pgToast(I,_pgL("3 personnes notifiées · 1 arrive déjà (avec le café)","3 people notified · 1 already on the way (with coffee)","3 pessoas avisadas · 1 já está a caminho (com o café)"));}
+ }
+},
+
+/* ---------- scene 7: Documents ---------- */
+{id:"docs",icon:"file-text",url:"documentos",dur:9500,
+ tab:function(){return _pgL("Documents","Documents","Documentos");},
+ title:function(){return _pgL("Elle lit vos plans en détail.","It reads your drawings in detail.","Ela lê suas plantas em detalhe.");},
+ desc:function(){return _pgL("Cotes, notes et normes extraites de chaque page PDF — puis reliées aux incidents et prêtes à être interrogées dans le chat.","Dimensions, notes and norms pulled from every PDF page — linked to incidents and ready to ask about in chat.","Cotas, notas e normas extraídas de cada página do PDF — ligadas às ocorrências e prontas pra perguntar no chat.");},
+ quip:function(){return _pgL("Elle lit tout le plan. Même les petits caractères que personne ne lit.","It reads the whole drawing. Even the fine print nobody reads.","Ela lê a planta inteira. Até a letra miúda que ninguém lê.");},
+ tries:function(){return [{i:"message-question",l:_pgL("Poser une question sur le PDF","Ask about the PDF","Perguntar sobre o PDF"),a:"ask"},{i:"click",l:_pgL("Cliquez sur une étiquette jaune","Click a yellow tag","Clique numa etiqueta amarela"),a:"hint"}];},
+ html:function(){
+  var cols="",x,y;for(y=0;y<3;y++)for(x=0;x<4;x++){cols+='<rect x="'+(52+x*70-7)+'" y="'+(44+y*70-7)+'" width="14" height="14" fill="#7dd3fc"/>';}
+  var T=[{l:"30%",t:"31%",x:_pgL("Poteau P4 · 40×40 cm","Column P4 · 40×40 cm","Pilar P4 · 40×40 cm"),p:_pgL("Cité dans 2 incidents · page 3","Cited in 2 incidents · page 3","Citado em 2 incidentes · pág. 3")},
+         {l:"68%",t:"18%",x:"fck 25 MPa",p:_pgL("Béton C25 · NBR 6118 tab. 7.1","Concrete C25 · NBR 6118 table 7.1","Concreto C25 · NBR 6118 tab. 7.1")},
+         {l:"55%",t:"60%",x:_pgL("Dalle 12 cm","Slab 12 cm","Laje 12 cm"),p:_pgL("Enrobage 2,5 cm · classe II","Cover 2.5 cm · class II","Cobrimento 2,5 cm · classe II")},
+         {l:"24%",t:"80%",x:_pgL("Fondation −2,20 m","Footing −2.20 m","Fundação −2,20 m"),p:_pgL("Sabot sur pieux · page 6","Pile cap · page 6","Bloco sobre estacas · pág. 6")}];
+  return '<div class="pgd"><div class="pgd-page"><svg viewBox="0 0 320 240" preserveAspectRatio="none"><g stroke="#7dd3fc" stroke-width="1.4" fill="none" opacity=".85"><rect x="30" y="22" width="254" height="184"/><path d="M52 44H262M52 114H262M52 184H262M52 44V184M122 44V184M192 44V184M262 44V184"/><path d="M30 222H284M30 216V228M284 216V228" stroke-dasharray="3 3"/></g>'+cols+'<text x="157" y="236" fill="#bae6fd" font-size="8" text-anchor="middle" font-family="monospace">12,70 m</text></svg><div class="pgd-scan"></div>'+
+   T.map(function(t,k){return '<button class="pgd-tag" data-t="'+k+'" data-p="'+t.p.replace(/"/g,"&quot;")+'" style="left:'+t.l+';top:'+t.t+'">'+t.x+'</button>';}).join("")+'<div class="pgd-pop"></div></div>'+
+   '<div class="pgd-side"><div class="pgd-file"><div class="ic">'+_pgI("file-type-pdf")+'</div><div style="min-width:0"><div class="n">'+_pgL("plan-structure-rev3.pdf","structural-plan-rev3.pdf","planta-estrutural-rev3.pdf")+'</div><div class="s">8 '+_pgL("pages","pages","páginas")+' · 4,2 MB</div></div></div>'+
+   '<div class="pgd-prog"><b></b></div><div class="pgd-st">'+_pgL("En attente…","Waiting…","Aguardando…")+'</div>'+
+   '<div class="pgd-ans pg-in"><div class="who">Pillier IA</div><span class="pgd-at">'+_pgL("48 cotes, 12 notes et 6 normes extraites. Demandez ce que vous voulez sur ce plan.","48 dimensions, 12 notes and 6 norms extracted. Ask me anything about this drawing.","48 cotas, 12 notas e 6 normas extraídas. Pergunte o que quiser sobre esta planta.")+'</span></div></div></div>';
+ },
+ mount:function(I){
+  I.stage.querySelectorAll(".pgd-tag").forEach(function(b){b.addEventListener("click",function(){pgPause(I);var pop=_pgQ(I.stage,".pgd-pop");pop.textContent=b.getAttribute("data-p");pop.style.left=b.style.left;pop.style.top=b.style.top;pop.classList.remove("v");void pop.offsetWidth;pop.classList.add("v");});});
+ },
+ steps:[
+  [300,function(st,I){_pgV(st,".pgd-scan");var b=_pgQ(st,".pgd-prog b"),s=_pgQ(st,".pgd-st");_pgTween(I,3600,function(p){b.style.width=(p*100)+"%";s.textContent=p<1?_pgL("Lecture page ","Reading page ","Lendo página ")+Math.max(1,Math.ceil(p*8))+" / 8":_pgL("Indexé par Pillier IA","Indexed by Pillier IA","Indexado pela Pillier IA");});}],
+  [1300,function(st){_pgV(st,'[data-t="0"]');}],
+  [2000,function(st){_pgV(st,'[data-t="1"]');}],
+  [2700,function(st){_pgV(st,'[data-t="2"]');}],
+  [3400,function(st){_pgV(st,'[data-t="3"]');}],
+  [4100,function(st){_pgQ(st,".pgd-scan").classList.remove("v");_pgV(st,".pgd-ans");}]
+ ],
+ act:function(I,a){
+  pgPause(I);var st=I.stage;_pgV(st,".pgd-tag");_pgV(st,".pgd-ans");
+  if(a==="ask"){var at=_pgQ(st,".pgd-at");at.textContent="";_pgType(I,at,_pgL("Le P4 fait 40×40 cm, fck 25 MPa (page 3). Pour la classe II, la NBR 6118 demande 3 cm d'enrobage sur les poteaux.","P4 is 40×40 cm, fck 25 MPa (page 3). For class II exposure, NBR 6118 requires 3 cm cover on columns.","O P4 tem 40×40 cm e fck 25 MPa (pág. 3). Pra classe II, a NBR 6118 pede 3 cm de cobrimento nos pilares."),1400,true);}
+  if(a==="hint"){var t=_pgQ(st,'[data-t="0"]');if(t)t.click();}
+ }
+}
+];
+
+/* ---------- scene helpers ---------- */
+function _pgChatAdd(st,el){var box=_pgQ(st,".pgh-msgs");var dots=_pgQ(box,".pgh-typing");if(dots)dots.remove();box.appendChild(el);while(box.children.length>6)box.removeChild(box.firstChild);_pgAppear(el);return el;}
+function _pgChatUser(st,txt){var el=document.createElement("div");el.className="pgh-u pg-in";el.textContent=txt;return _pgChatAdd(st,el);}
+function _pgChatDots(st){var box=_pgQ(st,".pgh-msgs");var el=_pgEl('<div class="pgh-b pgh-typing pg-in"><span class="pgh-dots"><span></span><span></span><span></span></span></div>');box.appendChild(el);_pgAppear(el);}
+function _pgChatBot(st,html){return _pgChatAdd(st,_pgEl('<div class="pgh-b pg-in"><div class="who">'+_pgI("sparkles")+'Pillier IA</div>'+html+'</div>'));}
+function _pgChatAction(st,I){
+  var el=_pgChatAdd(st,_pgEl('<div class="pgh-act pg-in"><div class="t">'+_pgI("bolt")+_pgL("Action proposée","Proposed action","Ação proposta")+'</div>'+_pgL("Fissure poteau C4 → <b>Résolu</b>","Crack in column C4 → <b>Resolved</b>","Fissura coluna C4 → <b>Resolvido</b>")+'<div class="row"><button class="ok">'+_pgL("Confirmer","Confirm","Confirmar")+'</button><button class="no">'+_pgL("Annuler","Cancel","Cancelar")+'</button></div></div>'));
+  _pgQ(el,"button.ok").addEventListener("click",function(){pgPause(I);this.classList.add("press");_pgChatConfirm(st,I);});
+  _pgQ(el,"button.no").addEventListener("click",function(){pgPause(I);var r=_pgQ(el,".row");r.outerHTML='<div class="pgh-done" style="color:var(--pg-tx2)">'+_pgI("circle-x")+_pgL("Annulé. Rien n'a été modifié.","Cancelled. Nothing was changed.","Cancelado. Nada foi alterado.")+'</div>';});
+}
+function _pgChatConfirm(st,I){
+  var act=_pgQ(st,".pgh-act");if(!act)return;var ok=_pgQ(act,"button.ok");if(ok){ok.disabled=true;ok.textContent=_pgL("Vérification…","Verifying…","Verificando…");}
+  setTimeout(function(){
+    var r=_pgQ(act,".row");if(r)r.outerHTML='<div class="pgh-done">'+_pgI("database-check")+_pgL("Vérifié dans la base : C4 est maintenant Résolu.","Verified in the database: C4 is now Resolved.","Verificado no banco: C4 agora está Resolvido.")+'</div>';
+    var c=_pgQ(st,".pgh-c4");if(c)c.classList.add("done");
+  },700);
+}
+function _pgFinRow(I,r){
+  var led=_pgQ(I.stage,".pgf-led");if(!led)return;
+  var el=_pgEl('<div class="pgf-row pg-in"><div class="v1">'+r.v+'<small>'+r.s+'</small></div><span class="amt">'+_pgMoney(r.a)+'</span><span class="st">'+_pgI("check")+'OCR</span></div>');
+  led.insertBefore(el,led.firstChild);while(led.children.length>3)led.removeChild(led.lastChild);_pgAppear(el);
+  var c=_pgQ(I.stage,".pgf-cost"),o=_pgQ(I.stage,".pgf-ocr"),from=I.cost||0;I.cost=from+r.a;
+  _pgTween(I,600,function(p){c.textContent=_pgMoney(from+r.a*p);},true);
+  o.textContent=(parseInt(o.textContent,10)||0)+1;
+}
+function _pgKbFilter(I,q){
+  var sc=PG_SCENES[I.i];if(sc.id!=="kb")return;
+  var data=sc.data(),nq=_pgNorm(q).trim(),list=_pgQ(I.stage,".pgk-list"),cnt=_pgQ(I.stage,".pgk-cnt");if(!list)return;
+  var hits=data.filter(function(r){return !nq||_pgNorm(r.t+" "+r.m+" "+r.n).indexOf(nq)>=0;});
+  function hl(s){if(!nq)return s;var ns=_pgNorm(s),k=ns.indexOf(nq);if(k<0)return s;return s.slice(0,k)+"<mark>"+s.slice(k,k+nq.length)+"</mark>"+s.slice(k+nq.length);}
+  list.innerHTML=hits.length?hits.map(function(r){return '<div class="pgk-it"><i class="d" style="background:'+r.d+'"></i><div style="min-width:0"><div class="tt">'+hl(r.t)+'</div><div class="mt">'+r.m+'</div></div><span class="pg-norm">'+hl(r.n)+'</span></div>';}).join("")
+    :'<div class="pgk-empty">'+_pgL("Rien trouvé. Soit votre chantier est parfait, soit il y a une faute de frappe. (Probablement la faute.)","Nothing found. Either your site is perfect or there's a typo. (Probably the typo.)","Nada encontrado. Ou sua obra é perfeita, ou foi erro de digitação. (Provavelmente o erro.)")+'</div>';
+  cnt.textContent=nq?hits.length+" "+_pgL("sur","of","de")+" "+data.length+" "+_pgL("résultats","results","resultados"):data.length+" "+_pgL("enregistrements · 3 chantiers","records · 3 sites","registros · 3 obras");
+}
+function _pgTeamLike(I,user){
+  var rx=_pgQ(I.stage,".pgt-rx");if(!rx)return;rx.classList.add("v");
+  I.likes=(I.likes||0)+1;var b=_pgQ(rx,".pgt-rc"),n=_pgQ(rx,".pgt-rc span"),t=_pgQ(rx,".pgt-rt");
+  n.textContent=I.likes+2;b.classList.remove("pop");void b.offsetWidth;b.classList.add("pop");
+  var u=user?(I.ulikes=(I.ulikes||0)+1):0;
+  t.textContent=u>=4?_pgL("OK, OK, tout le monde a compris que vous aimez.","OK, OK, everyone gets that you like it.","Tá bom, tá bom, todo mundo já entendeu que você curtiu."):u?_pgL("Marcos, Ana et vous","Marcos, Ana and you","Marcos, Ana e você"):_pgL("Marcos et Ana","Marcos and Ana","Marcos e Ana");
+}
+
+/* ---------- engine ---------- */
+function pgPause(I){I.playing=false;_pgSyncCtl(I);}
+function pgPlay(I){I.playing=true;_pgSyncCtl(I);}
+function _pgSyncCtl(I){
+  I.host.classList.toggle("paused",!I.playing);
+  var pp=_pgQ(I.host,".pg-cb.pp");if(pp){pp.innerHTML=_pgI(I.playing?"player-pause-filled":"player-play-filled");pp.setAttribute("aria-label",I.playing?"Pause":"Play");}
+  var lv=_pgQ(I.host,".pg-live span");if(lv)lv.textContent=I.playing?_pgL("En direct","Live","Ao vivo"):_pgL("En pause","Paused","Pausado");
+}
+function _pgShell(I){
+  var tabs=PG_SCENES.map(function(s,k){return '<button class="pg-tab" data-i="'+k+'">'+_pgI(s.icon)+'<span>'+s.tab()+'</span>'+(s.isNew?'<span class="pg-new">'+_pgL("nouveau","new","novo")+'</span>':'')+'<span class="pg-tf"></span></button>';}).join("");
+  I.host.innerHTML=
+   '<div class="pg-head"><h2>'+_pgL("Appuyez sur play. Visitez Pillier.","Press play. Take Pillier for a spin.","Aperte o play. Dê uma volta pela Pillier.")+'</h2>'+
+   '<p>'+_pgL("Une vraie démo, sans inscription ni casque. Mettez en pause quand vous voulez, cliquez partout — rien ne casse ici (contrairement à la bétonnière).","A real demo — no sign-up, no hard hat. Pause anytime and click everything — nothing here breaks (unlike that cement mixer).","Uma demo de verdade, sem cadastro e sem capacete. Pause quando quiser e clique em tudo — aqui nada quebra (diferente daquela betoneira).")+'</p></div>'+
+   '<div class="pg-tabs" role="tablist">'+tabs+'</div>'+
+   '<div class="pg-win"><div class="pg-bar"><div class="pg-dots"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div>'+
+   '<div class="pg-url">'+_pgI("lock")+'<span class="pg-urlt"></span></div>'+
+   '<span class="pg-live"><b></b><span></span></span>'+
+   '<div class="pg-ctl"><button class="pg-cb" data-c="prev" aria-label="Previous">'+_pgI("player-skip-back")+'</button><button class="pg-cb pp" data-c="pp"></button><button class="pg-cb" data-c="next" aria-label="Next">'+_pgI("player-skip-forward")+'</button></div></div>'+
+   '<div class="pg-body"><div class="pg-side"></div><div class="pg-stage"></div></div></div>'+
+   '<div class="pg-foot"><span>'+_pgL("Ça vous plaît ? Essayez sur votre propre chantier.","Like it? Try it on your own site.","Curtiu? Teste na sua obra.")+'</span>'+
+   '<a class="mk-btn mk-btn-primary" href="#" data-c="start">'+_pgL("Commencer gratuitement","Start free","Começar grátis")+'</a>'+
+   '<a class="mk-btn mk-btn-ghost" href="https://cal.com/pillier-ai-demo/30min" target="_blank" rel="noopener">'+_pgL("Réserver une démo","Book a demo","Agendar uma demo")+'</a></div>';
+  I.stage=_pgQ(I.host,".pg-stage");I.side=_pgQ(I.host,".pg-side");
+  I.host.querySelectorAll(".pg-tab").forEach(function(b){b.addEventListener("click",function(){pgGo(I,+b.getAttribute("data-i"),true);});});
+  I.host.querySelectorAll("[data-c]").forEach(function(b){b.addEventListener("click",function(e){
+    var c=b.getAttribute("data-c");
+    if(c==="pp"){I.playing?pgPause(I):pgPlay(I);}
+    if(c==="next")pgGo(I,(I.i+1)%PG_SCENES.length,true);
+    if(c==="prev")pgGo(I,(I.i+PG_SCENES.length-1)%PG_SCENES.length,true);
+    if(c==="start"){e.preventDefault();if(typeof showAuthPage==="function")showAuthPage();}
+  });});
+  _pgSyncCtl(I);
+}
+function pgGo(I,i,play){
+  var sc=PG_SCENES[i];I.i=i;I.t=0;I.fired=0;I.tw=[];I.wx=0;I.fr=null;I.blown=false;I.likes=0;I.ulikes=0;
+  if(play)I.playing=true;
+  I.host.querySelectorAll(".pg-tab").forEach(function(b,k){b.classList.toggle("on",k===i);b.setAttribute("aria-selected",k===i?"true":"false");var f=_pgQ(b,".pg-tf");if(f)f.style.width="0";});
+  var on=_pgQ(I.host,".pg-tab.on");if(on&&on.parentNode.scrollWidth>on.parentNode.clientWidth){on.parentNode.scrollTo({left:on.offsetLeft-24,behavior:"smooth"});}
+  _pgQ(I.host,".pg-urlt").textContent="app.pillier.com.br/"+sc.url;
+  I.side.innerHTML='<div class="pg-k">'+_pgL("Scène","Scene","Cena")+' '+(i+1)+' / '+PG_SCENES.length+'</div><h3 class="pg-t">'+sc.title()+'</h3><p class="pg-d">'+sc.desc()+'</p>'+
+    '<div class="pg-tryl">'+_pgL("Essayez","Try it","Experimente")+'</div><div class="pg-tries">'+sc.tries().map(function(t){return '<button class="pg-btn" data-a="'+t.a+'">'+_pgI(t.i)+t.l+'</button>';}).join("")+'</div>'+
+    '<div class="pg-quip">'+_pgI("bulb")+'<span>'+sc.quip()+'</span></div>';
+  I.side.querySelectorAll(".pg-btn").forEach(function(b){b.addEventListener("click",function(){if(sc.act)sc.act(I,b.getAttribute("data-a"));});});
+  I.stage.innerHTML=sc.html();
+  if(sc.mount)sc.mount(I);
+  _pgSyncCtl(I);
+}
+function _pgActive(I){return I.playing&&I.vis&&!document.hidden&&I.host.offsetParent!==null;}
+function _pgLoop(now){
+  PG_INST.forEach(function(I){
+    var dt=I.last?Math.min(now-I.last,100):0;I.last=now;
+    var sc=PG_SCENES[I.i];
+    if(_pgActive(I)){
+      I.t+=dt;
+      while(I.fired<sc.steps.length&&sc.steps[I.fired][0]<=I.t){try{sc.steps[I.fired][1](I.stage,I);}catch(e){}I.fired++;}
+    }
+    for(var k=I.tw.length-1;k>=0;k--){var w=I.tw[k];if(!w.r&&!_pgActive(I))continue;var p=Math.min(1,((w.r?now:I.t)-w.s)/w.d);try{w.f(p);}catch(e){}if(p>=1)I.tw.splice(k,1);}
+    var f=_pgQ(I.host,".pg-tab.on .pg-tf");if(f)f.style.width=Math.min(100,I.t/sc.dur*100)+"%";
+    if(_pgActive(I)&&I.t>=sc.dur)pgGo(I,(I.i+1)%PG_SCENES.length);
+  });
+  _pgRaf=requestAnimationFrame(_pgLoop);
+}
+function pgMount(host){
+  var I={host:host,i:0,t:0,fired:0,tw:[],playing:true,vis:true,last:0,lang:lang};
+  host.classList.add("pg");host._pg=I;
+  _pgShell(I);pgGo(I,0);
+  if("IntersectionObserver" in window){I.vis=false;new IntersectionObserver(function(es){I.vis=es[0].isIntersecting;},{threshold:0.2}).observe(host);}
+  PG_INST.push(I);
+  if(!_pgRaf)_pgRaf=requestAnimationFrame(_pgLoop);
+}
+// Mounts new hosts and re-renders existing ones when the language changes.
+function pgSync(){
+  document.querySelectorAll("[data-pg]").forEach(function(h){
+    if(!h._pg){pgMount(h);return;}
+    var I=h._pg;if(I.lang!==lang){I.lang=lang;var keep=I.i;_pgShell(I);pgGo(I,keep);}
+  });
+}
+if(document.readyState!=="loading")setTimeout(pgSync,0);else document.addEventListener("DOMContentLoaded",pgSync);
+// Kept for existing callers (lang change, login rotation): syncs the playground.
+function renderHYUB(){try{pgSync();}catch(e){}}
 
 function applyAuthLang(){
   try{pwCheck();}catch(e){}
