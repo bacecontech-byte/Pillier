@@ -92,7 +92,6 @@ body.light-mode .pg{--pg-bg:#ffffff;--pg-bg2:#f3f7f9;--pg-line:rgba(16,34,43,0.0
 .pg-tab:hover{color:var(--pg-tx);transform:translateY(-1px);}
 .pg-tab.on{color:#2cbeff;border-color:rgba(44,190,255,0.55);background:rgba(44,190,255,0.08);}
 .pg-tab .pg-tf{position:absolute;left:0;bottom:0;height:2px;width:0;background:#2cbeff;}
-.pg-tab .pg-new{font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;background:#fbbf24;color:#3a2a00;border-radius:999px;padding:2px 6px;}
 .pg-win{border-radius:20px;background:var(--pg-bg);border:1px solid var(--pg-line);box-shadow:0 30px 70px rgba(0,0,0,0.28);overflow:hidden;}
 body.light-mode .pg-win{box-shadow:0 24px 60px rgba(16,34,43,0.10);}
 .pg-bar{display:flex;align-items:center;gap:12px;height:50px;padding:0 14px;border-bottom:1px solid var(--pg-line);}
@@ -130,6 +129,83 @@ body.light-mode .pg-win{box-shadow:0 24px 60px rgba(16,34,43,0.10);}
 .pg-toast{position:absolute;left:50%;bottom:18px;transform:translate(-50%,20px);opacity:0;background:#10222b;color:#fff;border:1px solid rgba(44,190,255,0.4);border-radius:999px;padding:9px 16px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;white-space:nowrap;transition:opacity .3s,transform .3s;z-index:5;pointer-events:none;box-shadow:0 10px 30px rgba(0,0,0,.3);}
 .pg-toast.v{opacity:1;transform:translate(-50%,0);}
 .pg-toast i{color:#4ade80;font-size:16px;}
+/* finance view switch + price history */
+.pgf-sw{display:inline-flex;gap:4px;padding:4px;border-radius:999px;background:var(--pg-chip);margin-bottom:12px;}
+.pgf-swb{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 14px;border-radius:999px;border:none;background:none;color:var(--pg-tx2);font:600 13px var(--font-b);cursor:pointer;}
+.pgf-swb i{font-size:15px;}
+.pgf-swb.on{background:var(--pg-card);color:#2cbeff;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+.pgp{display:flex;flex-direction:column;gap:10px;}
+.pgp-chips{display:flex;gap:6px;flex-wrap:wrap;}
+.pgp-chip{height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--pg-line2);background:none;color:var(--pg-tx2);font:600 12.5px var(--font-b);cursor:pointer;white-space:nowrap;}
+.pgp-chip b{font-size:10.5px;margin-left:3px;padding:1px 6px;border-radius:999px;background:var(--pg-chip);}
+.pgp-chip.on{color:#2cbeff;border-color:rgba(44,190,255,.55);background:rgba(44,190,255,.08);}
+.pgp-card{background:var(--pg-card);border:1px solid var(--pg-line);border-radius:12px;padding:10px 12px;}
+.pgp-ch{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;}
+.pgp-t{font-size:13.5px;font-weight:700;color:var(--pg-tx);}
+.pgp-sel{color:#2cbeff;}
+.pgp-s{font-size:11.5px;color:var(--pg-tx2);margin-top:1px;}
+.pgp-delta{font-size:12px;font-weight:800;padding:3px 9px;border-radius:999px;background:var(--pg-chip);color:var(--pg-tx2);white-space:nowrap;}
+.pgp-delta.up{color:#e5484d;background:rgba(229,72,77,.1);}
+.pgp-delta.dn{color:#16a34a;background:rgba(74,222,128,.12);}
+.pgp-svg{width:100%;height:78px;display:block;margin:6px 0 4px;overflow:visible;}
+.pgp-area{fill:rgba(14,165,233,.12);stroke:none;}
+.pgp-line{fill:none;stroke:#0ea5e9;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:600;stroke-dashoffset:600;}
+.pgp-line.v{transition:stroke-dashoffset 1.1s ease;stroke-dashoffset:0;}
+.pgp-pts circle{fill:var(--pg-card);stroke:#0ea5e9;stroke-width:2;animation:pgPop .4s both;}
+.pgp-tip{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;line-height:1.45;color:var(--pg-tx);background:rgba(44,190,255,.06);border:1px solid rgba(44,190,255,.25);border-radius:10px;padding:7px 10px;}
+.pgp-tip i{color:#2cbeff;font-size:16px;flex-shrink:0;}
+.pgp-tbl{background:var(--pg-card);border:1px solid var(--pg-line);border-radius:12px;overflow:auto;max-height:238px;scrollbar-width:thin;}
+.pgp-hd{position:sticky;top:0;z-index:1;}
+.pgp-hd,.pgp-row{display:grid;grid-template-columns:1.6fr .8fr 1fr 1fr 1.3fr;gap:10px;align-items:center;padding:7px 12px;}
+.pgp-hd{font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--pg-tx2);background:var(--pg-chip);}
+.pgp-row{font-size:12.5px;color:var(--pg-tx);border-top:1px solid var(--pg-line);cursor:pointer;transition:background .15s;}
+.pgp-row:hover{background:rgba(44,190,255,.05);}
+.pgp-row.on{background:rgba(44,190,255,.10);box-shadow:inset 3px 0 0 #2cbeff;}
+.pgp-row .nm{font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.pgp-row .nm small{display:block;font-weight:500;font-size:10.5px;color:var(--pg-tx2);}
+.pgp-row .lt{font-weight:800;white-space:nowrap;}
+.pgp-row .lt i{font-size:14px;margin-left:4px;vertical-align:-2px;}
+.pgp-row .pgp-mm{font-size:11px;color:var(--pg-tx2);line-height:1.35;}
+.pgp-row .pgp-sp{font-size:12px;color:var(--pg-tx2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pgp .r{text-align:right;}
+/* customization / connected apps */
+.pga{display:flex;flex-direction:column;gap:12px;position:relative;}
+.pga-t{font-family:var(--font-d);font-size:20px;font-weight:800;color:var(--pg-tx);}
+.pga-d{font-size:12.5px;color:var(--pg-tx2);margin-top:2px;line-height:1.5;}
+.pga-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.pga-c{position:relative;display:flex;align-items:center;gap:10px;height:48px;padding:0 12px;border-radius:12px;border:1px solid var(--pg-line2);background:var(--pg-card);color:var(--pg-tx);font:600 13.5px var(--font-b);cursor:pointer;text-align:left;transition:border-color .2s,box-shadow .2s,transform .1s;}
+.pga-c:hover{border-color:rgba(44,190,255,.5);}
+.pga-c:active{transform:scale(.98);}
+.pga-c .ic{font-size:20px;flex-shrink:0;}
+.pga-c .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pga-c .pl,.pga-c .sp,.pga-c .gr{font-size:17px;color:var(--pg-tx2);display:flex;}
+.pga-c .ok,.pga-c .gr,.pga-c .sp,.pga-c .snt{display:none;}
+.pga-c .ok{font-size:10.5px;font-weight:800;color:#16a34a;background:rgba(74,222,128,.15);border-radius:999px;padding:3px 8px;}
+.pga-c.on .ok,.pga-c.on .gr{display:flex;}
+.pga-c.on .pl{display:none;}
+.pga-c.busy .pl{display:none;}
+.pga-c.busy .sp{display:flex;animation:pgSpin .7s linear infinite;color:#2cbeff;}
+.pga-c.on{border-color:rgba(74,222,128,.45);}
+.pga-c .snt{position:absolute;top:-7px;right:-7px;width:20px;height:20px;border-radius:50%;background:#2cbeff;color:#04222f;align-items:center;justify-content:center;font-size:13px;box-shadow:0 0 0 3px var(--pg-bg2);}
+.pga-c.sent .snt{display:flex;animation:pgPop .35s;}
+.pga-c.sent{box-shadow:0 0 0 3px rgba(44,190,255,.18);}
+.pga-inc{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--pg-tx);background:rgba(229,72,77,.08);border:1px solid rgba(229,72,77,.35);border-radius:12px;padding:9px 12px;opacity:0;transform:translateY(-6px);}
+.pga-inc i{color:#e5484d;font-size:18px;}
+.pga-inc.v{opacity:1;transform:none;transition:opacity .35s,transform .35s;}
+.pga-feed{display:flex;flex-direction:column;gap:5px;min-height:20px;}
+.pga-f{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--pg-tx2);background:var(--pg-card);border:1px solid var(--pg-line);border-radius:10px;padding:6px 10px;}
+.pga-f i{font-size:16px;}
+.pga-f b{color:var(--pg-tx);font-weight:700;}
+.pga-f span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.pga-f em{font-style:normal;font-weight:800;font-size:11px;color:#16a34a;display:inline-flex;align-items:center;gap:2px;}
+.pga-f.none{justify-content:center;border-style:dashed;}
+@keyframes pgSpin{to{transform:rotate(360deg)}}
+@media(max-width:640px){
+  .pgp-hd,.pgp-row{grid-template-columns:1.5fr 1fr 1fr;}
+  .pgp-u,.pgp-mm{display:none !important;}
+  .pga-grid{grid-template-columns:1fr;}
+  .pga-c{height:44px;}
+}
 @keyframes pgPulse{0%{box-shadow:0 0 0 0 currentColor}70%{box-shadow:0 0 0 6px transparent}100%{box-shadow:0 0 0 0 transparent}}
 @keyframes pgScan{0%{top:0}50%{top:calc(100% - 3px)}100%{top:0}}
 @keyframes pgBounce{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-4px);opacity:1}}
@@ -5947,7 +6023,7 @@ var PG_SCENES=[
 },
 
 /* ---------- scene 3: RDO (daily site report) ---------- */
-{id:"rdo",icon:"file-description",url:"rdo",dur:11500,isNew:true,
+{id:"rdo",icon:"file-description",url:"rdo",dur:11500,
  tab:function(){return _pgL("Rapport journalier","Daily report","RDO");},
  title:function(){return _pgL("Le rapport journalier s'écrit tout seul.","The daily report writes itself.","O RDO que se escreve sozinho.");},
  desc:function(){return _pgL("Météo, effectif, occurrences avec photos cartographiées et dépenses du jour : tout arrive tout seul. Vous relisez, signez, envoyez en PDF.","Weather, crew, incidents with mapped photos and the day's expenses all fill in automatically. You review, sign and send the PDF.","Clima, efetivo, ocorrências com fotos mapeadas e custos do dia entram sozinhos. Você revisa, assina e manda o PDF.");},
@@ -5999,16 +6075,18 @@ var PG_SCENES=[
 },
 
 /* ---------- scene 4: Finance ---------- */
-{id:"fin",icon:"chart-line",url:"financeiro",dur:11500,isNew:true,
+{id:"fin",icon:"chart-line",url:"financeiro",dur:18500,
  tab:function(){return _pgL("Finances","Finance","Financeiro");},
  title:function(){return _pgL("Le reçu froissé devient une donnée.","The crumpled receipt becomes data.","A nota amassada vira dado.");},
- desc:function(){return _pgL("Photographiez le reçu : l'IA lit fournisseur, montant et catégorie, l'affecte au chantier et suit le budget en temps réel.","Snap the receipt: the AI reads vendor, amount and category, assigns it to the site and tracks the budget live.","Fotografe a nota: a IA lê fornecedor, valor e categoria, lança na obra certa e acompanha o orçamento em tempo real.");},
+ desc:function(){return _pgL("Photographiez le reçu : l'IA lit fournisseur, montant et catégorie, suit le budget en temps réel — et l'historique des prix montre qui vous vend plus cher.","Snap the receipt: the AI reads vendor, amount and category, tracks the budget live — and Price History shows who's charging you more.","Fotografe a nota: a IA lê fornecedor, valor e categoria, acompanha o orçamento em tempo real — e o Histórico de Preços mostra quem está cobrando mais caro.");},
  quip:function(){return _pgL("Le reçu au fond de la poche ? L'IA le lit. (Lavez le pantalon après.)","That receipt in your back pocket? The AI reads it. (Do the laundry after.)","Aquela nota no bolso da calça? A IA lê. (Lava a calça depois.)");},
  tries:function(){return [
   {i:"receipt",l:_pgL("Saisir une dépense","Log an expense","Registrar despesa"),a:"add"},
-  {i:"alert-triangle",l:_pgL("Exploser le budget ?","Blow the budget?","Estourar o orçamento?"),a:"blow"}];},
+  {i:"alert-triangle",l:_pgL("Exploser le budget ?","Blow the budget?","Estourar o orçamento?"),a:"blow"},
+  {i:"trending-up",l:_pgL("Historique des prix","Price history","Histórico de preços"),a:"prices"}];},
  html:function(){
-  return '<div class="pgf">'+
+  return '<div class="pgf-sw"><button class="pgf-swb on" data-v="1">'+_pgI("receipt")+_pgL("Dépenses","Expenses","Despesas")+'</button><button class="pgf-swb" data-v="2">'+_pgI("trending-up")+_pgL("Historique des prix","Price history","Histórico de preços")+'</button></div>'+
+   '<div class="pgf pgf-v1">'+
    '<div class="pgf-kpis pg-in" data-f="k">'+
     '<div class="pgf-kpi"><div class="l">'+_pgI("cash")+_pgL("Coûts du mois","Costs this month","Custos este mês")+'</div><div class="n pgf-cost">'+_pgMoney(0)+'</div></div>'+
     '<div class="pgf-kpi"><div class="l">'+_pgI("receipt")+_pgL("Reçus (OCR)","Receipts (OCR)","Recibos (OCR)")+'</div><div class="n pgf-ocr">0</div></div>'+
@@ -6029,7 +6107,12 @@ var PG_SCENES=[
     '</div>'+
    '</div>'+
    '<div class="pgf-led"></div>'+
-  '</div>';
+  '</div>'+_pgPriceView();
+ },
+ mount:function(I){
+  I.stage.querySelectorAll(".pgf-swb").forEach(function(b){b.addEventListener("click",function(){pgPause(I);_pgFinView(I,+b.getAttribute("data-v"));});});
+  I.stage.querySelectorAll(".pgp-chip").forEach(function(b){b.addEventListener("click",function(){pgPause(I);_pgPriceFilter(I,b.getAttribute("data-g"));});});
+  I.stage.querySelectorAll(".pgp-row").forEach(function(r){r.addEventListener("click",function(){pgPause(I);_pgPriceSel(I,+r.getAttribute("data-k"));});});
  },
  steps:[
   [300,function(st,I){_pgV(st,'[data-f="k"]');I.cost=0;var c=_pgQ(st,".pgf-cost"),o=_pgQ(st,".pgf-ocr"),p=_pgQ(st,".pgf-pct"),b=_pgQ(st,".pgf-bar b");
@@ -6040,7 +6123,10 @@ var PG_SCENES=[
   [4000,function(st){_pgV(st,'[data-f="3"]');}],
   [4350,function(st){_pgV(st,'[data-f="4"]');}],
   [5000,function(st){_pgV(st,'[data-f="c"]');setTimeout(function(){_pgV(st,".pgf-line");},80);}],
-  [7300,function(st,I){_pgFinRow(I,{v:"Casa do Construtor",s:_pgL("Matériaux · OCR","Materials · OCR","Materiais · OCR"),a:1284.9});}]
+  [7300,function(st,I){_pgFinRow(I,{v:"Casa do Construtor",s:_pgL("Matériaux · OCR","Materials · OCR","Materiais · OCR"),a:1284.9});}],
+  [9600,function(st,I){_pgFinView(I,2);}],
+  [12600,function(st,I){_pgPriceSel(I,2);}],
+  [15200,function(st,I){_pgPriceFilter(I,"labor");}]
  ],
  act:function(I,a){
   pgPause(I);var st=I.stage;
@@ -6052,6 +6138,8 @@ var PG_SCENES=[
    I.fr=((I.fr==null?-1:I.fr)+1)%R.length;_pgFinRow(I,R[I.fr]);
    _pgToast(I,_pgL("Dépense lue et affectée au chantier","Expense read and assigned to the site","Despesa lida e lançada na obra"));
   }
+  if(a==="prices"){_pgFinView(I,2);return;}
+  if(a==="add"||a==="blow")_pgFinView(I,1);
   if(a==="blow"){
    var bar=_pgQ(st,".pgf-bar"),b=_pgQ(st,".pgf-bar b"),p=_pgQ(st,".pgf-pct"),al=_pgQ(st,".pgf-alert");
    I.blown=!I.blown;bar.classList.toggle("hot",I.blown);al.classList.toggle("v",I.blown);
@@ -6160,10 +6248,116 @@ var PG_SCENES=[
   if(a==="ask"){var at=_pgQ(st,".pgd-at");at.textContent="";_pgType(I,at,_pgL("Le P4 fait 40×40 cm, fck 25 MPa (page 3). Pour la classe II, la NBR 6118 demande 3 cm d'enrobage sur les poteaux.","P4 is 40×40 cm, fck 25 MPa (page 3). For class II exposure, NBR 6118 requires 3 cm cover on columns.","O P4 tem 40×40 cm e fck 25 MPa (pág. 3). Pra classe II, a NBR 6118 pede 3 cm de cobrimento nos pilares."),1400,true);}
   if(a==="hint"){var t=_pgQ(st,'[data-t="0"]');if(t)t.click();}
  }
+},
+
+/* ---------- scene 8: Customization (connected apps) ---------- */
+{id:"apps",icon:"adjustments-horizontal",url:"personalizacao",dur:11000,
+ tab:function(){return _pgL("Personnalisation","Customization","Personalização");},
+ title:function(){return _pgL("Branchez vos apps. Pillier fait le facteur.","Plug in your apps. Pillier plays mailman.","Conecte seus apps. A Pillier vira o carteiro.");},
+ desc:function(){return _pgL("Slack, Teams, WhatsApp, Procore, Autodesk, Jira… Chaque nouvel incident est envoyé instantanément à chaque service connecté.","Slack, Teams, WhatsApp, Procore, Autodesk, Jira… Every new incident is instantly sent to each connected service.","Slack, Teams, WhatsApp, Procore, Autodesk, Jira… Cada novo incidente é enviado na hora para cada serviço conectado.");},
+ quip:function(){return _pgL("On connecte presque tout. La radio du chef de chantier, on y travaille.","We connect almost everything. The foreman's walkie-talkie is still on the roadmap.","Conectamos quase tudo. O rádio do mestre de obras ainda está no roadmap.");},
+ tries:function(){return [{i:"plug-connected",l:_pgL("Tout connecter","Connect everything","Conectar tudo"),a:"all"},{i:"send",l:_pgL("Envoyer un incident test","Send a test incident","Enviar incidente de teste"),a:"send"},{i:"click",l:_pgL("Cliquez sur une app","Click any app","Clique num app"),a:"hint"}];},
+ html:function(){
+  return '<div class="pga"><div class="pga-hd"><div class="pga-t">'+_pgL("Personnalisation","Customization","Personalização")+'</div><div class="pga-d">'+_pgL("Connectez les apps de votre entreprise — chaque nouvel incident est envoyé instantanément à chaque service connecté.","Connect your company's apps — every new incident is instantly sent to each connected service.","Conecte os apps da sua empresa — cada novo incidente é enviado na hora para cada serviço conectado.")+'</div></div>'+
+   '<div class="pga-grid">'+_PG_APPS.map(function(a){return '<button class="pga-c'+(a.id==="teams"?' on':'')+'" data-id="'+a.id+'"><i class="ti '+a.icon+' ic" style="color:'+a.color+'"></i><span class="nm">'+a.name+'</span><span class="ok">'+_pgL("Connecté","Connected","Conectado")+'</span><span class="snt">'+_pgI("check")+'</span><span class="pl">'+_pgI("plus")+'</span><span class="sp">'+_pgI("loader-2")+'</span><span class="gr">'+_pgI("settings")+'</span></button>';}).join("")+'</div>'+
+   '<div class="pga-inc">'+_pgI("alert-octagon")+'<span><b>'+_pgL("Nouvel incident","New incident","Novo incidente")+'</b> · '+_pgL("Corrosion longrine V14 — critique","Waler corrosion bay 14 — critical","Corrosão longarina V14 — crítico")+'</span></div>'+
+   '<div class="pga-feed"></div></div>';
+ },
+ mount:function(I){I.stage.querySelectorAll(".pga-c").forEach(function(c){c.addEventListener("click",function(){pgPause(I);_pgAppToggle(I,c.getAttribute("data-id"));});});},
+ steps:[
+  [700,function(st,I){_pgAppToggle(I,"slack",true);}],
+  [1500,function(st,I){_pgAppToggle(I,"whatsapp",true);}],
+  [2300,function(st,I){_pgAppToggle(I,"procore",true);}],
+  [3100,function(st,I){_pgAppToggle(I,"jira",true);}],
+  [4300,function(st,I){_pgAppSend(I);}]
+ ],
+ act:function(I,a){
+  pgPause(I);
+  if(a==="all"){_PG_APPS.forEach(function(x,k){setTimeout(function(){_pgAppToggle(I,x.id,true);},k*120);});_pgToast(I,_pgL("8 apps connectées. Votre téléphone va vibrer un peu.","8 apps connected. Your phone is about to buzz a bit.","8 apps conectados. Seu celular vai vibrar um pouquinho."));}
+  if(a==="send")_pgAppSend(I);
+  if(a==="hint")_pgAppToggle(I,"gcal");
+ }
 }
 ];
 
 /* ---------- scene helpers ---------- */
+var _PG_PRICE_GROUPS=[["all",["Tous","All","Todos"]],["mat",["Matériaux","Materials","Materiais"]],["loc",["Équipements / Locations","Equipment / Rentals","Equipamentos / Locações"]],["labor",["Main-d'œuvre / Journées","Labor / Day rates","Mão de Obra / Diárias"]],["log",["Logistique & Divers","Logistics & Supplies","Transporte & Outros"]]];
+function _pgPriceData(){return [
+ {g:"mat",n:_pgL("Ciment CP-II 50 kg","Cement CP-II 50 kg","Cimento CP-II 50 kg"),u:_pgL("sac","bag","saco"),v:[34.5,35.2,35.9,36.8,37.6,38.9],sup:"Casa do Construtor",tip:_pgL("+12,8 % en 60 jours. Dépôt Pedra Boa le vend 36,20 R$ — 54 R$ d'économie par commande de 20 sacs.","+12.8% in 60 days. Depósito Pedra Boa sells it at R$ 36.20 — R$ 54 saved per 20-bag order.","+12,8% em 60 dias. O Depósito Pedra Boa vende a R$ 36,20 — economia de R$ 54 por pedido de 20 sacos.")},
+ {g:"mat",n:_pgL("Acier CA-50 10 mm","Rebar CA-50 10 mm","Vergalhão CA-50 10 mm"),u:_pgL("barre","bar","barra"),v:[54.1,53.2,51.9,50.8,49.9,52.4],sup:_pgL("Aciérie du Sud","Southern Steel","Aço Sul Distribuidora"),tip:_pgL("Il est remonté de 5 % après le creux de septembre. Bon moment pour acheter : plus maintenant.","Back up 5% after the September dip. Good time to buy: it was last week.","Subiu 5% depois da baixa de setembro. Hora boa de comprar: foi semana passada.")},
+ {g:"loc",n:_pgL("Location échafaudage","Scaffold rental","Locação de andaime"),u:_pgL("pièce/mois","piece/month","peça/mês"),v:[21,21,20,19.5,18.5,18],sup:_pgL("Location Échafaudage Fort","Strong Scaffold Rentals","Locadora Andaime Forte"),tip:_pgL("−14 % depuis la renégociation. Le loueur a cédé, l'échafaudage non.","−14% since renegotiation. The supplier gave in, the scaffold didn't.","−14% desde a renegociação. A locadora cedeu, o andaime não.")},
+ {g:"loc",n:_pgL("Rétrochargeuse","Backhoe loader","Retroescavadeira"),u:_pgL("heure","hour","hora"),v:[165,170,175,180,178,180],sup:_pgL("Terrassement Silva","Silva Earthworks","Terraplenagem Silva"),tip:_pgL("Stable depuis 3 semaines. L'opérateur, lui, réclame toujours un café.","Flat for 3 weeks. The operator still wants a coffee.","Estável há 3 semanas. O operador continua pedindo um cafezinho.")},
+ {g:"labor",n:_pgL("Journée maçon","Mason day rate","Diária de pedreiro"),u:_pgL("jour","day","dia"),v:[220,220,230,240,240,250],sup:_pgL("Équipe propre","In-house crew","Equipe própria"),tip:_pgL("+13,6 % sur le trimestre — encore sous la moyenne régionale (265 R$).","+13.6% this quarter — still below the regional average (R$ 265).","+13,6% no trimestre — ainda abaixo da média da região (R$ 265).")},
+ {g:"labor",n:_pgL("Journée électricien","Electrician day rate","Diária de eletricista"),u:_pgL("jour","day","dia"),v:[280,280,290,290,300,300],sup:_pgL("Électricité Lumière","Bright Electric","Elétrica Luz"),tip:_pgL("Stable. Personne n'a encore essayé de le payer en café.","Steady. Nobody has tried paying him in coffee yet.","Estável. Ninguém tentou pagar em cafezinho ainda.")},
+ {g:"log",n:"Diesel S10",u:_pgL("litre","litre","litro"),v:[5.89,5.95,6.05,6.12,6.29,6.19],sup:"TotalEnergies",tip:_pgL("Petite baisse cette semaine. La bétonnière dit merci.","Small dip this week. The mixer says thanks.","Leve queda esta semana. A betoneira agradece.")},
+ {g:"log",n:_pgL("Café de l'équipe","Crew coffee","Café da equipe"),u:"kg",v:[38,38,39,40,42,42],sup:_pgL("Boulangerie du coin","Corner bakery","Padaria do Zé"),tip:_pgL("Poste le plus critique du chantier. Ne pas couper.","Most critical line item on site. Do not cut.","Item mais crítico da obra. Não cortar.")}];}
+function _pgPriceView(){
+  var d=_pgPriceData();
+  return '<div class="pgp pgf-v2" style="display:none">'+
+   '<div class="pgp-chips">'+_PG_PRICE_GROUPS.map(function(g,k){var c=g[0]==="all"?d.length:d.filter(function(x){return x.g===g[0];}).length;return '<button class="pgp-chip'+(k===0?' on':'')+'" data-g="'+g[0]+'">'+_pgL(g[1][0],g[1][1],g[1][2])+' <b>'+c+'</b></button>';}).join("")+'</div>'+
+   '<div class="pgp-card"><div class="pgp-ch"><div><div class="pgp-t">'+_pgL("Évolution du prix unitaire","Unit price evolution","Evolução do preço unitário")+' · <span class="pgp-sel"></span></div><div class="pgp-s">'+_pgL("Détecté à partir de vos reçus capturés.","Detected from your captured receipts.","Detectado a partir dos seus recibos capturados.")+'</div></div><span class="pgp-delta"></span></div>'+
+   '<svg class="pgp-svg" viewBox="0 0 320 90" preserveAspectRatio="none"><polyline class="pgp-area" points=""/><polyline class="pgp-line" points=""/><g class="pgp-pts"></g></svg>'+
+   '<div class="pgp-tip">'+_pgI("sparkles")+'<span></span></div></div>'+
+   '<div class="pgp-tbl"><div class="pgp-hd"><span>'+_pgL("Article","Item","Item")+'</span><span class="pgp-u">'+_pgL("Unité","Unit","Unid.")+'</span><span class="r">'+_pgL("Dernier","Latest","Último")+'</span><span class="r pgp-mm">'+_pgL("Min–max","Min–max","Mín–máx")+'</span><span class="pgp-sp">'+_pgL("Fournisseur","Supplier","Fornecedor")+'</span></div>'+
+   d.map(function(x,k){var a=x.v[x.v.length-1],b=x.v[x.v.length-2],up=a>b,dn=a<b;
+     return '<div class="pgp-row" data-k="'+k+'" data-g="'+x.g+'"><span class="nm">'+x.n+'<small>'+x.v.length+' '+_pgL("relevés","records","registros")+'</small></span><span class="pgp-u">'+x.u+'</span><span class="r lt">'+_pgMoney(a)+'<i class="ti ti-trending-'+(up?'up':dn?'down':'flat')+'" style="color:'+(up?'#e5484d':dn?'#4ade80':'var(--pg-tx2)')+'"></i></span><span class="r pgp-mm">'+_pgMoney(Math.min.apply(null,x.v))+'<br>'+_pgMoney(Math.max.apply(null,x.v))+'</span><span class="pgp-sp">'+x.sup+'</span></div>';}).join("")+
+   '</div></div>';
+}
+function _pgFinView(I,v){
+  var st=I.stage,a=_pgQ(st,".pgf-v1"),b=_pgQ(st,".pgf-v2");if(!a||!b)return;
+  a.style.display=v===1?"":"none";b.style.display=v===2?"":"none";
+  st.querySelectorAll(".pgf-swb").forEach(function(x){x.classList.toggle("on",+x.getAttribute("data-v")===v);});
+  _pgQ(I.host,".pg-urlt").textContent="app.pillier.com.br/"+(v===2?"financeiro/precos":"financeiro");
+  if(v===2&&I.psel==null)_pgPriceSel(I,0);
+}
+function _pgPriceSel(I,k){
+  var st=I.stage,x=_pgPriceData()[k];if(!x)return;I.psel=k;
+  st.querySelectorAll(".pgp-row").forEach(function(r){r.classList.toggle("on",+r.getAttribute("data-k")===k);});
+  _pgQ(st,".pgp-sel").textContent=x.n;
+  var mn=Math.min.apply(null,x.v),mx=Math.max.apply(null,x.v),rg=(mx-mn)||1,n=x.v.length;
+  var pts=x.v.map(function(v,i){return [10+i*(300/(n-1)),78-((v-mn)/rg)*62];});
+  var line=pts.map(function(q){return q[0].toFixed(1)+","+q[1].toFixed(1);}).join(" ");
+  var ln=_pgQ(st,".pgp-line");ln.setAttribute("points",line);ln.classList.remove("v");void ln.getBoundingClientRect();ln.classList.add("v");
+  _pgQ(st,".pgp-area").setAttribute("points","10,88 "+line+" 310,88");
+  var up=x.v[n-1]>=x.v[0],ch=(x.v[n-1]-x.v[0])/x.v[0]*100;
+  _pgQ(st,".pgp-pts").innerHTML=pts.map(function(q,i){return '<circle cx="'+q[0]+'" cy="'+q[1]+'" r="'+(i===n-1?4.5:3)+'" style="animation-delay:'+(i*0.12)+'s"/>';}).join("");
+  var dl=_pgQ(st,".pgp-delta");dl.textContent=(ch>0?"+":"")+ch.toFixed(1).replace(".",lang===1?".":",")+"%";dl.className="pgp-delta "+(Math.abs(ch)<0.5?"":up?"up":"dn");
+  var tp=_pgQ(st,".pgp-tip span");tp.textContent=x.tip;var tw=_pgQ(st,".pgp-tip");tw.style.animation="none";void tw.offsetWidth;tw.style.animation="pgPop .35s";
+}
+function _pgPriceFilter(I,g){
+  var st=I.stage,d=_pgPriceData();
+  st.querySelectorAll(".pgp-chip").forEach(function(c){c.classList.toggle("on",c.getAttribute("data-g")===g);});
+  var first=-1;st.querySelectorAll(".pgp-row").forEach(function(r){var ok=g==="all"||r.getAttribute("data-g")===g;r.style.display=ok?"":"none";if(ok&&first<0)first=+r.getAttribute("data-k");});
+  if(first>=0&&(I.psel==null||(g!=="all"&&d[I.psel].g!==g)))_pgPriceSel(I,first);
+}
+function _pgAppToggle(I,id,on,quiet){
+  var c=_pgQ(I.stage,'.pga-c[data-id="'+id+'"]');if(!c)return;
+  if(on==null)on=!c.classList.contains("on");
+  if(on&&!c.classList.contains("on")){c.classList.add("busy");setTimeout(function(){c.classList.remove("busy");c.classList.add("on");},quiet?0:550);}
+  else if(!on){c.classList.remove("on");c.classList.remove("sent");}
+}
+function _pgAppSend(I){
+  var st=I.stage,inc=_pgQ(st,".pga-inc"),feed=_pgQ(st,".pga-feed");
+  inc.classList.remove("v");void inc.offsetWidth;inc.classList.add("v");feed.innerHTML="";
+  st.querySelectorAll(".pga-c").forEach(function(c){c.classList.remove("sent");});
+  var on=Array.prototype.slice.call(st.querySelectorAll(".pga-c.on"));
+  if(!on.length){feed.innerHTML='<div class="pga-f none">'+_pgL("Aucune app connectée. L'incident attend, bras croisés.","No apps connected. The incident is waiting, arms crossed.","Nenhum app conectado. O incidente está esperando, de braços cruzados.")+'</div>';return;}
+  on.forEach(function(c,k){setTimeout(function(){
+    c.classList.add("sent");var d=_PG_APPS.filter(function(a){return a.id===c.getAttribute("data-id");})[0];
+    var r=_pgEl('<div class="pga-f pg-in"><i class="ti '+d.icon+'" style="color:'+d.color+'"></i><b>'+d.name+'</b><span>'+d.to()+'</span><em>'+_pgI("check")+_pgL("envoyé","sent","enviado")+'</em></div>');
+    feed.appendChild(r);while(feed.children.length>5)feed.removeChild(feed.firstChild);_pgAppear(r);
+  },350+k*380);});
+}
+var _PG_APPS=[
+ {id:"slack",name:"Slack",icon:"ti-brand-slack",color:"#E01E5A",to:function(){return "#obra-aurora";}},
+ {id:"teams",name:"Microsoft Teams",icon:"ti-brand-teams",color:"#6264A7",to:function(){return _pgL("Canal Ingénierie","Engineering channel","Canal Engenharia");}},
+ {id:"whatsapp",name:"WhatsApp Business",icon:"ti-brand-whatsapp",color:"#25D366",to:function(){return _pgL("Groupe Chefs de chantier","Site foremen group","Grupo Mestres de obra");}},
+ {id:"gcal",name:"Google Calendar",icon:"ti-calendar-event",color:"#4285F4",to:function(){return _pgL("Inspection demain 8h","Inspection tomorrow 8am","Vistoria amanhã 8h");}},
+ {id:"procore",name:"Procore",icon:"ti-building",color:"#F47E42",to:function(){return _pgL("Observation #482 créée","Observation #482 created","Observação #482 criada");}},
+ {id:"autodesk",name:"Autodesk Construction",icon:"ti-cube",color:"#0696D7",to:function(){return _pgL("Issue liée au modèle","Issue linked to model","Issue vinculada ao modelo");}},
+ {id:"jira",name:"Jira",icon:"ti-ticket",color:"#0052CC",to:function(){return "OBRA-217";}},
+ {id:"zapier",name:"Zapier / Webhook",icon:"ti-webhook",color:"#FF4A00",to:function(){return "POST 200 OK";}}];
+
 function _pgChatAdd(st,el){var box=_pgQ(st,".pgh-msgs");var dots=_pgQ(box,".pgh-typing");if(dots)dots.remove();box.appendChild(el);while(box.children.length>6)box.removeChild(box.firstChild);_pgAppear(el);return el;}
 function _pgChatUser(st,txt){var el=document.createElement("div");el.className="pgh-u pg-in";el.textContent=txt;return _pgChatAdd(st,el);}
 function _pgChatDots(st){var box=_pgQ(st,".pgh-msgs");var el=_pgEl('<div class="pgh-b pgh-typing pg-in"><span class="pgh-dots"><span></span><span></span><span></span></span></div>');box.appendChild(el);_pgAppear(el);}
@@ -6214,7 +6408,7 @@ function _pgSyncCtl(I){
   var lv=_pgQ(I.host,".pg-live span");if(lv)lv.textContent=I.playing?_pgL("En direct","Live","Ao vivo"):_pgL("En pause","Paused","Pausado");
 }
 function _pgShell(I){
-  var tabs=PG_SCENES.map(function(s,k){return '<button class="pg-tab" data-i="'+k+'">'+_pgI(s.icon)+'<span>'+s.tab()+'</span>'+(s.isNew?'<span class="pg-new">'+_pgL("nouveau","new","novo")+'</span>':'')+'<span class="pg-tf"></span></button>';}).join("");
+  var tabs=PG_SCENES.map(function(s,k){return '<button class="pg-tab" data-i="'+k+'">'+_pgI(s.icon)+'<span>'+s.tab()+'</span>'+'<span class="pg-tf"></span></button>';}).join("");
   I.host.innerHTML=
    '<div class="pg-head"><h2>'+_pgL("Appuyez sur play. Visitez Pillier.","Press play. Take Pillier for a spin.","Aperte o play. Dê uma volta pela Pillier.")+'</h2>'+
    '<p>'+_pgL("Une vraie démo, sans inscription ni casque. Mettez en pause quand vous voulez, cliquez partout — rien ne casse ici (contrairement à la bétonnière).","A real demo — no sign-up, no hard hat. Pause anytime and click everything — nothing here breaks (unlike that cement mixer).","Uma demo de verdade, sem cadastro e sem capacete. Pause quando quiser e clique em tudo — aqui nada quebra (diferente daquela betoneira).")+'</p></div>'+
@@ -6239,7 +6433,7 @@ function _pgShell(I){
   _pgSyncCtl(I);
 }
 function pgGo(I,i,play){
-  var sc=PG_SCENES[i];I.i=i;I.t=0;I.fired=0;I.tw=[];I.wx=0;I.fr=null;I.blown=false;I.likes=0;I.ulikes=0;
+  var sc=PG_SCENES[i];I.i=i;I.t=0;I.fired=0;I.tw=[];I.wx=0;I.fr=null;I.blown=false;I.likes=0;I.ulikes=0;I.psel=null;
   if(play)I.playing=true;
   I.host.querySelectorAll(".pg-tab").forEach(function(b,k){b.classList.toggle("on",k===i);b.setAttribute("aria-selected",k===i?"true":"false");var f=_pgQ(b,".pg-tf");if(f)f.style.width="0";});
   var on=_pgQ(I.host,".pg-tab.on");if(on&&on.parentNode.scrollWidth>on.parentNode.clientWidth){on.parentNode.scrollTo({left:on.offsetLeft-24,behavior:"smooth"});}
