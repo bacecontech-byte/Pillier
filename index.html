@@ -6411,7 +6411,7 @@ function _pgShell(I){
   var tabs=PG_SCENES.map(function(s,k){return '<button class="pg-tab" data-i="'+k+'">'+_pgI(s.icon)+'<span>'+s.tab()+'</span>'+'<span class="pg-tf"></span></button>';}).join("");
   I.host.innerHTML=
    '<div class="pg-head"><h2>'+_pgL("Appuyez sur play. Visitez Pillier.","Press play. Take Pillier for a spin.","Aperte o play. Dê uma volta pela Pillier.")+'</h2>'+
-   '<p>'+_pgL("Une vraie démo, sans inscription ni casque. Mettez en pause quand vous voulez, cliquez partout — rien ne casse ici (contrairement à la bétonnière).","A real demo — no sign-up, no hard hat. Pause anytime and click everything — nothing here breaks (unlike that cement mixer).","Uma demo de verdade, sem cadastro e sem capacete. Pause quando quiser e clique em tudo — aqui nada quebra (diferente daquela betoneira).")+'</p></div>'+
+   '</div>'+
    '<div class="pg-tabs" role="tablist">'+tabs+'</div>'+
    '<div class="pg-win"><div class="pg-bar"><div class="pg-dots"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div>'+
    '<div class="pg-url">'+_pgI("lock")+'<span class="pg-urlt"></span></div>'+
