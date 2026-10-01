@@ -53,6 +53,32 @@ body.light-mode .auth-left-panel{background:#eef4f6 !important;}
 .content-tab{background:none;border:none;color:var(--text2);font-size:14px;font-weight:500;padding:14px 24px;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;font-family:var(--font-b);}
 .content-tab:hover{color:var(--white);}
 .content-tab.active{color:#2cbeff;border-bottom-color:#2cbeff;font-weight:600;}
+/* Floating header (Zero-style): rounded bar inset from the viewport edges */
+#content-header.ch-bar{position:sticky;top:14px;z-index:200;display:flex;align-items:center;gap:6px;height:60px;max-width:1240px;margin:14px auto 0;width:calc(100% - 36px);padding:0 10px 0 22px;border-radius:20px;background:rgba(22,50,59,0.92);border:1px solid rgba(255,255,255,0.09);box-shadow:0 10px 30px rgba(0,0,0,0.30);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);}
+.ch-nav{display:flex;align-items:center;gap:2px;flex:1;justify-content:flex-start;margin-left:22px;min-width:0;}
+.ch-nav .content-tab{border:none;border-radius:999px;padding:8px 14px;font-size:15px;font-weight:500;color:#c9d3d8;white-space:nowrap;transition:background 0.15s,color 0.15s;}
+.ch-nav .content-tab:hover{color:#fff;background:rgba(255,255,255,0.05);}
+.ch-nav .content-tab.active{color:#fff;background:rgba(255,255,255,0.08);font-weight:500;}
+.ch-nav .ch-cap{display:inline-flex;align-items:center;gap:6px;color:#2cbeff;font-weight:600;}
+.ch-nav .ch-cap:hover{color:#2cbeff;background:rgba(44,190,255,0.12);}
+.ch-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.ch-chip{display:inline-flex;align-items:center;justify-content:center;height:40px;min-width:40px;padding:0 12px;border-radius:999px;background:none;border:1px solid rgba(255,255,255,0.14);color:#e6edf0;font-family:var(--font-b);font-size:13px;font-weight:700;letter-spacing:0.03em;cursor:pointer;transition:border-color 0.15s,color 0.15s;}
+.ch-chip i{font-size:17px;}
+.ch-chip:hover{border-color:#2cbeff;color:#2cbeff;}
+.ch-out{display:inline-flex;align-items:center;height:40px;padding:0 20px;border-radius:999px;background:none;border:1px solid rgba(255,255,255,0.22);color:#fff;font-family:var(--font-b);font-size:15px;font-weight:600;cursor:pointer;white-space:nowrap;transition:border-color 0.15s,background 0.15s;}
+.ch-out:hover{border-color:#fff;background:rgba(255,255,255,0.05);}
+.ch-solid{display:inline-flex;align-items:center;height:40px;padding:0 20px;border-radius:999px;background:#2cbeff;color:#04222f;font-family:var(--font-b);font-size:15px;font-weight:700;text-decoration:none;white-space:nowrap;transition:filter 0.15s;}
+.ch-solid:hover{filter:brightness(1.08);}
+body.light-mode #content-header.ch-bar{background:rgba(255,255,255,0.94);border-color:rgba(16,34,43,0.08);box-shadow:0 8px 26px rgba(16,34,43,0.08);}
+body.light-mode .ch-logo,body.light-mode .ch-logo path{color:#0a95d6 !important;fill:#0a95d6;}
+body.light-mode .ch-nav .content-tab{color:#4b5a61;}
+body.light-mode .ch-nav .content-tab:hover,body.light-mode .ch-nav .content-tab.active{color:#10222b;background:#eef3f5;}
+body.light-mode .ch-nav .ch-cap,body.light-mode .ch-nav .ch-cap:hover{color:#0a95d6;}
+body.light-mode .ch-chip{border-color:rgba(16,34,43,0.14);color:#10222b;}
+body.light-mode .ch-out{border-color:rgba(16,34,43,0.2);color:#10222b;}
+body.light-mode .ch-out:hover{border-color:#10222b;background:rgba(16,34,43,0.03);}
+@media(max-width:1180px){.ch-nav .content-tab{padding:8px 10px;font-size:14px;}.ch-nav{margin-left:12px;}.ch-out,.ch-solid{padding:0 16px;font-size:14px;}}
+@media(min-width:769px) and (max-width:1080px){#content-tabs{display:none !important;}#content-mob-menu{display:inline-flex !important;}.ch-right{margin-left:auto;}}
 /* ===== Marketing redesign design-system (mk-) ===== */
 .mk-eyebrow{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#2cbeff;}
 .mk-section{max-width:1280px;margin:0 auto;padding:72px 48px;}
@@ -1468,9 +1494,10 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
   .cmp-row{font-size:11px !important;}
   /* Content page mobile: hide tabs + all controls (moved to hamburger); keep logo + hamburger only */
   #content-tabs{display:none !important;}
-  #content-header{padding:0 16px !important;justify-content:space-between !important;}
+  #content-header.ch-bar{top:10px;margin-top:10px;width:calc(100% - 20px);height:56px;padding:0 8px 0 16px;border-radius:18px;justify-content:space-between !important;}
   #content-header>div:last-child{gap:6px !important;margin-left:auto;}
-  #content-header>div:last-child>div,#content-header>div:last-child>button:not(#content-mob-menu),#content-header>div:last-child>a{display:none !important;}
+  #content-header>div:last-child>div,#content-header>div:last-child>button:not(#content-mob-menu){display:none !important;}
+  #content-demo-btn{height:36px;padding:0 14px;font-size:13px;}
   #content-mob-menu{display:flex !important;align-items:center;}
   .content-panel{padding:32px 16px !important;}
   /* Solutions tab hover dropdown - convert to click on mobile */
@@ -1783,14 +1810,14 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
 <!-- ═══ CONTENT PAGE (About/Solutions/Plans/Resources) ═══ -->
 <div id="s-content" class="screen active" style="min-height:100vh;background:var(--navy);">
   <!-- Content page header with tabs inline -->
-  <div style="display:flex;align-items:center;justify-content:flex-start;padding:0 32px;height:56px;background:var(--navy2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200;" id="content-header">
-    <a href="#" onclick="showContentPage(0);return false;" title="Pillier — Home" style="font-family:var(--font-d);font-size:16px;font-weight:800;color:#2cbeff;text-decoration:none;letter-spacing:-0.4px;cursor:pointer;flex-shrink:0;display:inline-flex;align-items:flex-end;gap:8px;line-height:1;">
+  <div id="content-header" class="ch-bar">
+    <a href="#" onclick="showContentPage(0);return false;" title="Pillier — Home" class="ch-logo" style="font-family:var(--font-d);font-size:17px;font-weight:800;color:#2cbeff;text-decoration:none;letter-spacing:-0.4px;cursor:pointer;flex-shrink:0;display:inline-flex;align-items:flex-end;gap:8px;line-height:1;">
       <svg width="32" height="30" viewBox="0 0 322.71 305.81" fill="none" aria-hidden="true" style="flex-shrink:0;display:block;">
         <path fill="#2cbeff" d="M67.65,200.75H0v105.05h67.66v-9.23s.12-52.48,0-95.83ZM67.66,305.81V56.54h136.2c10.68,0,19.73,1.78,27.15,5.34,7.41,3.55,13.05,8.6,16.91,15.13,3.86,6.54,5.78,14.39,5.78,23.59,0,13.65-4.38,24.33-13.14,32.05-8.75,7.73-20.98,11.57-36.71,11.57h-79.66l-56.55,56.51,154.91.03c20.18,0,37.74-4.3,52.73-12.9,14.99-8.62,26.63-20.55,34.94-35.83,8.3-15.28,12.48-32.56,12.48-51.86s-4.09-36.87-12.25-51.87c-8.16-14.97-19.59-26.77-34.27-35.38-14.68-8.6-31.97-12.91-51.86-12.91H62C27.77,0,0,27.77,0,62v82.22l67.61,56.53"/>
       </svg>
       <span>Pillier</span>
     </a>
-    <div style="display:flex;align-items:center;gap:0;flex:1;justify-content:center;" id="content-tabs">
+    <div id="content-tabs" class="ch-nav">
       <button onclick="showContentTab(0)" class="content-tab active" id="ctab-0">Home</button>
       <button onclick="showContentTab(1)" class="content-tab" id="ctab-1">Solutions</button>
       <div style="position:relative;display:none;">
@@ -1839,21 +1866,21 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
       </div>
       <button onclick="showContentTab(2)" class="content-tab" id="ctab-2">Plans</button>
       <button onclick="showContentTab(3)" class="content-tab" id="ctab-3">Resources</button>
-      <button onclick="goCapture()" id="ctab-capture" style="display:inline-flex;align-items:center;gap:6px;margin-left:6px;background:rgba(44,190,255,0.12);color:#2cbeff;border:none;border-radius:8px;padding:8px 14px;font-family:var(--font-b);font-size:14px;font-weight:600;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='rgba(44,190,255,0.2)'" onmouseout="this.style.background='rgba(44,190,255,0.12)'"><i class="ti ti-camera" style="font-size:16px;"></i> <span id="ctab-capture-lbl">Capture now</span></button>
-      <button onclick="showAuthPage()" class="content-tab" id="ctab-login">Log in</button>
+      <button onclick="goCapture()" id="ctab-capture" class="content-tab ch-cap"><i class="ti ti-camera" style="font-size:16px;"></i> <span id="ctab-capture-lbl">Capture now</span></button>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+    <div class="ch-right">
       <div style="position:relative;" id="content-lang-wrap">
-        <button onclick="toggleContentLang()" id="content-lang-btn" style="display:inline-flex;align-items:center;justify-content:center;background:none;border:1px solid var(--border2);border-radius:9px;color:var(--text);font-size:12px;font-weight:600;letter-spacing:0.04em;padding:8px 13px;cursor:pointer;font-family:var(--font-b);transition:border-color 0.15s;" onmouseover="this.style.borderColor='#2cbeff'" onmouseout="this.style.borderColor='var(--border2)'"><span id="content-lang-label">EN</span></button>
+        <button onclick="toggleContentLang()" id="content-lang-btn" class="ch-chip" aria-label="Language"><span id="content-lang-label">EN</span></button>
         <div id="content-lang-menu" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--navy2);border:1px solid var(--border2);border-radius:10px;padding:6px;min-width:130px;box-shadow:0 8px 24px rgba(0,0,0,0.3);z-index:300;">
           <div onclick="changeLang(1);toggleContentLang();" class="lang-menu-item"><span style="font-size:14px;">🇬🇧</span> English</div>
           <div onclick="changeLang(2);toggleContentLang();" class="lang-menu-item"><span style="font-size:14px;">🇧🇷</span> Português</div>
           <div onclick="changeLang(0);toggleContentLang();" class="lang-menu-item"><span style="font-size:14px;">🇫🇷</span> Français</div>
         </div>
       </div>
-      <button onclick="setTheme(document.body.classList.contains('light-mode')?'dark':'light')" aria-label="Theme" style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:34px;background:none;border:1px solid var(--border2);border-radius:9px;color:var(--text);cursor:pointer;transition:border-color 0.15s,color 0.15s;" onmouseover="this.style.borderColor='#2cbeff';this.style.color='#2cbeff'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text)'"><i class="ti ti-contrast" style="font-size:16px;"></i></button>
-      <a href="https://cal.com/pillier-ai-demo/30min" target="_blank" id="content-demo-btn" style="font-size:13px;color:#04222f;text-decoration:none;padding:9px 18px;background:#2cbeff;border-radius:9px;font-weight:700;">Schedule a demo</a>
-      <button onclick="toggleLandingMenu()" id="content-mob-menu" style="display:none;background:none;border:none;color:var(--white);font-size:22px;padding:2px;cursor:pointer;"><i class="ti ti-menu-2"></i></button>
+      <button onclick="setTheme(document.body.classList.contains('light-mode')?'dark':'light')" aria-label="Theme" class="ch-chip"><i class="ti ti-contrast" style="font-size:16px;"></i></button>
+      <button onclick="showAuthPage()" id="ctab-login" class="ch-out">Log in</button>
+      <a href="https://cal.com/pillier-ai-demo/30min" target="_blank" id="content-demo-btn" class="ch-solid">Schedule a demo</a>
+      <button onclick="toggleLandingMenu()" id="content-mob-menu" class="ch-chip" aria-label="Menu" style="display:none;"><i class="ti ti-menu-2"></i></button>
     </div>
   </div>
 
