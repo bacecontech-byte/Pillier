@@ -1420,6 +1420,23 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
   #rdo-doc .rdo-cost-badge{cursor:default !important;}
   #rdo-doc .rdo-sig-meta{color:#14202a !important;}
 }
+/* Cloudflare Turnstile gate */
+.ts-problem{display:flex;align-items:center;gap:10px;margin:-14px 0 18px;padding:10px 12px;border-radius:10px;background:rgba(229,72,77,.1);border:1px solid rgba(229,72,77,.35);color:#fca5a5;font-size:12.5px;line-height:1.45;}
+.ts-problem i{font-size:18px;color:#f87171;flex-shrink:0;}
+.ts-problem span{flex:1;}
+.ts-problem button{flex-shrink:0;background:none;border:1px solid rgba(248,113,113,.5);color:#fecaca;border-radius:999px;padding:5px 12px;font:600 12px var(--font-b);cursor:pointer;}
+body.light-mode .ts-problem{color:#b91c1c;}
+body.light-mode .ts-problem button{color:#b91c1c;}
+.ts-nudge{animation:tsNudge .5s;border-radius:8px;box-shadow:0 0 0 2px rgba(251,191,36,.7);}
+@keyframes tsNudge{0%,100%{transform:none}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+#ts-modal{position:fixed;inset:0;z-index:100080;background:rgba(4,14,18,.65);display:flex;align-items:center;justify-content:center;padding:16px;}
+#ts-modal .ts-card{background:#16323b;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;width:min(380px,100%);box-shadow:0 20px 60px rgba(0,0,0,.5);text-align:center;color:#e6edf0;font-family:var(--font-b);}
+#ts-modal .ts-h{display:flex;align-items:center;justify-content:center;gap:8px;font-family:var(--font-d);font-weight:800;font-size:16px;}
+#ts-modal .ts-h i{color:#2cbeff;font-size:20px;}
+#ts-modal .ts-s{font-size:13px;color:#93a6af;margin:6px 0 14px;}
+#ts-modal .ts-w{display:flex;justify-content:center;min-height:65px;}
+#ts-modal .ts-x{margin-top:12px;background:none;border:none;color:#93a6af;font:600 13px var(--font-b);cursor:pointer;}
+body.light-mode #ts-modal .ts-card{background:#fff;color:#10222b;border-color:rgba(0,0,0,.08);}
 #ai-p-solution,#ai-v-solution,#imd-action{white-space:pre-line;}
 /* Pillier IA agent: platform link chips + action confirmation cards */
 .pl-chip{display:inline-flex;align-items:center;gap:6px;max-width:100%;vertical-align:middle;margin:2px 1px;padding:3px 10px;border-radius:999px;border:1px solid rgba(44,190,255,.35);background:rgba(44,190,255,.08);color:#2cbeff;font-size:12.5px;font-weight:600;line-height:1.4;cursor:pointer;}
@@ -4170,13 +4187,14 @@ function _pillierRenderTurnstile() {
         language: wantedLang,
         callback: function(token) {
           _turnstileTokens[kind] = token;
+          try { _tsClearProblem(kind); } catch(e){}
           // Explicitly re-enable the auth button (in case it was stuck disabled)
           var btnId = kind === 'login' ? 'btn-login' : 'btn-signup';
           var btn = document.getElementById(btnId);
           if (btn) { btn.disabled = false; btn.style.pointerEvents = 'auto'; btn.style.opacity = '1'; }
           },
         'expired-callback': function() { _turnstileTokens[kind] = null; },
-        'error-callback': function() { _turnstileTokens[kind] = null; }
+        'error-callback': function() { _turnstileTokens[kind] = null; _tsShowProblem(kind, 'error'); return true; }
       });
       _turnstileWidgetIds[kind] = wid;
     } catch(e) {
@@ -4253,34 +4271,77 @@ async function _pillierLogAuthEvent(eventType, email, errorMsg) {
   } catch(e) { /* silent — auth event logging should never break auth */ }
 }
 
-async function _pillierVerifyCaptcha(token) {
-  if (!TURNSTILE_ENABLED) return { ok: true, skipped: true };
-  // Fail-open when the widget hasn't produced a usable token yet (SDK slow to
-  // load, token expired, or cleared by a language re-render). A missing token
-  // must NEVER deadlock the auth button — the server still verifies real tokens.
-  if (!token) { console.warn('Turnstile token missing — proceeding (fail-open)'); return { ok: true, noToken: true }; }
-  try {
-    var r = await fetch('/api/verify-captcha', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: token })
-    });
-    // Fail-open on backend errors (network issue, 5xx) — user shouldn't be locked out because our backend hiccupped
-    // Only block if we get a DEFINITIVE "no" from Cloudflare (data.ok === false)
-    if (!r.ok) {
-      console.warn('Captcha backend returned', r.status, '— allowing login (fail-open)');
-      return { ok: true, backendError: true };
-    }
-    var data = await r.json();
-    // Handle new API response format: {ok: true} or {ok: false, error: "..."}
-    if (data && data.ok === false) return data;
-    // Any other response (including {ok: true, skipped: true} when secret not configured) — allow
-    return { ok: true };
-  } catch(e) {
-    console.warn('Captcha verify network error — allowing login (fail-open):', e && e.message);
-    return { ok: true, networkError: true };
-  }
+// ── Cloudflare Turnstile gate (strict) ──────────────────────────────────────
+// No verification → no access. Every Supabase auth call that can create a
+// session or send a sign-in email needs a fresh Turnstile token, which is
+// forwarded to Supabase as captchaToken (Supabase verifies it server-side with
+// Cloudflare when CAPTCHA protection is enabled in Supabase → Auth → Attack
+// Protection). Tokens are single-use, so each one is consumed then reset.
+function _tsMsg(){return {
+  wait:plL("Veuillez terminer la vérification de sécurité (Cloudflare) avant de continuer.","Please complete the security check (Cloudflare) before continuing.","Conclua a verificação de segurança (Cloudflare) antes de continuar."),
+  fail:plL("La vérification de sécurité a échoué. Réessayez.","The security check failed. Please try again.","A verificação de segurança falhou. Tente novamente."),
+  down:plL("Impossible de charger la vérification de sécurité Cloudflare. Désactivez le bloqueur de pubs / VPN puis rechargez la page.","Couldn't load the Cloudflare security check. Turn off ad-blockers / VPN and reload the page.","Não foi possível carregar a verificação de segurança da Cloudflare. Desative bloqueadores de anúncio / VPN e recarregue a página."),
+  retry:plL("Réessayer","Try again","Tentar novamente"),
+  reload:plL("Recharger la page","Reload page","Recarregar a página"),
+  title:plL("Vérification de sécurité","Security check","Verificação de segurança"),
+  sub:plL("Confirmez que vous êtes humain pour continuer.","Confirm you're human to continue.","Confirme que você é humano para continuar."),
+  cancel:plL("Annuler","Cancel","Cancelar")
+};}
+function _tsShowProblem(kind,why){
+  var el=document.getElementById('turnstile-'+kind);if(!el)return;
+  var box=el.parentNode.querySelector('.ts-problem[data-k="'+kind+'"]');
+  if(!box){box=document.createElement('div');box.className='ts-problem';box.setAttribute('data-k',kind);el.parentNode.insertBefore(box,el.nextSibling);}
+  var M=_tsMsg();
+  box.innerHTML='<i class="ti ti-shield-x"></i><span>'+(why==='down'?M.down:M.fail)+'</span><button type="button">'+(why==='down'?M.reload:M.retry)+'</button>';
+  box.querySelector('button').onclick=function(){
+    if(why==='down'){location.reload();return;}
+    box.remove();try{window.turnstile.reset(_turnstileWidgetIds[kind]);}catch(e){}
+  };
 }
+function _tsClearProblem(kind){var el=document.getElementById('turnstile-'+kind);var b=el&&el.parentNode.querySelector('.ts-problem[data-k="'+kind+'"]');if(b)b.remove();}
+// If the SDK never loads (blocked network, ad-blocker), say so instead of a silent empty box.
+setTimeout(function(){
+  if(TURNSTILE_ENABLED&&typeof window.turnstile==='undefined'){_tsShowProblem('login','down');_tsShowProblem('signup','down');}
+},9000);
+// Token from the visible widget on the login / signup form (consumed on use).
+function _tsTakeToken(kind){
+  if(!TURNSTILE_ENABLED)return {ok:true,token:undefined};
+  if(typeof window.turnstile==='undefined')return {ok:false,why:'down'};
+  var t=_turnstileTokens[kind];
+  if(!t)return {ok:false,why:'wait'};
+  _turnstileTokens[kind]=null;
+  return {ok:true,token:t};
+}
+// On-demand check for flows without a visible widget (code, magic link, reset).
+function pillierCaptcha(){
+  return new Promise(function(resolve){
+    if(!TURNSTILE_ENABLED){resolve({ok:true,token:undefined});return;}
+    if(typeof window.turnstile==='undefined'){resolve({ok:false,why:'down'});return;}
+    var M=_tsMsg(),done=false,wid=null;
+    var ov=document.createElement('div');ov.id='ts-modal';
+    ov.innerHTML='<div class="ts-card"><div class="ts-h"><i class="ti ti-shield-check"></i>'+M.title+'</div><div class="ts-s">'+M.sub+'</div><div class="ts-w"></div><button type="button" class="ts-x">'+M.cancel+'</button></div>';
+    document.body.appendChild(ov);
+    function finish(r){if(done)return;done=true;try{if(wid!=null)window.turnstile.remove(wid);}catch(e){}ov.remove();resolve(r);}
+    ov.querySelector('.ts-x').onclick=function(){finish({ok:false,why:'cancel'});};
+    try{
+      wid=window.turnstile.render(ov.querySelector('.ts-w'),{sitekey:TURNSTILE_SITE_KEY,theme:document.body.classList.contains('light-mode')?'light':'dark',language:_pillierTurnstileLang(),
+        callback:function(t){setTimeout(function(){finish({ok:true,token:t});},250);},
+        'error-callback':function(){finish({ok:false,why:'fail'});return true;},
+        'timeout-callback':function(){finish({ok:false,why:'fail'});}});
+    }catch(e){finish({ok:false,why:'fail'});}
+  });
+}
+// Shows the right message for a failed gate; returns false so callers can `return`.
+function _tsBlocked(r,kind){
+  var M=_tsMsg();
+  if(r.why==='cancel')return false;
+  if(r.why==='down'){showMsg(M.down,'err');if(kind)_tsShowProblem(kind,'down');return false;}
+  showMsg(r.why==='wait'?M.wait:M.fail,'err');
+  if(kind){var el=document.getElementById('turnstile-'+kind);if(el){el.classList.remove('ts-nudge');void el.offsetWidth;el.classList.add('ts-nudge');}}
+  return false;
+}
+// Supabase rejects a missing / invalid token with a captcha error — make it readable.
+function _tsAuthErr(err){var m=String((err&&err.message)||'');return /captcha/i.test(m)?_tsMsg().fail:m;}
 
 function setTheme(t){
   if(t==='light'){document.body.classList.add('light-mode');}else{document.body.classList.remove('light-mode');}
@@ -5254,10 +5315,11 @@ async function sendResetLink(){
   var em=(document.getElementById("r-email").value||"").trim();
   var S=STRINGS[lang];
   if(!em){showMsg(plL("Entrez votre email","Enter your email","Digite seu e-mail"),"err");return;}
+  var _cap=await pillierCaptcha();if(!_cap.ok)return _tsBlocked(_cap);
   var btn=document.getElementById("btn-reset-send");if(btn){btn.disabled=true;}
   showLoad(true,plL("Envoi…","Sending…","Enviando…"));
   try{
-    var r=await db.auth.resetPasswordForEmail(em,{redirectTo:location.origin+"/"});
+    var r=await db.auth.resetPasswordForEmail(em,{redirectTo:location.origin+"/",captchaToken:_cap.token});
     showLoad(false);if(btn)btn.disabled=false;
     if(r.error){showMsg(plL("Erreur — vérifiez votre email","Error — check your email","Erro — verifique seu e-mail"),"err");return;}
     showMsg(plL("Lien de réinitialisation envoyé ! Vérifiez votre boîte mail.","Reset link sent! Check your inbox.","Link de redefinição enviado! Verifique seu e-mail."),"ok");
@@ -5364,12 +5426,13 @@ async function sendLoginCode(){
   var em=(document.getElementById("l-email").value||"").trim();
   if(!em){showMsg(plL("Entrez votre email","Enter your email","Digite seu e-mail"),"err");return;}
   _otpEmail=em;
+  var _cap=await pillierCaptcha();if(!_cap.ok)return _tsBlocked(_cap);
   var btn=document.getElementById("btn-send-code");if(btn)btn.disabled=true;
   showLoad(true,plL("Envoi du code…","Sending code…","Enviando código…"));
   try{
-    var r=await db.auth.signInWithOtp({email:em,options:{shouldCreateUser:false,emailRedirectTo:location.origin+"/auth/verify-code"}});
+    var r=await db.auth.signInWithOtp({email:em,options:{shouldCreateUser:false,captchaToken:_cap.token,emailRedirectTo:location.origin+"/auth/verify-code"}});
     showLoad(false);if(btn)btn.disabled=false;
-    if(r.error){showMsg(r.error.message,"err");return;}
+    if(r.error){showMsg(_tsAuthErr(r.error),"err");return;}
     _show("login-code",false);_show("login-magic",false);
     var eg=document.getElementById("login-email-group");if(eg)eg.style.display="none";
     _show("login-code-wait",true);
@@ -5416,12 +5479,13 @@ async function sendMagicLink(){
   var em=(document.getElementById("l-email").value||"").trim();
   if(!em){showMsg(plL("Entrez votre email","Enter your email","Digite seu e-mail"),"err");return;}
   _otpEmail=em;
+  var _cap=await pillierCaptcha();if(!_cap.ok)return _tsBlocked(_cap);
   var btn=document.getElementById("btn-send-magic");if(btn)btn.disabled=true;
   showLoad(true,plL("Envoi du lien…","Sending link…","Enviando link…"));
   try{
-    var r=await db.auth.signInWithOtp({email:em,options:{shouldCreateUser:false,emailRedirectTo:location.origin+"/"}});
+    var r=await db.auth.signInWithOtp({email:em,options:{shouldCreateUser:false,captchaToken:_cap.token,emailRedirectTo:location.origin+"/"}});
     showLoad(false);if(btn)btn.disabled=false;
-    if(r.error){showMsg(r.error.message,"err");return;}
+    if(r.error){showMsg(_tsAuthErr(r.error),"err");return;}
     _show("login-magic",false);_show("login-code",false);
     var eg=document.getElementById("login-email-group");if(eg)eg.style.display="none";
     _show("login-magic-wait",true);showMsg("","");
@@ -5530,9 +5594,6 @@ async function doLogin(){
     // The token is passed to the backend for verification/logging when available,
     // but a missing/expired/desynced token must not deadlock the button. The real
     // gate is Supabase auth below; server-side verify-captcha also fails open.
-    if (TURNSTILE_ENABLED) {
-      try { await _pillierVerifyCaptcha(_turnstileTokens.login); } catch(e){ console.warn('Captcha check skipped:', e && e.message); }
-    }
     var em=document.getElementById("l-email").value.trim(),pw=document.getElementById("l-pass").value;
   var S=STRINGS[lang];
   if(!em||!pw){showMsg(S.fillAll||"Remplissez tous les champs","err");return;}
@@ -5544,9 +5605,11 @@ async function doLogin(){
     return;
   }
   if(Date.now()-rlData.ts>=120000){rlData.count=0;}
+  // No Cloudflare verification → no sign-in.
+  var _cap=_tsTakeToken('login');if(!_cap.ok)return _tsBlocked(_cap,'login');
   var btn=document.getElementById("btn-login");btn.disabled=true;btn.textContent="...";
   showLoad(true,S.loadLogin||"Connexion...");
-  var r=await db.auth.signInWithPassword({email:em,password:pw});
+  var r=await db.auth.signInWithPassword({email:em,password:pw,options:{captchaToken:_cap.token}});
   showLoad(false);btn.disabled=false;btn.textContent=S.btnLogin||"Se connecter";
   // Log auth event (best-effort, non-blocking)
   _pillierLogAuthEvent(r.error ? 'login_failure' : 'login_success', em, r.error ? (r.error.message||'unknown') : null);
@@ -5556,6 +5619,7 @@ async function doLogin(){
     rlData.count++;rlData.ts=Date.now();
     localStorage.setItem(rlKey,JSON.stringify(rlData));
     var attemptsLeft=5-rlData.count;
+    if(/captcha/i.test(r.error.message||'')){showMsg(_tsAuthErr(r.error),"err");return;}
     if(attemptsLeft>0){showMsg((S.wrongCreds||"Email ou mot de passe incorrect")+" ("+(S.attemptsLeft||"{n} tentative(s) restante(s)").replace("{n}",attemptsLeft)+")","err");}
     else{showMsg((S.rateLimited||"Trop de tentatives. Réessayez dans {s}s.").replace("{s}","120"),"err");}
     return;
@@ -5579,9 +5643,6 @@ async function doSignup(){
     // SECURITY: Rate limit signup attempts (prevent bot signups)
     if(!checkRateLimit('login'))return;
     // SECURITY: Verify Turnstile CAPTCHA (best-effort — must NEVER block signup).
-    if (TURNSTILE_ENABLED) {
-      try { await _pillierVerifyCaptcha(_turnstileTokens.signup); } catch(e){ console.warn('Captcha check skipped:', e && e.message); }
-    }
     var S=STRINGS[lang];
     var first=document.getElementById("s-first").value.trim(),last=document.getElementById("s-last").value.trim();
   var em=document.getElementById("s-email").value.trim(),co=document.getElementById("s-co").value.trim(),pw=document.getElementById("s-pass").value;
@@ -5598,15 +5659,17 @@ async function doSignup(){
   var selectedLang=0;
   var langRadios=document.querySelectorAll("input[name='signup-lang']");
   langRadios.forEach(function(r){if(r.checked)selectedLang=parseInt(r.value);});
+  // No Cloudflare verification → no account.
+  var _cap=_tsTakeToken('signup');if(!_cap.ok)return _tsBlocked(_cap,'signup');
   var btn=document.getElementById("btn-signup");btn.disabled=true;btn.textContent="...";
   showLoad(true,"Creation...");
-  var r=await db.auth.signUp({email:em,password:pw,options:{data:{full_name:first+" "+last,company:co,preferred_lang:selectedLang}}});
+  var r=await db.auth.signUp({email:em,password:pw,options:{captchaToken:_cap.token,data:{full_name:first+" "+last,company:co,preferred_lang:selectedLang}}});
   showLoad(false);btn.disabled=false;btn.textContent=STRINGS[lang].btnSignup||"Creer mon compte";
   // Log signup event (best-effort)
   _pillierLogAuthEvent(r.error ? 'signup_failure' : 'signup_success', em, r.error ? (r.error.message||'unknown') : null);
   // Reset CAPTCHA so next attempt has fresh token
   try { _pillierResetTurnstile('signup'); } catch(e){}
-  if(r.error){showMsg(r.error.message,"err");return;}
+  if(r.error){showMsg(_tsAuthErr(r.error),"err");return;}
   if(r.data&&r.data.session){enterApp(r.data.user);}
   else{showMsg("Compte créé ! Connectez-vous.","ok");switchTab(0);}
   } catch (signupErr) {
@@ -5620,8 +5683,9 @@ async function doSignup(){
 async function doReset(){
   var em=document.getElementById("l-email").value.trim();
   if(!em){showMsg("Entrez votre email d'abord","err");return;}
+  var _cap=await pillierCaptcha();if(!_cap.ok)return _tsBlocked(_cap);
   showLoad(true,"Envoi...");
-  var r=await db.auth.resetPasswordForEmail(em,{redirectTo:"https://app.pillier.com.br"});
+  var r=await db.auth.resetPasswordForEmail(em,{redirectTo:"https://app.pillier.com.br",captchaToken:_cap.token});
   showLoad(false);
   if(r.error){showMsg("Erreur - vérifiez votre email","err");return;}
   showMsg("Émail de réinitialisation envoyé !","ok");
@@ -13015,7 +13079,8 @@ async function saveNewPassword(){
 }
 async function sendResetLink(){
   if(!me||!me.email||!db)return;
-  try{await db.auth.resetPasswordForEmail(me.email,{redirectTo:location.origin+"/reset-password"});
+  var _cap=await pillierCaptcha();if(!_cap.ok){if(_cap.why!=='cancel')toast(_tsMsg()[_cap.why==='down'?'down':'fail']);return;}
+  try{var _rr=await db.auth.resetPasswordForEmail(me.email,{redirectTo:location.origin+"/reset-password",captchaToken:_cap.token});if(_rr&&_rr.error)throw _rr.error;
     toast("📧 "+plL("Lien envoyé à ","Link sent to ","Link enviado para ")+me.email);
   }catch(e){toast("⚠️ "+plL("Erreur d'envoi","Send error","Erro ao enviar"));}
 }
