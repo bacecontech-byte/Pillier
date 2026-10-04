@@ -4319,6 +4319,10 @@ var _LAND_SLUGS={
   en:['/','/product','/plans','/resources'],
   fr:['/','/produit','/plans','/ressources']
 };
+// Sign-in page has its own URL so a refresh keeps you there (/entrar, /login, /connexion).
+var _AUTH_SLUGS={pt:'/entrar',en:'/login',fr:'/connexion'};
+function _authPath(){return lang===1?_AUTH_SLUGS.en:lang===0?_AUTH_SLUGS.fr:_AUTH_SLUGS.pt;}
+function _isAuthPath(p){p=String(p||'').toLowerCase().replace(/\/+$/,'');return /^\/(entrar|login|connexion|signin|sign-in|acessar)$/.test(p);}
 function _landPaths(){return lang===1?_LAND_SLUGS.en:lang===0?_LAND_SLUGS.fr:_LAND_SLUGS.pt;}
 // SEO: keep <link rel=canonical> + hreflang alternates pointing at the current
 // tab's localized URL, so Google treats /recursos, /resources and /ressources as
@@ -4384,6 +4388,7 @@ function showAuthPage(){
   document.getElementById('s-app').classList.remove('active');
   document.getElementById('s-login').classList.add('active');
   localStorage.setItem('pillier_current_page','auth');
+  try{var _cp=location.pathname;if(!_isAuthPath(_cp)&&(_cp==='/'||_landPathToTab(_cp)>=0))history.pushState(null,'',_authPath()+location.search);}catch(e){}
   window.scrollTo(0,0);
   renderFeatTabs();
   renderFeatPreview(currentFeat);
@@ -4414,6 +4419,12 @@ function goCapture(){
   // Deep link: a visitor landing directly on /solucoes, /planos or /recursos
   // opens that marketing tab (takes precedence over the stored last-page).
   var urlTab=_landPathToTab(location.pathname);
+  if(!wasLoggedIn&&_isAuthPath(location.pathname)){
+    var sca=document.getElementById('s-content'),sla=document.getElementById('s-login');
+    if(sca&&sla){sca.classList.remove('active');sla.classList.add('active');}
+    localStorage.setItem('pillier_current_page','auth');
+    return;
+  }
   if(!wasLoggedIn&&urlTab>=0){
     var scd=document.getElementById('s-content'),sld=document.getElementById('s-login');
     if(scd&&sld){sld.classList.remove('active');scd.classList.add('active');}
@@ -4456,6 +4467,7 @@ window.addEventListener('popstate',function(){
   try{
     var sa=document.getElementById('s-app');
     if(sa&&sa.classList.contains('active'))return; // don't hijack the logged-in app
+    if(_isAuthPath(location.pathname)){var sc0=document.getElementById('s-content'),sl0=document.getElementById('s-login');if(sc0)sc0.classList.remove('active');if(sl0)sl0.classList.add('active');localStorage.setItem('pillier_current_page','auth');return;}
     var t=_landPathToTab(location.pathname);if(t<0)return;
     var sc=document.getElementById('s-content'),sl=document.getElementById('s-login');
     if(sc){if(sl)sl.classList.remove('active');sc.classList.add('active');}
@@ -4929,7 +4941,7 @@ function applyLang(){
   syncLangSelects();
   // Re-localize the marketing URL to the new language (e.g. /recursos → /resources)
   // when a content tab is showing — replaceState so it doesn't add history.
-  try{var _sc=document.getElementById("s-content");if(_sc&&_sc.classList.contains("active")){var _p=_landPaths()[_curContentTab]||"/";if(location.pathname!==_p)history.replaceState(null,"",_p);}}catch(e){}
+  try{var _sc=document.getElementById("s-content");if(_sc&&_sc.classList.contains("active")){var _p=_landPaths()[_curContentTab]||"/";if(location.pathname!==_p)history.replaceState(null,"",_p);}var _sl=document.getElementById("s-login");if(_sl&&_sl.classList.contains("active")&&_isAuthPath(location.pathname)&&location.pathname!==_authPath())history.replaceState(null,"",_authPath()+location.search);}catch(e){}
   try{_updateSeoTags(_curContentTab);}catch(e){} // refresh canonical/hreflang for the new language
   try{var _cb=document.getElementById("sb-cap-lbl");if(_cb)_cb.textContent=plL("Capturer un incident","Capture incident","Capturar incidente");}catch(e){}
   // Mobile profile panel labels (were hardcoded PT)
@@ -5616,6 +5628,7 @@ async function doReset(){
 }
 
 function enterApp(user){
+  try{if(_isAuthPath(location.pathname))history.replaceState(null,"","/"+location.search);}catch(e){}
   var meta=user.user_metadata||{};
   var name=meta.full_name||user.email.split("@")[0];
   // Workspace boundary: an explicit company means teammates share a workspace;
