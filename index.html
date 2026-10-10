@@ -1421,6 +1421,101 @@ body.light-mode #cloud-connections-panel{background:#f9fafb !important;border-co
   #rdo-doc .rdo-cost-badge{cursor:default !important;}
   #rdo-doc .rdo-sig-meta{color:#14202a !important;}
 }
+/* Recursos: smart library */
+.rs-wrap{max-width:1280px;margin:0 auto;padding:40px 48px 64px;}
+.rs-head h1{font-family:var(--font-d);font-size:clamp(30px,4vw,40px);font-weight:800;color:var(--white);letter-spacing:-0.02em;margin:0;}
+.rs-head p{font-size:16px;color:var(--text2);margin:8px 0 20px;}
+.rs-search{display:flex;align-items:center;gap:10px;height:50px;max-width:640px;border-radius:14px;background:var(--navy2);border:1px solid var(--border2);padding:0 16px;transition:border-color .15s;}
+.rs-search:focus-within{border-color:#2cbeff;}
+.rs-search i{font-size:19px;color:var(--text3);}
+.rs-search input{flex:1;min-width:0;background:none;border:none;outline:none;color:var(--text);font:500 15px var(--font-b);}
+.rs-chips{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 4px;}
+.rs-chip{height:34px;padding:0 14px;border-radius:999px;border:1px solid var(--border2);background:none;color:var(--text);font:600 13px var(--font-b);cursor:pointer;white-space:nowrap;}
+.rs-chip b{font-weight:600;color:var(--text3);margin-left:3px;}
+.rs-chip.on{background:#2cbeff;border-color:#2cbeff;color:#04222f;}.rs-chip.on b{color:#04222f;}
+.rs-sec{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:30px 0 12px;}
+.rs-sec h2{font-family:var(--font-d);font-size:19px;font-weight:800;color:var(--white);margin:0;}
+.rs-sec span{font-size:12.5px;color:var(--text3);}
+.rs-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.rs-mini{display:flex;gap:14px;background:var(--navy2);border:1px solid var(--border2);border-radius:14px;padding:12px;cursor:pointer;transition:border-color .15s,transform .15s;}
+.rs-mini:hover{border-color:rgba(44,190,255,.5);transform:translateY(-1px);}
+.rs-mini-img{width:66px;height:93px;object-fit:cover;border-radius:6px;flex-shrink:0;box-shadow:0 6px 16px rgba(0,0,0,.3);background:#0e1f27;}
+.rs-k{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#2cbeff;}
+.rs-mt{font-weight:700;color:var(--white);font-size:14px;line-height:1.35;margin:4px 0 6px;}
+.rs-why{font-size:12px;color:var(--text3);}
+.rs-prog{height:6px;border-radius:99px;background:var(--border2);overflow:hidden;margin:6px 0 5px;}
+.rs-prog i{display:block;height:100%;width:0;background:#2cbeff;border-radius:99px;transition:width .3s;}
+.rs-cont{font-size:12px;color:#2cbeff;font-weight:700;}
+.rs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+.rs-card{background:var(--navy2);border:1px solid var(--border2);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;transition:border-color .15s,transform .15s;}
+.rs-card:hover{border-color:rgba(44,190,255,.5);transform:translateY(-2px);}
+.rs-cv{position:relative;height:196px;background:#0e1f27;overflow:hidden;}
+.rs-cv-img{position:absolute;left:50%;top:16px;width:130px;transform:translateX(-50%) rotate(-2deg);border-radius:6px;box-shadow:0 14px 30px rgba(0,0,0,.5);transition:transform .25s;}
+canvas.rs-cv-img{height:184px;}
+.rs-card:hover .rs-cv-img{transform:translateX(-50%) rotate(0deg) translateY(-3px);}
+.rs-new{position:absolute;left:12px;top:12px;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#4ade80;background:rgba(74,222,128,.14);border:1px solid rgba(74,222,128,.45);border-radius:6px;padding:3px 8px;}
+.rs-st{position:absolute;right:12px;top:12px;font-size:10.5px;font-weight:700;border-radius:999px;padding:4px 9px;color:#e6edf0;background:rgba(0,0,0,.45);}
+.rs-st.rs-free{color:#04222f;background:#4ade80;}
+.rs-cb{padding:14px 16px 16px;display:flex;flex-direction:column;flex:1;}
+.rs-ct{font-weight:700;color:var(--white);font-size:14.5px;line-height:1.35;margin:6px 0 10px;}
+.rs-cm{margin-top:auto;font-size:12px;color:var(--text3);}
+.rs-empty{grid-column:1/-1;text-align:center;padding:30px;border:1px dashed var(--border2);border-radius:14px;color:var(--text2);}
+/* reader */
+.rs-rd{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:28px;}
+.rs-back{display:inline-block;font-size:13px;color:#2cbeff;font-weight:600;margin-bottom:12px;text-decoration:none;}
+.rs-rt{font-family:var(--font-d);font-size:clamp(22px,3vw,30px);font-weight:800;color:var(--white);line-height:1.18;letter-spacing:-.015em;margin:8px 0 10px;}
+.rs-rm{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;font-size:13px;color:var(--text3);}
+.rs-share{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto;}
+.rs-sh{height:34px;padding:0 13px;border-radius:999px;border:1px solid var(--border2);background:none;display:inline-flex;align-items:center;gap:6px;font:700 12.5px var(--font-b);color:var(--text);text-decoration:none;cursor:pointer;}
+.rs-sh i{font-size:16px;}
+.rs-sh:hover{border-color:rgba(44,190,255,.5);}
+.rs-pbar{display:flex;align-items:center;gap:12px;font-size:12.5px;color:var(--text3);margin:16px 0 0;position:sticky;top:84px;z-index:3;background:var(--navy);padding:8px 0;}
+.rs-pbar .rs-prog{flex:1;margin:0;}
+.rs-tldr{margin:18px 0 22px;background:rgba(44,190,255,.07);border:1px solid rgba(44,190,255,.3);border-radius:14px;padding:14px 18px;}
+.rs-tldr h4{margin:0 0 8px;font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#2cbeff;}
+.rs-tldr ul{margin:0;padding-left:18px;}
+.rs-tldr li{font-size:14px;line-height:1.55;color:var(--text);margin:3px 0;}
+.rs-pages{display:flex;flex-direction:column;align-items:center;gap:18px;}
+.rs-pg{position:relative;width:100%;max-width:760px;aspect-ratio:595/842;border-radius:6px;background:#0e1f27;box-shadow:0 18px 40px rgba(0,0,0,.35);}
+.rs-pg canvas{display:block;width:100%;height:100%;border-radius:6px;opacity:0;transition:opacity .35s;}
+.rs-pg.rs-ready canvas{opacity:1;}
+.rs-pg:not(.rs-ready):not(.rs-pg-lock):before{content:"";position:absolute;inset:0;border-radius:6px;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.05) 50%,transparent 70%) 0 0/200% 100%;animation:rsShim 1.3s linear infinite;}
+@keyframes rsShim{to{background-position:-200% 0}}
+.rs-pn{position:absolute;right:-46px;top:6px;font-size:11px;color:var(--text3);}
+.rs-pg-lock{aspect-ratio:auto;height:520px;overflow:hidden;}
+.rs-pg-lock canvas{filter:blur(6px) saturate(.7);opacity:.7 !important;height:auto;}
+.rs-pg-empty{height:420px;}
+.rs-gate{position:absolute;left:50%;top:40px;transform:translateX(-50%);width:min(440px,calc(100% - 24px));background:var(--navy2);border:1px solid rgba(44,190,255,.45);border-radius:16px;padding:20px 22px;box-shadow:0 24px 60px rgba(0,0,0,.5);z-index:2;}
+.rs-gate h3{margin:0;font-family:var(--font-d);font-size:19px;font-weight:800;color:var(--white);}
+.rs-gate p{margin:6px 0 14px;font-size:13px;color:var(--text2);line-height:1.5;}
+.rs-f{width:100%;height:42px;border-radius:10px;border:1px solid var(--border2);background:var(--navy);margin-bottom:8px;padding:0 12px;font:500 13.5px var(--font-b);color:var(--text);outline:none;box-sizing:border-box;}
+.rs-f:focus{border-color:#2cbeff;}
+.rs-f2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.rs-btn{width:100%;height:46px;border-radius:12px;border:none;background:#2cbeff;color:#04222f;font:800 14.5px var(--font-b);cursor:pointer;margin-top:4px;}
+.rs-btn:hover{filter:brightness(1.06);}
+.rs-note{font-size:12.5px;color:#22c55e;font-weight:700;margin-top:12px;}
+.rs-priv{font-size:11px;color:var(--text3);margin-top:6px;}
+.rs-side{position:sticky;top:90px;align-self:start;display:flex;flex-direction:column;gap:14px;}
+.rs-sc{background:var(--navy2);border:1px solid var(--border2);border-radius:14px;padding:16px;}
+.rs-sc h5{margin:0 0 10px;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);}
+.rs-sc p{font-size:13px;line-height:1.5;color:var(--text);margin:0 0 12px;}
+.rs-cta{border-color:rgba(44,190,255,.35);}.rs-cta h5{color:#2cbeff;}
+.rs-thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;}
+.rs-th{position:relative;aspect-ratio:595/842;border-radius:4px;background:#0e1f27;border:1px solid var(--border2);overflow:hidden;cursor:pointer;}
+.rs-th canvas{width:100%;height:100%;display:block;}
+.rs-th-l:after{content:"";position:absolute;inset:0;background:rgba(16,34,43,.72);}
+.rs-th.on{outline:2px solid #2cbeff;}
+.rs-dl{width:100%;height:44px;border-radius:12px;border:none;background:#2cbeff;color:#04222f;font:800 14px var(--font-b);display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;text-decoration:none;}
+.rs-dl i{font-size:17px;}
+.rs-dl-off{background:var(--border2);color:var(--text2);font-weight:700;font-size:13px;}
+.rs-toast{position:fixed;left:50%;top:92px;transform:translate(-50%,-14px);opacity:0;z-index:10060;background:var(--navy2);border:1px solid rgba(74,222,128,.55);color:var(--white);border-radius:999px;padding:11px 20px;font-size:14px;font-weight:600;box-shadow:0 14px 34px rgba(0,0,0,.4);transition:opacity .3s,transform .3s;}
+.rs-toast.v{opacity:1;transform:translate(-50%,0);}
+.rs-toast b{color:#22c55e;}
+body.light-mode .rs-cv,body.light-mode .rs-pg,body.light-mode .rs-th{background:#e3edef;}
+body.light-mode .rs-th-l:after{background:rgba(247,250,251,.7);}
+@media(max-width:1180px){.rs-grid{grid-template-columns:repeat(3,1fr);}.rs-rd{grid-template-columns:minmax(0,1fr) 250px;}}
+@media(max-width:900px){.rs-grid{grid-template-columns:repeat(2,1fr);}.rs-row{grid-template-columns:1fr;}.rs-rd{grid-template-columns:1fr;}.rs-side{position:static;}.rs-side .rs-sc:first-child{display:none;}.rs-pn{right:8px;top:-18px;}}
+@media(max-width:600px){.rs-wrap{padding:28px 16px 48px;}.rs-grid{grid-template-columns:1fr 1fr;gap:12px;}.rs-cv{height:160px;}.rs-cv-img{width:104px;}canvas.rs-cv-img{height:147px;}.rs-share{margin-left:0;}.rs-f2{grid-template-columns:1fr;}.rs-gate{padding:16px;top:20px;}.rs-pg-lock{height:560px;}.rs-pbar{top:72px;}}
 /* Dashboard v2 */
 /* Site switching and Capturar now live at the top of the dashboard → removed from the sidebar */
 .sb-switch-wrap,.sb-capture{display:none !important;}
@@ -2627,82 +2722,7 @@ body.light-mode #ts-modal .ts-card{background:#fff;color:#10222b;border-color:rg
 
   <!-- TAB 3: Resources -->
   <div id="content-panel-3" class="content-panel" style="display:none;padding:0;">
-    <div class="mk-section">
-      <div class="mk-head" style="margin-bottom:36px;">
-        <h2 id="mkr-title">Field-tested thinking for construction leaders</h2>
-        <p id="res-sub">Reports and insights for construction leaders.</p>
-      </div>
-      <div class="mk-res">
-        <!-- Report 1 -->
-        <div class="mk-res-card" onclick="openResForm(1)">
-          <div class="mk-res-ico"><i class="ti ti-file-analytics"></i></div>
-          <div style="font-size:10px;color:#2cbeff;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;" id="res-cat-1">Gestão de Incidentes Críticos</div>
-          <h3 style="font-family:var(--font-d);font-size:16px;font-weight:700;color:var(--white);line-height:1.35;margin:0 0 10px;" id="rp-title-1">Gestão de Incidentes Críticos: O Acidente Grave Sempre Avisa Antes</h3>
-          <div style="font-size:12px;color:var(--text3);margin-top:auto;" id="res-meta-1">PDF · 7 páginas · Download gratuito</div>
-        </div>
-        <!-- Report 2 -->
-        <div class="mk-res-card" onclick="openResForm(2)">
-          <div class="mk-res-ico"><i class="ti ti-file-report"></i></div>
-          <div style="font-size:10px;color:#2cbeff;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;" id="rp-cat-2">Modelo de Maturidade</div>
-          <h3 style="font-family:var(--font-d);font-size:16px;font-weight:700;color:var(--white);line-height:1.35;margin:0 0 10px;" id="rp-title-2">Do Papel à IA Preditiva: O ROI do Registro Automatizado em Canteiros</h3>
-          <div style="font-size:12px;color:var(--text3);margin-top:auto;" id="res-meta-2">PDF · 7 páginas · Download gratuito</div>
-        </div>
-        <!-- Report 3 -->
-        <div class="mk-res-card" onclick="openResForm(3)">
-          <div class="mk-res-ico"><i class="ti ti-report-money"></i></div>
-          <div style="font-size:10px;color:#2cbeff;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;" id="rp-cat-3">Gestão Financeira de Obras</div>
-          <h3 style="font-family:var(--font-d);font-size:16px;font-weight:700;color:var(--white);line-height:1.35;margin:0 0 10px;" id="rp-title-3">Controle Financeiro no Canteiro: O Fim do Ponto Cego das Microcompras</h3>
-          <div style="font-size:12px;color:var(--text3);margin-top:auto;" id="res-meta-3">PDF · 7 páginas · Download gratuito</div>
-        </div>
-        <!-- Report 4 -->
-        <div class="mk-res-card" onclick="openResForm(4)">
-          <div class="mk-res-ico"><i class="ti ti-books"></i></div>
-          <div style="font-size:10px;color:#2cbeff;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;" id="rp-cat-4">Gestão do Conhecimento em Obras</div>
-          <h3 style="font-family:var(--font-d);font-size:16px;font-weight:700;color:var(--white);line-height:1.35;margin:0 0 10px;" id="rp-title-4">Memória da Obra: Quando o Engenheiro Sai, a Obra Esquece</h3>
-          <div style="font-size:12px;color:var(--text3);margin-top:auto;" id="res-meta-4">PDF · 7 páginas · Download gratuito</div>
-        </div>
-        <!-- Report 5 -->
-        <div class="mk-res-card" onclick="openResForm(5)">
-          <div class="mk-res-ico"><i class="ti ti-file-certificate"></i></div>
-          <div style="font-size:10px;color:#2cbeff;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;" id="rp-cat-5">Conformidade e Defesa Contratual</div>
-          <h3 style="font-family:var(--font-d);font-size:16px;font-weight:700;color:var(--white);line-height:1.35;margin:0 0 10px;" id="rp-title-5">RDO Automatizado: Quem Não Registra, Não Prova</h3>
-          <div style="font-size:12px;color:var(--text3);margin-top:auto;" id="res-meta-5">PDF · 7 páginas · Download gratuito</div>
-        </div>
-        <!-- Report 6 -->
-        <div class="mk-res-card" onclick="openResForm(6)">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;"><div class="mk-res-ico" style="margin-bottom:0;"><i class="ti ti-receipt-tax"></i></div><span style="font-size:9px;font-weight:700;color:#4ade80;background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.4);border-radius:5px;padding:2px 7px;text-transform:uppercase;letter-spacing:0.05em;" class="mkr-new">New</span></div>
-          <div style="font-size:10px;color:#2cbeff;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;" id="rp-cat-6">Gestão Financeira de Obras</div>
-          <h3 style="font-family:var(--font-d);font-size:16px;font-weight:700;color:var(--white);line-height:1.35;margin:0 0 10px;" id="rp-title-6">Fechamento em Tempo Real: Na Reforma Tributária, Despesa Sem Nota É Imposto Perdido</h3>
-          <div style="font-size:12px;color:var(--text3);margin-top:auto;" id="res-meta-6">PDF · 7 páginas · Download gratuito</div>
-        </div>
-        <!-- Report 7 -->
-        <div class="mk-res-card" onclick="openResForm(7)">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;"><div class="mk-res-ico" style="margin-bottom:0;"><i class="ti ti-brain"></i></div><span style="font-size:9px;font-weight:700;color:#4ade80;background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.4);border-radius:5px;padding:2px 7px;text-transform:uppercase;letter-spacing:0.05em;" class="mkr-new">New</span></div>
-          <div style="font-size:10px;color:#2cbeff;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;" id="rp-cat-7">Gestão do Conhecimento em Obras</div>
-          <h3 style="font-family:var(--font-d);font-size:16px;font-weight:700;color:var(--white);line-height:1.35;margin:0 0 10px;" id="rp-title-7">Memória da Empresa: O Erro Que Sua Construtora Já Pagou Duas Vezes</h3>
-          <div style="font-size:12px;color:var(--text3);margin-top:auto;" id="res-meta-7">PDF · 7 páginas · Download gratuito</div>
-        </div>
-        <!-- Report 8 -->
-        <div class="mk-res-card" onclick="openResForm(8)">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;"><div class="mk-res-ico" style="margin-bottom:0;"><i class="ti ti-shield-check"></i></div><span style="font-size:9px;font-weight:700;color:#4ade80;background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.4);border-radius:5px;padding:2px 7px;text-transform:uppercase;letter-spacing:0.05em;" class="mkr-new">New</span></div>
-          <div style="font-size:10px;color:#2cbeff;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;" id="rp-cat-8">Prova Digital e Defesa Contratual</div>
-          <h3 style="font-family:var(--font-d);font-size:16px;font-weight:700;color:var(--white);line-height:1.35;margin:0 0 10px;" id="rp-title-8">RDO Digital e Valor Probatório: O Registro Que Resiste à Perícia</h3>
-          <div style="font-size:12px;color:var(--text3);margin-top:auto;" id="res-meta-8">PDF · 7 páginas · Download gratuito</div>
-        </div>
-      </div>
-      <!-- Lead form -->
-      <div id="res-lead-form" style="display:none;max-width:480px;margin:0 auto;padding:28px;background:var(--navy2);border:1px solid rgba(44,190,255,0.15);border-radius:16px;">
-        <div style="font-size:15px;font-weight:600;color:var(--white);margin-bottom:14px;" id="res-form-title">Baixar o relatório completo</div>
-        <input placeholder="Nome" style="width:100%;background:var(--navy);border:1px solid var(--border2);border-radius:8px;padding:11px 14px;font-size:13px;color:var(--text);margin-bottom:8px;outline:none;font-family:var(--font-b);box-sizing:border-box;" id="res-f-name">
-        <input placeholder="E-mail" type="email" style="width:100%;background:var(--navy);border:1px solid var(--border2);border-radius:8px;padding:11px 14px;font-size:13px;color:var(--text);margin-bottom:8px;outline:none;font-family:var(--font-b);box-sizing:border-box;" id="res-f-email">
-        <input placeholder="Empresa" style="width:100%;background:var(--navy);border:1px solid var(--border2);border-radius:8px;padding:11px 14px;font-size:13px;color:var(--text);margin-bottom:12px;outline:none;font-family:var(--font-b);box-sizing:border-box;" id="res-f-company">
-        <div style="display:flex;gap:8px;margin-bottom:12px;">
-          <button onclick="setResLang('pt')" id="res-lang-pt" style="flex:1;padding:9px;border-radius:8px;border:1px solid rgba(44,190,255,0.3);background:rgba(44,190,255,0.1);color:#2cbeff;font-size:12px;font-weight:600;cursor:pointer;">Português</button>
-          <button onclick="setResLang('en')" id="res-lang-en" style="flex:1;padding:9px;border-radius:8px;border:1px solid var(--border2);background:none;color:var(--text2);font-size:12px;cursor:pointer;">English</button>
-        </div>
-        <button onclick="downloadResReport()" style="width:100%;padding:12px;border-radius:10px;background:#2cbeff;color:#fff;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font-d);" id="res-dl-btn">Baixar Relatório</button>
-      </div>
-    </div>
+    <div class="rs-wrap"><div id="res-list-view"></div><div id="res-reader-view" style="display:none;"></div></div>
   </div>
 
   <!-- Footer -->
@@ -4576,14 +4596,76 @@ function _landPathToTab(p){
 }
 // Per-ebook deep links: /recursos/<slug> (any language base) opens that report's
 // download form. Slugs are forgiving so email links are hard to get wrong.
-var _EBOOK_SLUGS={'1':1,'incidentes':1,'incidentes-criticos':1,'incidents':1,'riscos':1,'risco':1,'risk':1,'risco-em-canteiros':1,
-                  '2':2,'roi':2,'ia':2,'ia-preditiva':2,'maturidade':2,
-                  '3':3,'financeiro':3,'financas':3,'financial':3,'microcompras':3,
-                  '4':4,'memoria':4,'memoria-da-obra':4,'memory':4,'conhecimento':4,'knowledge':4,
-                  '5':5,'rdo':5,'rdo-automatizado':5,'conformidade':5,'compliance':5,
-                  '6':6,'fechamento':6,'fechamento-tempo-real':6,'reforma-tributaria':6,'tempo-real':6,'7':7,'memoria-da-empresa':7,'empresa':7,'memoria-empresa':7,'8':8,'rdo-digital':8,'valor-probatorio':8,'prova':8,'prova-digital':8};
+/* ══ Recursos: ebook catalog ═══════════════════════════════════════════════
+   ONE place to add an ebook. To publish a new one:
+     1. put the PDF in /reports/
+     2. add an entry below (id = next number, slug = its link /recursos/<slug>)
+   Everything else is automatic: card, cover (rendered from page 1 when no
+   `cover` file is given), 2-page preview + unlock form, "Em 30 segundos",
+   search, topic filter, "Leia também", progress, lead e-mail.
+   `pages` is optional (read from the PDF); `sum` and `related` are optional. */
+var RES_TOPICS=[
+  {k:"all",l:["Tous","All","Todos"]},
+  {k:"seg",l:["Sécurité","Safety","Segurança"]},
+  {k:"fin",l:["Finances","Finance","Financeiro"]},
+  {k:"con",l:["Connaissance","Knowledge","Conhecimento"]},
+  {k:"rdo",l:["Conformité & RDO","Compliance & daily reports","Conformidade & RDO"]},
+  {k:"ia",l:["IA & numérique","AI & digital","IA & Digital"]}
+];
+var RES_EBOOKS=[
+ {id:1,slug:"incidentes",aliases:["incidentes-criticos","incidents","riscos","risco","risk","risco-em-canteiros"],file:"/reports/Pillier_Gestao_Incidentes_Criticos_Ebook_PT.pdf",cover:"/reports/covers/incidentes.jpg",pages:7,topic:"seg",related:[5,8,2],
+  cat:["Gestion des incidents critiques","Critical incident management","Gestão de incidentes críticos"],
+  title:["Gestion des Incidents Critiques : L'Accident Grave Prévient Toujours Avant","Critical Incident Management: Serious Accidents Always Warn You First","Gestão de Incidentes Críticos: O Acidente Grave Sempre Avisa Antes"],
+  sum:{fr:["Pour chaque blessure grave, il y a en moyenne ~600 presque-accidents : l'alerte existe, personne ne l'écoute.","En 2022, le Brésil a enregistré 612 900 accidents du travail et 2 538 décès, près de 7 par jour.","Piloter les presque-accidents avec la rigueur du planning et des coûts réduit les événements graves."],
+       en:["For every serious injury there are ~600 near misses on average: the warning is there, nobody is listening.","In 2022 Brazil recorded 612,900 workplace accidents and 2,538 deaths, almost 7 a day.","Managing near misses with the same discipline as schedule and cost cuts serious events."],
+       pt:["Para cada lesão grave há, em média, ~600 quase-acidentes: o aviso existe, falta quem escute.","Em 2022 o Brasil registrou 612,9 mil acidentes de trabalho e 2.538 óbitos, quase 7 por dia.","Gerir quase-acidentes com a disciplina de prazo e custo reduz os eventos graves."]}},
+ {id:2,slug:"roi",aliases:["ia","ia-preditiva","maturidade"],file:"/reports/Pillier_AI_Ebook_PT.pdf",cover:"/reports/covers/roi.jpg",pages:7,topic:"ia",related:[1,4,5],
+  cat:["Modèle de maturité","Maturity model","Modelo de maturidade"],
+  title:["Du Papier à l'IA Prédictive : Le ROI de l'Enregistrement Automatisé sur Chantier","From Paper to Predictive AI: The ROI of Automated Site Logging","Do Papel à IA Preditiva: O ROI do Registro Automatizado em Canteiros"],
+  sum:{fr:["Sur un chantier manuel, le délai terrain-bureau est de 24 à 72 heures ; sur un chantier connecté, c'est du temps réel.","Au stade prédictif, l'enregistrement prend moins de 60 secondes et la complétude des données dépasse 95 %.","Les programmes numériques rapportent 20 à 35 % d'incidents déclarables en moins."],
+       en:["On manual sites, field-to-office lag is 24 to 72 hours; on a connected site it's real time.","At the predictive stage, logging takes under 60 seconds and data completeness tops 95%.","Digital programs report 20–35% fewer recordable incidents."],
+       pt:["Em canteiros manuais, o atraso do campo ao escritório é de 24 a 72 horas; num canteiro conectado, é tempo real.","No estágio preditivo, o registro leva menos de 60 segundos e a completude dos dados passa de 95%.","Programas digitais relatam 20–35% menos incidentes registráveis."]}},
+ {id:3,slug:"financeiro",aliases:["financas","financial","microcompras"],file:"/reports/Pillier_Financeiro_Ebook_PT.pdf",cover:"/reports/covers/financeiro.jpg",pages:7,topic:"fin",related:[6,5,2],
+  cat:["Gestion financière de chantier","Construction financial control","Gestão financeira de obras"],
+  title:["Contrôle Financier sur Chantier : Fin de l'Angle Mort des Micro-Achats","Financial Control on the Jobsite: Closing the Micro-Procurement Blind Spot","Controle Financeiro no Canteiro: O Fim do Ponto Cego das Microcompras"],
+  sum:{fr:["La marge ne fuit pas dans les gros contrats : elle fuit dans les micro-achats invisibles du quotidien.","Les données erronées et la mauvaise communication causent 48 % des reprises dans la construction aux États-Unis (31,3 Md$ par an).","La capture par IA sur le chantier ramène la clôture financière de plusieurs semaines à quasi temps réel."],
+       en:["Margin doesn't leak in big contracts: it leaks in invisible day-to-day micro-purchases.","Bad data and poor communication drive 48% of US construction rework (US$31.3B a year).","AI capture on site cuts the financial close from weeks to near real time."],
+       pt:["A margem não vaza nos grandes contratos: vaza nas microcompras invisíveis do dia a dia.","Dados falhos e má comunicação respondem por 48% do retrabalho na construção nos EUA (US$ 31,3 bi/ano).","A captura com IA no canteiro reduz o fechamento de semanas para quase tempo real."]}},
+ {id:4,slug:"memoria",aliases:["memoria-da-obra","memory","conhecimento","knowledge"],file:"/reports/Pillier_Memoria_da_Obra_Ebook_PT.pdf",cover:"/reports/covers/memoria.jpg",pages:7,topic:"con",related:[7,2,1],
+  cat:["Gestion des connaissances en chantier","Knowledge management in construction","Gestão do conhecimento em obras"],
+  title:["La Mémoire du Chantier : Quand l'Ingénieur Part, le Chantier Oublie","Site Memory: When the Engineer Leaves, the Project Forgets","Memória da Obra: Quando o Engenheiro Sai, a Obra Esquece"],
+  sum:{fr:["42 % des connaissances d'un poste n'existent que dans la tête de celui qui l'occupe.","Chaque professionnel perd 5,3 h par semaine à attendre une information ou à refaire l'existant.","Avec 108 % de rotation annuelle, l'équipe change plus vite que le chantier ne se termine."],
+       en:["42% of a role's knowledge exists only in the head of the person doing it.","Each professional loses 5.3 hours a week waiting for information or redoing existing work.","With 108% annual turnover, the team changes faster than the project finishes."],
+       pt:["42% do conhecimento de uma função existe só na cabeça de quem a exerce.","Cada profissional perde 5,3 h por semana esperando informação ou refazendo o que já existia.","Com 108% de rotatividade anual, a equipe muda mais rápido do que a obra termina."]}},
+ {id:5,slug:"rdo",aliases:["rdo-automatizado","conformidade","compliance"],file:"/reports/Pillier_RDO_Automatizado_Ebook_PT.pdf",cover:"/reports/covers/rdo.jpg",pages:7,topic:"rdo",related:[8,1,3],
+  cat:["Conformité et défense contractuelle","Compliance & contract defense","Conformidade e defesa contratual"],
+  title:["Rapport Journalier Automatisé : Ce Qui N'est Pas Consigné Ne Se Prouve Pas","Automated Daily Reports: If It Isn't Logged, It Can't Be Proven","RDO Automatizado: Quem Não Registra, Não Prova"],
+  sum:{fr:["La première cause de litiges dans la construction : des réclamations mal étayées.","Un litige de construction dure en moyenne 15,4 mois.","Le rapport journalier saisi sur le moment, avec photos, météo et visa du client, est la meilleure défense."],
+       en:["The leading cause of construction disputes is poorly substantiated claims.","A construction dispute lasts 15.4 months on average.","A daily report captured on the spot, with photos, weather and client acknowledgement, is the best defense."],
+       pt:["A principal causa de disputas na construção são pleitos mal fundamentados.","Uma disputa de construção dura em média 15,4 meses.","O RDO capturado no momento, com foto, clima e ciência do contratante, é a melhor defesa."]}},
+ {id:6,slug:"fechamento",aliases:["fechamento-tempo-real","reforma-tributaria","tempo-real"],file:"/reports/Pillier_Fechamento_Tempo_Real_Ebook_PT.pdf",cover:"/reports/covers/fechamento.jpg",pages:7,topic:"fin",isNew:true,related:[3,5,8],
+  cat:["Gestion financière de chantier","Construction financial control","Gestão financeira de obras"],
+  title:["Clôture en Temps Réel : Avec la Réforme Fiscale, une Dépense Sans Facture Est un Impôt Perdu","Real-Time Close: Under Brazil's Tax Reform, an Expense Without an Invoice Is Lost Tax","Fechamento em Tempo Real: Na Reforma Tributária, Despesa Sem Nota É Imposto Perdido"],
+  sum:{fr:["Avec la réforme fiscale brésilienne, le crédit IBS et CBS exige une facture électronique valide (art. 47, LC 214/2025).","Le Pix paie en quelques secondes, mais une facture met en moyenne 17,4 jours à être traitée.","Capturer la facture au moment du paiement récupère un crédit d'impôt aujourd'hui perdu dans les micro-achats."],
+       en:["Under Brazil's tax reform, IBS and CBS credits require a valid electronic invoice (art. 47, LC 214/2025).","Pix pays in seconds, but an invoice takes 17.4 days on average to process.","Capturing the invoice with the payment recovers tax credit lost today in micro-purchases."],
+       pt:["Na reforma tributária, o crédito de IBS e CBS depende de nota fiscal eletrônica idônea (art. 47 da LC 214/2025).","O Pix paga em segundos, mas uma nota leva em média 17,4 dias para ser processada.","Capturar a nota junto com o pagamento recupera crédito que hoje se perde nas microcompras."]}},
+ {id:7,slug:"memoria-da-empresa",aliases:["empresa","memoria-empresa"],file:"/reports/Pillier_Memoria_da_Empresa_Ebook_PT.pdf",cover:"/reports/covers/memoria-da-empresa.jpg",pages:7,topic:"con",isNew:true,related:[4,2,6],
+  cat:["Gestion des connaissances en chantier","Knowledge management in construction","Gestão do conhecimento em obras"],
+  title:["La Mémoire de l'Entreprise : L'Erreur Que Votre Entreprise a Déjà Payée Deux Fois","Company Memory: The Mistake Your Firm Has Already Paid For Twice","Memória da Empresa: O Erro Que Sua Construtora Já Pagou Duas Vezes"],
+  sum:{fr:["L'erreur évitable coûte 5 % de la valeur du chantier, plus que la marge moyenne du secteur.","Avec les coûts indirects, l'erreur atteint 10 à 25 % du coût du chantier.","Quatre entreprises ont économisé 9,83 % de la valeur de leurs chantiers en formant leurs équipes à prévenir les erreurs."],
+       en:["Avoidable error costs 5% of project value, more than the sector's average margin.","Including indirect costs, error reaches 10–25% of project cost.","Four contractors saved 9.83% of project value by training teams to prevent errors."],
+       pt:["O erro evitável custa 5% do valor da obra, acima da margem média do setor.","Com custos indiretos, o erro chega a 10–25% do custo da obra.","Quatro construtoras economizaram 9,83% do valor das obras treinando equipes para prevenir erros."]}},
+ {id:8,slug:"rdo-digital",aliases:["valor-probatorio","prova","prova-digital"],file:"/reports/Pillier_RDO_Digital_Valor_Probatorio_Ebook_PT.pdf",cover:"/reports/covers/rdo-digital.jpg",pages:7,topic:"rdo",isNew:true,related:[5,1,6],
+  cat:["Preuve numérique et défense contractuelle","Digital evidence & contract defense","Prova digital e defesa contratual"],
+  title:["Rapport Journalier Numérique et Valeur Probante : Le Registre Qui Résiste à l'Expertise","Digital Daily Reports as Evidence: The Record That Holds Up to Expert Review","RDO Digital e Valor Probatório: O Registro Que Resiste à Perícia"],
+  sum:{fr:["Un arbitrage avec expertise dure en moyenne 49 mois ; sans expertise, 21.","Les honoraires d'expertise atteignent en moyenne 408 000 R$ par arbitrage avec rapport.","Ce qui compte : un registre qui prouve l'auteur, la date et l'heure, et que personne ne l'a modifié."],
+       en:["An arbitration with expert review lasts 49 months on average; without it, 21.","Expert fees average R$408k per arbitration with a report.","What counts is a record that proves authorship, date and time, and that nobody altered it."],
+       pt:["Uma arbitragem com perícia dura em média 49 meses; sem perícia, 21.","Os honorários periciais custam em média R$ 408 mil por arbitragem com laudo.","Vale o registro que prova autoria, data e hora e que ninguém o alterou."]}}
+];
+function resById(id){id=+id;for(var i=0;i<RES_EBOOKS.length;i++)if(RES_EBOOKS[i].id===id)return RES_EBOOKS[i];return null;}
+var _EBOOK_SLUGS=(function(){var m={};RES_EBOOKS.forEach(function(e){m[String(e.id)]=e.id;m[e.slug]=e.id;(e.aliases||[]).forEach(function(a){m[a]=e.id;});});return m;})();
 // Canonical slug written to the address bar when a report is opened.
-var _EBOOK_CANON={1:'incidentes',2:'roi',3:'financeiro',4:'memoria',5:'rdo',6:'fechamento',7:'memoria-da-empresa',8:'rdo-digital'};
+var _EBOOK_CANON=(function(){var m={};RES_EBOOKS.forEach(function(e){m[e.id]=e.slug;});return m;})();
 function _ebookPath(id){return (_landPaths()[3]||'/recursos')+'/'+(_EBOOK_CANON[id]||_EBOOK_CANON[1]);}
 function _ebookFromPath(p){
   var seg=String(p||'').toLowerCase().replace(/\/+$/,'').split('/').filter(Boolean);
@@ -4692,7 +4774,7 @@ window.addEventListener('popstate',function(){
     var sc=document.getElementById('s-content'),sl=document.getElementById('s-login');
     if(sc){if(sl)sl.classList.remove('active');sc.classList.add('active');}
     _suppressUrlPush=true;showContentTab(t);_suppressUrlPush=false;
-    if(t===3){var _eb2=_ebookFromPath(location.pathname);if(_eb2){openResForm(_eb2,true);}else{var _rf=document.getElementById('res-lead-form');if(_rf)_rf.style.display='none';}}
+    if(t===3){var _eb2=_ebookFromPath(location.pathname);if(_eb2){openResForm(_eb2,true);}else{try{resShowList();}catch(e){}}}
   }catch(e){}
 });
 function showContentTab(idx){
@@ -4701,6 +4783,7 @@ function showContentTab(idx){
     var t=document.getElementById('ctab-'+i);if(t)t.classList.toggle('active',i===idx);
   }
   _curContentTab=idx;
+  if(idx===3&&!_suppressUrlPush){try{resShowList();}catch(e){}}
   localStorage.setItem('pillier_current_page','content');
   localStorage.setItem('pillier_current_tab',idx);
   _syncLandingUrl(idx); // reflect the active tab in the address bar (localized slug)
@@ -4870,28 +4953,227 @@ var SOL_CONTENT={
 var _resLang='pt';
 var _resReportId=1;
 // Local PT ebook files (hosted in the repo, served by Vercel)
-var _resFiles={1:'/reports/Pillier_Gestao_Incidentes_Criticos_Ebook_PT.pdf',2:'/reports/Pillier_AI_Ebook_PT.pdf',3:'/reports/Pillier_Financeiro_Ebook_PT.pdf',4:'/reports/Pillier_Memoria_da_Obra_Ebook_PT.pdf',5:'/reports/Pillier_RDO_Automatizado_Ebook_PT.pdf',6:'/reports/Pillier_Fechamento_Tempo_Real_Ebook_PT.pdf',7:'/reports/Pillier_Memoria_da_Empresa_Ebook_PT.pdf',8:'/reports/Pillier_RDO_Digital_Valor_Probatorio_Ebook_PT.pdf'};
+var _resFiles=(function(){var m={};RES_EBOOKS.forEach(function(e){m[e.id]=e.file;});return m;})();
 // Send a resources lead to the server (stores in Supabase + emails the team).
 // Fire-and-forget: failures never block the visitor's download.
 function _sendLead(p){try{fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)}).catch(function(){});}catch(_e){}}
 var _resFormHTML=null;
-function openResForm(id,noPush){
-  _resReportId=id||1;
-  if(!noPush){try{var _ep=_ebookPath(_resReportId);if(location.pathname!==_ep)history.pushState(null,'',_ep);}catch(e){}}
-  var f=document.getElementById('res-lead-form');
-  if(f){
-    // Capture the pristine form once; restore it on later opens so the
-    // "Report ready" success message from a previous download is replaced
-    // by fresh, fillable fields instead of lingering.
-    if(_resFormHTML===null)_resFormHTML=f.innerHTML;
-    else f.innerHTML=_resFormHTML;
-    f.style.display='block';
-    ['res-f-name','res-f-email','res-f-company'].forEach(function(k){var el=document.getElementById(k);if(el)el.value='';});
-    try{f.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){}
-  }
-  try{translateResources(lang===0?'fr':lang===2?'pt':'en');}catch(e){}
-  setResLang('pt');
+/* ══ Recursos: smart library (list · reader with 2-page preview · unlock-all) ══ */
+var _rsQ="",_rsTopic="all",_rsCur=null,_rsDocs={},_rsLib=null,_rsObs=null,_rsSendT=null;
+function _rsL(fr,en,pt){return lang===0?fr:lang===2?pt:en;}
+function _rsI(a){return a[lang===0?0:lang===2?2:1];}
+function _rsLk(){return lang===0?"fr":lang===2?"pt":"en";}
+function _rsNorm(s){return String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();}
+function _rsGet(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
+function _rsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function _rsLead(){return _rsGet("pillier_res_lead",null);}
+function _rsProg(){return _rsGet("pillier_res_prog",{});}
+function _rsPages(e){var p=_rsProg()[e.id];return (p&&p.pages)||e.pages||7;}
+function _rsMin(e){return Math.max(3,Math.round(_rsPages(e)*1.15));}
+function _rsUrl(e){return location.origin+_ebookPath(e.id);}
+// Where the visitor came from (share links carry ?utm_source=…); kept for the lead e-mail.
+(function(){try{var q=new URLSearchParams(location.search),u=q.get("utm_source");var r=document.referrer?new URL(document.referrer).hostname:"";
+  if(u)localStorage.setItem("pillier_res_src",u);else if(r&&r.indexOf(location.hostname)<0&&!localStorage.getItem("pillier_res_src"))localStorage.setItem("pillier_res_src",r);}catch(e){}})();
+function _rsOrigin(){var s="";try{s=localStorage.getItem("pillier_res_src")||"";}catch(e){}
+  var m={whatsapp:"WhatsApp",linkedin:"LinkedIn",link:_rsL("Lien partagé","Shared link","Link compartilhado"),email:"E-mail",mailerlite:"E-mail (MailerLite)"};
+  return s?(m[s.toLowerCase()]||s):_rsL("Accès direct","Direct visit","Acesso direto");}
+/* ---------- pdf.js (self-hosted) ---------- */
+function _rsPdfLib(){
+  if(!_rsLib)_rsLib=import("/vendor/pdfjs/pdf.min.js").then(function(m){m.GlobalWorkerOptions.workerSrc="/vendor/pdfjs/pdf.worker.min.js";return m;});
+  return _rsLib;
 }
+function _rsDoc(e){
+  if(!_rsDocs[e.id])_rsDocs[e.id]=_rsPdfLib().then(function(m){return m.getDocument(e.file).promise;}).then(function(doc){
+    var p=_rsProg();p[e.id]=Object.assign(p[e.id]||{},{pages:doc.numPages});_rsSet("pillier_res_prog",p);return doc;});
+  return _rsDocs[e.id];
+}
+function _rsDraw(e,n,cv,cssW){
+  return _rsDoc(e).then(function(doc){return doc.getPage(n);}).then(function(pg){
+    var v1=pg.getViewport({scale:1}),dpr=Math.min(2,window.devicePixelRatio||1),sc=(cssW*dpr)/v1.width,vp=pg.getViewport({scale:sc});
+    cv.width=Math.round(vp.width);cv.height=Math.round(vp.height);
+    return pg.render({canvasContext:cv.getContext("2d"),viewport:vp}).promise;
+  });
+}
+/* ---------- list ---------- */
+function _rsMatches(e){
+  if(_rsTopic!=="all"&&e.topic!==_rsTopic)return false;
+  if(!_rsQ)return true;
+  var hay=_rsNorm([_rsI(e.title),_rsI(e.cat)].concat((e.sum&&e.sum[_rsLk()])||[]).concat(e.title).join(" "));
+  return _rsNorm(_rsQ).split(/\s+/).every(function(w){return hay.indexOf(w)>=0;});
+}
+function _rsCover(e,cls){
+  return e.cover?"<img class='"+cls+"' src='"+e.cover+"' alt='' loading='lazy'>":"<canvas class='"+cls+" rs-cvr-pdf' data-id='"+e.id+"'></canvas>";
+}
+function _rsMini(e,sub){
+  return "<div class='rs-mini' onclick='openResForm("+e.id+")'>"+_rsCover(e,"rs-mini-img")+"<div style='min-width:0'><div class='rs-k'>"+escapeHTML(_rsI(e.cat))+"</div><div class='rs-mt'>"+escapeHTML(_rsI(e.title))+"</div>"+sub+"</div></div>";
+}
+function resRenderList(){
+  var host=document.getElementById("res-list-view");if(!host)return;
+  var lead=_rsLead(),prog=_rsProg();
+  var counts={all:RES_EBOOKS.length};RES_EBOOKS.forEach(function(e){counts[e.topic]=(counts[e.topic]||0)+1;});
+  var chips=RES_TOPICS.filter(function(t){return counts[t.k];}).map(function(t){return "<button class='rs-chip"+(_rsTopic===t.k?" on":"")+"' onclick=\"_rsSetTopic('"+t.k+"')\">"+escapeHTML(_rsI(t.l))+" <b>"+counts[t.k]+"</b></button>";}).join("");
+  // Continue reading: started but not finished, most recent first
+  var started=RES_EBOOKS.filter(function(e){var p=prog[e.id];return p&&p.max>0&&p.max<_rsPages(e);}).sort(function(a,b){return (prog[b.id].t||0)-(prog[a.id].t||0);}).slice(0,3);
+  var cont=started.length?"<div class='rs-sec'><h2>"+_rsL("Continuer la lecture","Continue reading","Continue lendo")+"</h2><span>"+_rsL("là où vous vous êtes arrêté","where you left off","de onde você parou")+"</span></div><div class='rs-row'>"+
+    started.map(function(e){var p=prog[e.id],pc=Math.round(p.max/_rsPages(e)*100);return _rsMini(e,"<div class='rs-prog'><i style='width:"+pc+"%'></i></div><div class='rs-cont'>"+_rsL("Page ","Page ","Página ")+Math.min(p.max+1,_rsPages(e))+_rsL(" sur "," of "," de ")+_rsPages(e)+" · "+_rsL("continuer","continue","continuar")+" →</div>");}).join("")+"</div>":"";
+  // Recommended: related to the most recently opened ebook, not yet finished
+  var last=RES_EBOOKS.filter(function(e){return prog[e.id]&&prog[e.id].t;}).sort(function(a,b){return prog[b.id].t-prog[a.id].t;})[0];
+  var rec="";
+  if(last){var ids=(last.related||[]).filter(function(id){var p=prog[id],e=resById(id);return e&&!(p&&p.max>=_rsPages(e));}).slice(0,3);
+    if(ids.length)rec="<div class='rs-sec'><h2>"+_rsL("Recommandé pour vous","Recommended for you","Recomendado para você")+"</h2><span>"+_rsL("parce que vous avez lu ","because you read ","porque você leu ")+escapeHTML(_rsI(last.title).split(":")[0])+"</span></div><div class='rs-row'>"+
+      ids.map(function(id){var e=resById(id);return _rsMini(e,"<div class='rs-why'>"+_rsPages(e)+_rsL(" pages · "," pages · "," páginas · ")+_rsMin(e)+" min</div>");}).join("")+"</div>";}
+  var list=RES_EBOOKS.filter(_rsMatches);
+  var grid=list.length?list.map(function(e){
+    var badge=e.isNew?"<span class='rs-new'>"+_rsL("Nouveau","New","Novo")+"</span>":"";
+    var st=lead?"<span class='rs-st rs-free'>✓ "+_rsL("Débloqué","Unlocked","Liberado")+"</span>":"<span class='rs-st'>"+_rsL("Aperçu gratuit","Free preview","Prévia grátis")+"</span>";
+    return "<div class='rs-card' onclick='openResForm("+e.id+")'><div class='rs-cv'>"+_rsCover(e,"rs-cv-img")+badge+st+"</div><div class='rs-cb'><div class='rs-k'>"+escapeHTML(_rsI(e.cat))+"</div><div class='rs-ct'>"+escapeHTML(_rsI(e.title))+"</div><div class='rs-cm'>"+_rsPages(e)+_rsL(" pages · "," pages · "," páginas · ")+_rsMin(e)+_rsL(" min de lecture"," min read"," min de leitura")+"</div></div></div>";
+  }).join(""):"<div class='rs-empty'>"+_rsL("Aucun ebook ne correspond. Essayez un autre mot.","No ebook matches. Try another word.","Nenhum ebook encontrado. Tente outra palavra.")+"</div>";
+  var focused=document.activeElement&&document.activeElement.id==="rs-q";
+  host.innerHTML="<div class='rs-head'><h1>"+_rsL("Pillier Recherche","Pillier Research","Pillier Pesquisa")+"</h1><p>"+_rsL("Rapports et analyses pour les leaders de la construction.","Reports and insights for construction leaders.","Relatórios e análises para líderes da construção civil.")+" "+RES_EBOOKS.length+" ebooks · "+_rsL("gratuits","free","gratuitos")+".</p></div>"+
+    "<div class='rs-search'><i class='ti ti-search'></i><input id='rs-q' type='search' autocomplete='off' value=\""+escapeHTML(_rsQ)+"\" placeholder=\""+_rsL("Rechercher : RDO, facture, sécurité…","Search: daily report, invoice, safety…","Buscar: RDO, nota fiscal, segurança…")+"\" oninput='_rsSearch(this.value)'></div>"+
+    "<div class='rs-chips'>"+chips+"</div>"+((_rsQ||_rsTopic!=="all")?"":cont+rec)+
+    "<div class='rs-sec'><h2>"+_rsL("Tous les ebooks","All ebooks","Todos os ebooks")+"</h2><span>"+list.length+" "+_rsL(list.length===1?"résultat":"résultats",list.length===1?"result":"results",list.length===1?"resultado":"resultados")+"</span></div><div class='rs-grid'>"+grid+"</div>";
+  if(focused){var q=document.getElementById("rs-q");if(q){q.focus();var v=q.value;q.setSelectionRange(v.length,v.length);}}
+  _rsPdfCovers(host);
+}
+// Ebooks published without a cover image: draw page 1 from the PDF when the card scrolls into view.
+function _rsPdfCovers(host){
+  var cvs=host.querySelectorAll("canvas.rs-cvr-pdf");if(!cvs.length)return;
+  var go=function(cv){if(cv._d)return;cv._d=1;var e=resById(cv.getAttribute("data-id"));if(e)_rsDraw(e,1,cv,cv.clientWidth||180).catch(function(){});};
+  if("IntersectionObserver" in window){var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){go(x.target);io.unobserve(x.target);}});},{rootMargin:"300px"});cvs.forEach(function(c){io.observe(c);});}
+  else cvs.forEach(go);
+}
+function _rsSearch(v){_rsQ=v;resRenderList();}
+function _rsSetTopic(k){_rsTopic=k;resRenderList();}
+/* ---------- reader ---------- */
+function _rsTrack(e,n){
+  var p=_rsProg(),r=p[e.id]||{};
+  r.t=Date.now();if(n&&n>(r.max||0))r.max=n;p[e.id]=r;_rsSet("pillier_res_prog",p);
+  var bar=document.getElementById("rs-pbar");
+  if(bar){var tot=_rsPages(e),cur=Math.max(1,n||1);bar.querySelector("i").style.width=Math.round(cur/tot*100)+"%";
+    var t=document.getElementById("rs-ptxt");if(t)t.textContent=_rsL("Page ","Page ","Página ")+cur+_rsL(" sur "," of "," de ")+tot;
+    var left=document.getElementById("rs-pleft");if(left)left.textContent="~"+Math.max(1,Math.round((tot-cur)*1.15))+_rsL(" min restantes"," min left"," min restantes");}
+  document.querySelectorAll(".rs-th").forEach(function(th){th.classList.toggle("on",+th.getAttribute("data-n")===n);});
+  if(_rsLead())_rsProgressSync(e);
+}
+function resRenderReader(){
+  var host=document.getElementById("res-reader-view"),e=_rsCur;if(!host||!e)return;
+  var lead=_rsLead(),N=_rsPages(e),locked=!lead;
+  var share=function(src){return encodeURIComponent(_rsUrl(e)+"?utm_source="+src);};
+  var wa="https://wa.me/?text="+encodeURIComponent(_rsI(e.title)+" ")+share("whatsapp");
+  var li="https://www.linkedin.com/sharing/share-offsite/?url="+share("linkedin");
+  var shareBtns="<a class='rs-sh' href='"+wa+"' target='_blank' rel='noopener'><i class='ti ti-brand-whatsapp' style='color:#25D366'></i>WhatsApp</a><a class='rs-sh' href='"+li+"' target='_blank' rel='noopener'><i class='ti ti-brand-linkedin' style='color:#0A66C2'></i>LinkedIn</a><button class='rs-sh' onclick='_rsCopy()'><i class='ti ti-link'></i>"+_rsL("Copier le lien","Copy link","Copiar link")+"</button>";
+  var sum=(e.sum&&e.sum[_rsLk()])||null;
+  var roles=[_rsL("Ingénieur(e)","Engineer","Engenheiro(a)"),_rsL("Chef de chantier / conducteur de travaux","Site / project manager","Gestor(a) / gerente de obras"),_rsL("Directeur / associé","Director / partner","Diretor(a) / sócio(a)"),_rsL("Technicien(ne) sécurité","Safety technician","Técnico(a) de segurança"),_rsL("Achats / finances","Purchasing / finance","Compras / financeiro"),_rsL("Autre","Other","Outro")];
+  var gate="<div class='rs-gate' id='rs-gate'><h3>"+_rsL("Continuez la lecture : encore ","Keep reading: ","Continue lendo: faltam ")+(N-2)+_rsL(" pages"," more pages"," páginas")+"</h3>"+
+    "<p>"+_rsL("Télémétrie, anatomie du problème, moteur de la solution, modèle de maturité et feuille de route à 90 jours.","Telemetry, anatomy of the problem, the solution engine, maturity model and a 90-day roadmap.","Telemetria, anatomia do problema, o motor da solução, modelo de maturidade e roadmap de 90 dias.")+"</p>"+
+    "<input id='rs-f-name' class='rs-f' placeholder='"+_rsL("Nom","Name","Nome")+"' autocomplete='name'>"+
+    "<input id='rs-f-email' class='rs-f' type='email' placeholder='"+_rsL("E-mail professionnel","Work e-mail","E-mail profissional")+"' autocomplete='email'>"+
+    "<div class='rs-f2'><input id='rs-f-company' class='rs-f' placeholder='"+_rsL("Entreprise","Company","Empresa")+"' autocomplete='organization'><select id='rs-f-role' class='rs-f'><option value=''>"+_rsL("Poste (facultatif)","Role (optional)","Cargo (opcional)")+"</option>"+roles.map(function(r){return "<option>"+escapeHTML(r)+"</option>";}).join("")+"</select></div>"+
+    "<button class='rs-btn' onclick='resUnlock()'>"+_rsL("Débloquer l'ebook complet","Unlock the full ebook","Liberar o ebook completo")+"</button>"+
+    "<div class='rs-note'>✓ "+_rsL("Une seule inscription débloque les ","One sign-up unlocks all ","Um único cadastro libera os ")+RES_EBOOKS.length+" ebooks</div><div class='rs-priv'>"+_rsL("Pas de spam. Vous ne recevez que ce que vous avez demandé.","No spam. You only get what you asked for.","Sem spam. Você recebe só o que pediu.")+"</div></div>";
+  var pages="";
+  var showN=locked?Math.min(3,N):N;
+  for(var n=1;n<=showN;n++){
+    var blur=locked&&n===3;
+    pages+="<div class='rs-pg"+(blur?" rs-pg-lock":"")+"' data-n='"+n+"'><canvas></canvas><span class='rs-pn'>"+n+" / "+N+"</span>"+(blur?gate:"")+"</div>";
+  }
+  if(locked&&N<3)pages+="<div class='rs-pg rs-pg-lock rs-pg-empty'>"+gate+"</div>";
+  var thumbs="";for(var t=1;t<=N;t++){thumbs+="<div class='rs-th"+(locked&&t>2?" rs-th-l":"")+"' data-n='"+t+"' onclick='_rsGoto("+t+")'><canvas></canvas></div>";}
+  var rel=(e.related||[]).map(resById).filter(Boolean).slice(0,3);
+  var relHTML=rel.length?"<div class='rs-sec'><h2>"+_rsL("À lire aussi","Read next","Leia também")+"</h2><span>"+_rsL("sur le même thème","on the same topic","no mesmo tema")+"</span></div><div class='rs-row'>"+rel.map(function(r){return _rsMini(r,"<div class='rs-why'>"+(lead?"✓ "+_rsL("Débloqué","Unlocked","Liberado"):_rsPages(r)+_rsL(" pages"," pages"," páginas"))+"</div>");}).join("")+"</div>":"";
+  host.innerHTML="<div class='rs-rd'><div class='rs-main'>"+
+    "<a class='rs-back' href='"+(_landPaths()[3]||"/recursos")+"' onclick='resBack();return false;'>← "+_rsL("Tous les ebooks","All ebooks","Todos os ebooks")+"</a>"+
+    "<div class='rs-k'>"+escapeHTML(_rsI(e.cat))+"</div><h1 class='rs-rt'>"+escapeHTML(_rsI(e.title))+"</h1>"+
+    "<div class='rs-rm'><span>PDF · "+N+_rsL(" pages · "," pages · "," páginas · ")+_rsMin(e)+_rsL(" min de lecture"," min read"," min de leitura")+"</span><div class='rs-share'>"+shareBtns+"</div></div>"+
+    (lead?"<div class='rs-pbar'><span id='rs-ptxt'></span><div class='rs-prog' id='rs-pbar'><i></i></div><span id='rs-pleft'></span></div>":"")+
+    (sum?"<div class='rs-tldr'><h4>"+_rsL("En 30 secondes","In 30 seconds","Em 30 segundos")+"</h4><ul>"+sum.map(function(x){return "<li>"+escapeHTML(x)+"</li>";}).join("")+"</ul></div>":"")+
+    "<div class='rs-pages'>"+pages+"</div>"+relHTML+"</div>"+
+    "<aside class='rs-side'><div class='rs-sc'><h5>"+_rsL("Pages","Pages","Páginas")+"</h5><div class='rs-thumbs'>"+thumbs+"</div></div>"+
+    "<div class='rs-sc'><h5>"+_rsL("Télécharger","Download","Baixar")+"</h5>"+(lead?"<button class='rs-dl' onclick='resDownload()'><i class='ti ti-download'></i>"+_rsL("Télécharger le PDF","Download PDF","Baixar PDF")+"</button>":"<button class='rs-dl rs-dl-off' onclick='_rsGoto(3)'>"+_rsL("Disponible après l'inscription","Available after sign-up","Liberado após o cadastro")+"</button>")+"</div>"+
+    "<div class='rs-sc rs-cta'><h5>"+_rsL("Et sur votre chantier ?","Want this on your site?","Quer isso na sua obra?")+"</h5><p>"+_rsL("Pillier capture incidents, RDO et dépenses par photo et voix en moins de 60 secondes.","Pillier captures incidents, daily reports and expenses by photo and voice in under 60 seconds.","A Pillier captura incidentes, RDO e despesas por foto e voz em menos de 60 segundos.")+"</p><a class='rs-dl' href='https://cal.com/pillier-ai-demo/30min' target='_blank' rel='noopener'>"+_rsL("Réserver une démo","Book a demo","Agendar uma demo")+"</a></div></aside></div>";
+  _rsPaint(e,locked);
+}
+function _rsPaint(e,locked){
+  var host=document.getElementById("res-reader-view");
+  var W=Math.min(760,(host.querySelector(".rs-pages")||{}).clientWidth||700);
+  var pgs=host.querySelectorAll(".rs-pg[data-n]");
+  var drawPg=function(el){if(el._d)return;el._d=1;var n=+el.getAttribute("data-n");
+    _rsDraw(e,n,el.querySelector("canvas"),el.classList.contains("rs-pg-lock")?Math.round(W*0.45):W).then(function(){el.classList.add("rs-ready");}).catch(function(err){el.classList.add("rs-err");console.error("ebook page",err);});};
+  if(_rsObs)_rsObs.disconnect();
+  if("IntersectionObserver" in window){
+    var seen=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting&&!x.target.classList.contains("rs-pg-lock"))_rsTrack(e,+x.target.getAttribute("data-n"));});},{threshold:0.45});
+    var near=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){drawPg(x.target);near.unobserve(x.target);}});},{rootMargin:"900px"});
+    pgs.forEach(function(el){near.observe(el);seen.observe(el);});
+    _rsObs={disconnect:function(){seen.disconnect();near.disconnect();}};
+  }else pgs.forEach(drawPg);
+  host.querySelectorAll(".rs-th").forEach(function(th,i){var n=+th.getAttribute("data-n");setTimeout(function(){_rsDraw(e,n,th.querySelector("canvas"),70).catch(function(){});},150*i);});
+  _rsTrack(e,locked?0:null);
+}
+function _rsGoto(n){
+  var lead=_rsLead(),el;
+  if(!lead&&n>2)el=document.getElementById("rs-gate");else el=document.querySelector(".rs-pg[data-n='"+n+"']");
+  if(el)el.scrollIntoView({behavior:"smooth",block:"start"});
+  if(!lead&&n>2)setTimeout(function(){var f=document.getElementById("rs-f-name");if(f)f.focus({preventScroll:true});},500);
+}
+function _rsCopy(){var u=_rsUrl(_rsCur)+"?utm_source=link";try{navigator.clipboard.writeText(u);}catch(e){}toast(_rsL("Lien copié","Link copied","Link copiado"));}
+/* ---------- unlock (one sign-up → every ebook) ---------- */
+function _rsReadSummary(exceptId){
+  var p=_rsProg();return RES_EBOOKS.filter(function(x){return x.id!==exceptId&&p[x.id]&&(p[x.id].max||p[x.id].t);}).map(function(x){return _rsI(x.title).split(":")[0]+" ("+(p[x.id].max||0)+"/"+_rsPages(x)+")";});
+}
+function resUnlock(){
+  var e=_rsCur;if(!e)return;
+  var v=function(id){var el=document.getElementById(id);return el?String(el.value||"").trim():"";};
+  var name=v("rs-f-name"),email=v("rs-f-email"),company=v("rs-f-company"),role=v("rs-f-role");
+  if(!name||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){toast(_rsL("Indiquez votre nom et un e-mail valide","Please enter your name and a valid e-mail","Preencha nome e um e-mail válido"));return;}
+  var also=_rsReadSummary(e.id),pr=_rsProg()[e.id]||{};
+  var hot=also.length>=1;
+  _rsSet("pillier_res_lead",{name:name,email:email,company:company,role:role,at:Date.now(),first:e.id});
+  if(hot)_rsSet("pillier_res_hot",1);
+  _sendLead({name:name,email:email,company:company,role:role,report_id:e.id,report_title:e.title[2],lang:_rsLk(),source:"resources",
+    pages_read:(pr.max||2)+"/"+_rsPages(e),also_read:also.join(" · "),origin:_rsOrigin(),hot:hot});
+  var first=name.split(/\s+/)[0];
+  resRenderReader();
+  setTimeout(function(){_rsGoto(3);},120);
+  _rsToast(_rsL("C'est fait, ","Done, ","Pronto, ")+escapeHTML(first)+"! <b>"+_rsL("Les ","All ","Os ")+RES_EBOOKS.length+_rsL(" ebooks sont débloqués"," ebooks are unlocked"," ebooks estão liberados")+"</b>"+_rsL(" pour vous."," for you."," para você."));
+}
+function _rsToast(html){var t=document.createElement("div");t.className="rs-toast";t.innerHTML=html;document.body.appendChild(t);setTimeout(function(){t.classList.add("v");},20);setTimeout(function(){t.classList.remove("v");setTimeout(function(){t.remove();},400);},4200);}
+function resDownload(){
+  var e=_rsCur;if(!e)return;
+  try{var a=document.createElement("a");a.href=e.file;a.download=e.file.split("/").pop();document.body.appendChild(a);a.click();a.remove();}catch(_e){window.open(e.file,"_blank");}
+  var p=_rsProg();p[e.id]=Object.assign(p[e.id]||{},{dl:1,t:Date.now()});_rsSet("pillier_res_prog",p);_rsProgressSync(e,true);
+}
+// Reading activity after sign-up → Supabase lead row (debounced) + one "hot lead" alert.
+function _rsProgressSync(e,now){
+  clearTimeout(_rsSendT);
+  _rsSendT=setTimeout(function(){
+    var lead=_rsLead();if(!lead)return;var p=_rsProg();
+    var read=RES_EBOOKS.filter(function(x){return p[x.id]&&(p[x.id].max||p[x.id].dl);});
+    var detail=read.map(function(x){return {id:x.id,title:x.title[2],pages:(p[x.id].max||0)+"/"+_rsPages(x),downloaded:!!p[x.id].dl};});
+    var finished=read.some(function(x){return (p[x.id].max||0)>=_rsPages(x)||p[x.id].dl;});
+    var hot=finished||read.length>=2;
+    var payload={type:"progress",email:lead.email,name:lead.name,company:lead.company,role:lead.role,details:detail,origin:_rsOrigin(),lang:_rsLk()};
+    if(hot&&!_rsGet("pillier_res_hot",0)){_rsSet("pillier_res_hot",1);payload.type="hot";payload.report_title=e.title[2];}
+    _sendLead(payload);
+  },now?200:4000);
+}
+/* ---------- navigation ---------- */
+function _rsShow(view){
+  var l=document.getElementById("res-list-view"),r=document.getElementById("res-reader-view");
+  if(l)l.style.display=view==="list"?"":"none";if(r)r.style.display=view==="reader"?"":"none";
+}
+function openResForm(id,noPush){
+  var e=resById(id)||RES_EBOOKS[0];_rsCur=e;_resReportId=e.id;
+  if(!noPush){try{var _ep=_ebookPath(e.id);if(location.pathname!==_ep)history.pushState(null,"",_ep);}catch(_x){}}
+  try{var sc=document.getElementById("s-content"),sl=document.getElementById("s-login");if(sc&&!sc.classList.contains("active")){if(sl)sl.classList.remove("active");sc.classList.add("active");}
+    if(_curContentTab!==3){_suppressUrlPush=true;showContentTab(3);_suppressUrlPush=false;}}catch(_x){}
+  _rsShow("reader");resRenderReader();window.scrollTo(0,0);
+}
+function resShowList(){_rsCur=null;if(_rsObs)_rsObs.disconnect();_rsShow("list");resRenderList();}
+function resBack(){try{var p=_landPaths()[3]||"/recursos";if(location.pathname!==p)history.pushState(null,"",p);}catch(e){}resShowList();window.scrollTo(0,0);}
+function resRenderAll(){if(_rsCur)resRenderReader();else resRenderList();}
+if(document.readyState!=="loading")setTimeout(resRenderList,0);else document.addEventListener("DOMContentLoaded",function(){resRenderList();});
+
 function setResLang(l){
   _resLang=l;
   var en=document.getElementById('res-lang-en');var pt=document.getElementById('res-lang-pt');
@@ -4956,6 +5238,7 @@ function _resTx(l){
   return{header:'Pillier Research',sub:'Reports and insights for construction leaders.',cat1:'CRITICAL INCIDENT MANAGEMENT',t1:'Critical Incident Management: Serious Accidents Always Warn You First',dl:'PDF · 7 pages · Free download',cat2:'MATURITY MODEL',t2:'From Paper to Predictive AI: The ROI of Automated Site Logging',soon:'PDF · 7 pages · Free download',cat3:'CONSTRUCTION FINANCIAL CONTROL',t3:'Financial Control on the Jobsite: Closing the Micro-Procurement Blind Spot',dl3:'PDF · 7 pages · Free download',cat4:'KNOWLEDGE MANAGEMENT IN CONSTRUCTION',t4:'Site Memory: When the Engineer Leaves, the Project Forgets',cat5:'COMPLIANCE & CONTRACT DEFENSE',t5:"Automated Daily Reports: If It Isn't Logged, It Can't Be Proven",cat6:"CONSTRUCTION FINANCIAL CONTROL",t6:"Real-Time Close: Under Brazil's Tax Reform, an Expense Without an Invoice Is Lost Tax",cat7:"KNOWLEDGE MANAGEMENT IN CONSTRUCTION",t7:"Company Memory: The Mistake Your Firm Has Already Paid For Twice",cat8:"DIGITAL EVIDENCE & CONTRACT DEFENSE",t8:"Digital Daily Reports as Evidence: The Record That Holds Up to Expert Review",formTitle:'Download the full report',name:'Name',email:'Email',company:'Company',btn:'Download Report'};
 }
 function translateResources(l){
+  try{resRenderAll();}catch(e){}
   var tx=_resTx(l);
   var setT=function(id,v){var el=document.getElementById(id);if(el)el.textContent=v;};
   var setP=function(id,v){var el=document.getElementById(id);if(el)el.placeholder=v;};

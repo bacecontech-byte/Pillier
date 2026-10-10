@@ -57,6 +57,14 @@ async function handleLead(req, res) {
     const report_title = str(body.report_title).slice(0, 200);
     const lang = str(body.lang).slice(0, 8);
     const source = str(body.source || 'resources').slice(0, 40);
+    const type = str(body.type || 'lead');
+    const role = str(body.role).slice(0, 80);
+    const pagesRead = str(body.pages_read).slice(0, 20);
+    const alsoRead = str(body.also_read).slice(0, 500);
+    const origin = str(body.origin).slice(0, 80);
+    const hot = body.hot === true;
+    // Reading activity after sign-up (no new lead): update the lead row, and alert once when it turns hot.
+    if (type === 'progress' || type === 'hot') return handleProgress(req, res, body, type);
 
     if (!name || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
       return res.status(400).json({ ok: false, error: 'invalid_lead' });
@@ -75,7 +83,10 @@ async function handleLead(req, res) {
         body: JSON.stringify(row),
       });
       try {
-        const r = await insert({ name, email, company, report_id, report_title, lang, source, ip, user_agent: ua });
+        const details = { role, pages_read: pagesRead, also_read: alsoRead, origin, hot };
+        let r = await insert({ name, email, company, report_id, report_title, lang, source, ip, user_agent: ua, role, details });
+        // Tables created before the role/details columns existed: retry without them.
+        if (!r.ok) { const t0 = await r.clone().text(); if (/Could not find the '(role|details)' column/.test(t0)) r = await insert({ name, email, company, report_id, report_title, lang, source, ip, user_agent: ua }); }
         stored = r.ok;
         if (!r.ok) {
           const t = await r.text();
@@ -99,12 +110,13 @@ async function handleLead(req, res) {
         const when = new Date().toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
         const html =
           '<div style="font-family:Arial,sans-serif;font-size:14px;color:#1a2b33;line-height:1.6">' +
-          '<h2 style="margin:0 0 12px;color:#0a95d6">Novo download de relatório</h2>' +
+          '<h2 style="margin:0 0 12px;color:#0a95d6">Novo lead: ' + esc(report_title || 'Relatório') + (hot ? ' <span style="display:inline-block;background:#fee2e2;color:#b91c1c;font-size:11px;border-radius:999px;padding:2px 8px;vertical-align:middle">QUENTE</span>' : '') + '</h2>' +
           '<table cellpadding="0" cellspacing="0" style="border-collapse:collapse">' +
           row('Nome', esc(name)) + row('E-mail', '<a href="mailto:' + esc(email) + '">' + esc(email) + '</a>') +
-          row('Empresa', esc(company) || '—') + row('Relatório', esc(report_title || report_id) || '—') +
+          row('Empresa', esc(company) || '—') + row('Cargo', esc(role) || '—') + row('Liberou com', esc(report_title || report_id) || '—') +
+          row('Leitura', esc(pagesRead) ? esc(pagesRead) + ' páginas (prévia)' : '—') + row('Também leu', esc(alsoRead) || '—') + row('Origem', esc(origin) || '—') +
           row('Idioma', esc(lang) || '—') + row('Origem', esc(source)) + row('Quando', esc(when)) +
-          '</table><p style="margin-top:16px;color:#6b7c84;font-size:12px">Enviado automaticamente pela página Recursos da Pillier.</p></div>';
+          '</table><p style="margin-top:16px;color:#6b7c84;font-size:12px">Um cadastro libera todos os ebooks. O progresso de leitura continua sendo salvo na tabela leads (coluna details). Você recebe outro e-mail se o lead ficar quente.</p></div>';
         const er = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: { Authorization: 'Bearer ' + RESEND_KEY, 'Content-Type': 'application/json' },
@@ -134,7 +146,8 @@ async function handleLead(req, res) {
         form.set('Company', company || 'Não informado'); // required by Zoho Leads
         form.set('Email', email);
         form.set('Lead Source', 'Site Web');         // must match a Zoho picklist option
-        form.set('Description', 'Baixou "' + (report_title || report_id) + '" (' + lang + ') · origem: ' + source);
+        form.set('Description', 'Liberou "' + (report_title || report_id) + '" (' + lang + ')' + (role ? ' · cargo: ' + role : '') + (origin ? ' · origem: ' + origin : '') + (alsoRead ? ' · também leu: ' + alsoRead : '') + (hot ? ' · LEAD QUENTE' : ''));
+        if (role) form.set('Designation', role);
         const zr = await fetch(ZWTL_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: form.toString(), redirect: 'manual' });
         zoho = zr.status >= 200 && zr.status < 400; // WebToLead redirects (3xx) to returnURL on success
         if (!zoho) { zohoErr = 'zoho ' + zr.status; console.error('[lead] zoho wtl failed', zr.status); }
@@ -145,6 +158,46 @@ async function handleLead(req, res) {
     return res.status(200).json({ ok: true, stored, emailed, zoho, store_error: storeErr || undefined, zoho_error: zohoErr || undefined });
   } catch (err) {
     console.error('[lead] error', err.message);
+    return res.status(200).json({ ok: false, error: 'server_error' });
+  }
+}
+
+// ---- reading progress after sign-up: update the newest lead row; one "hot lead" alert ----
+async function handleProgress(req, res, body, type) {
+  try {
+    const email = str(body.email).slice(0, 160).toLowerCase();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return res.status(400).json({ ok: false, error: 'invalid_email' });
+    const details = Array.isArray(body.details) ? body.details.slice(0, 50).map((d) => ({ id: d && d.id, title: str(d && d.title).slice(0, 200), pages: str(d && d.pages).slice(0, 12), downloaded: !!(d && d.downloaded) })) : [];
+    let updated = false;
+    if (SERVICE_KEY) {
+      try {
+        const u = await fetch(SUPABASE_URL + '/rest/v1/leads?email=eq.' + encodeURIComponent(email) + '&source=eq.resources', {
+          method: 'PATCH',
+          headers: { apikey: SERVICE_KEY, Authorization: 'Bearer ' + SERVICE_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+          body: JSON.stringify({ details: { reading: details, origin: str(body.origin).slice(0, 80), role: str(body.role).slice(0, 80), updated_at: new Date().toISOString() } }),
+        });
+        updated = u.ok; // false when the table has no `details` column yet — harmless
+      } catch (e) { /* best effort */ }
+    }
+    let emailed = false;
+    if (type === 'hot' && RESEND_KEY) {
+      const lines = details.map((d) => esc(d.title) + ' — ' + esc(d.pages) + ' páginas' + (d.downloaded ? ' · baixou o PDF' : '')).join('<br>');
+      const html = '<div style="font-family:Arial,sans-serif;font-size:14px;color:#1a2b33;line-height:1.6">' +
+        '<h2 style="margin:0 0 12px;color:#b91c1c">Lead quente: ' + esc(body.name) + '</h2>' +
+        '<table cellpadding="0" cellspacing="0" style="border-collapse:collapse">' +
+        row('Nome', esc(body.name)) + row('E-mail', '<a href="mailto:' + esc(email) + '">' + esc(email) + '</a>') + row('Empresa', esc(body.company) || '—') + row('Cargo', esc(body.role) || '—') +
+        row('Leitura', lines || '—') + row('Origem', esc(body.origin) || '—') +
+        '</table><p style="margin-top:16px;color:#6b7c84;font-size:12px">Quente = leu um ebook inteiro, baixou o PDF ou abriu 2+ ebooks. Bom momento para entrar em contato.</p></div>';
+      try {
+        const er = await fetch('https://api.resend.com/emails', {
+          method: 'POST', headers: { Authorization: 'Bearer ' + RESEND_KEY, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ from: NOTIFY_FROM, to: [NOTIFY_TO], reply_to: email, subject: 'Lead quente: ' + str(body.name).slice(0, 80) + ' — ' + str(body.company || '').slice(0, 80), html }),
+        });
+        emailed = er.ok;
+      } catch (e) { /* best effort */ }
+    }
+    return res.status(200).json({ ok: true, updated, emailed });
+  } catch (err) {
     return res.status(200).json({ ok: false, error: 'server_error' });
   }
 }
