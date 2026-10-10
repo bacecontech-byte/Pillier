@@ -1,18 +1,55 @@
 {
   "crons": [
-    { "path": "/api/cron/daily-financial-nudge", "schedule": "30 20 * * *" }
+    {
+      "path": "/api/cron/daily-financial-nudge",
+      "schedule": "30 20 * * *"
+    }
   ],
   "rewrites": [
-    { "source": "/privacy", "destination": "/index.html" },
-    { "source": "/terms", "destination": "/index.html" },
-    { "source": "/code", "destination": "/index.html" },
-    { "source": "/auth/verify-code", "destination": "/index.html" },
-    { "source": "/reset-password", "destination": "/index.html" },
-    { "source": "/financeiro", "destination": "/index.html" },
-    { "source": "/financeiro/(.*)", "destination": "/index.html" },
-    { "source": "/annotate-demo", "destination": "/annotate-demo.html" },
-    { "source": "/twin-demo", "destination": "/annotate-demo.html" },
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    {
+      "source": "/reports/Pillier_Riscos_Ebook_PT.pdf",
+      "destination": "/reports/Pillier_Gestao_Incidentes_Criticos_Ebook_PT.pdf"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/terms",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/code",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/auth/verify-code",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/reset-password",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/financeiro",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/financeiro/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/annotate-demo",
+      "destination": "/annotate-demo.html"
+    },
+    {
+      "source": "/twin-demo",
+      "destination": "/annotate-demo.html"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
+    }
   ],
   "headers": [
     {
@@ -51,20 +88,32 @@
     {
       "source": "/",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
       ]
     },
     {
       "source": "/index.html",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
       ]
     },
     {
       "source": "/sw.js",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" },
-        { "key": "Service-Worker-Allowed", "value": "/" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        },
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/"
+        }
       ]
     }
   ]
