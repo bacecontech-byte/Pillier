@@ -63,6 +63,7 @@ async function handleLead(req, res) {
     const alsoRead = str(body.also_read).slice(0, 500);
     const origin = str(body.origin).slice(0, 80);
     const hot = body.hot === true;
+    const returning = body.returning === true;
     // Reading activity after sign-up (no new lead): update the lead row, and alert once when it turns hot.
     if (type === 'progress' || type === 'hot') return handleProgress(req, res, body, type);
 
@@ -114,13 +115,13 @@ async function handleLead(req, res) {
           '<table cellpadding="0" cellspacing="0" style="border-collapse:collapse">' +
           row('Nome', esc(name)) + row('E-mail', '<a href="mailto:' + esc(email) + '">' + esc(email) + '</a>') +
           row('Empresa', esc(company) || '—') + row('Cargo', esc(role) || '—') + row('Liberou com', esc(report_title || report_id) || '—') +
-          row('Leitura', esc(pagesRead) ? esc(pagesRead) + ' páginas (prévia)' : '—') + row('Também leu', esc(alsoRead) || '—') + row('Origem', esc(origin) || '—') +
+          row('Leitura', esc(pagesRead) ? esc(pagesRead) + ' páginas (prévia)' : '—') + row('Também leu', esc(alsoRead) || '—') + row('Origem', esc(origin) || '—') + (returning ? row('Visita', 'Voltou: já tinha se cadastrado antes') : '') +
           row('Idioma', esc(lang) || '—') + row('Origem', esc(source)) + row('Quando', esc(when)) +
           '</table><p style="margin-top:16px;color:#6b7c84;font-size:12px">Um cadastro libera todos os ebooks. O progresso de leitura continua sendo salvo na tabela leads (coluna details). Você recebe outro e-mail se o lead ficar quente.</p></div>';
         const er = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: { Authorization: 'Bearer ' + RESEND_KEY, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ from: NOTIFY_FROM, to: [NOTIFY_TO], reply_to: email, subject: 'Novo lead: ' + (report_title || 'Relatório') + ' — ' + name, html }),
+          body: JSON.stringify({ from: NOTIFY_FROM, to: [NOTIFY_TO], reply_to: email, subject: (returning ? 'Lead voltou: ' : 'Novo lead: ') + (report_title || 'Relatório') + ' — ' + name, html }),
         });
         emailed = er.ok;
         if (!er.ok) console.error('[lead] resend failed', er.status, (await er.text()).slice(0, 200));

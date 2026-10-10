@@ -4967,7 +4967,10 @@ function _rsLk(){return lang===0?"fr":lang===2?"pt":"en";}
 function _rsNorm(s){return String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();}
 function _rsGet(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
 function _rsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
-function _rsLead(){return _rsGet("pillier_res_lead",null);}
+// Unlock lasts for the current visit only: closing the site means filling the form again.
+try{localStorage.removeItem("pillier_res_lead");}catch(e){} // older builds kept it forever
+function _rsLead(){try{var v=sessionStorage.getItem("pillier_res_lead");return v?JSON.parse(v):null;}catch(e){return null;}}
+function _rsSetLead(o){try{sessionStorage.setItem("pillier_res_lead",JSON.stringify(o));}catch(e){}}
 function _rsProg(){return _rsGet("pillier_res_prog",{});}
 function _rsPages(e){var p=_rsProg()[e.id];return (p&&p.pages)||e.pages||7;}
 function _rsMin(e){return Math.max(3,Math.round(_rsPages(e)*1.15));}
@@ -5026,7 +5029,7 @@ function resRenderList(){
   var list=RES_EBOOKS.filter(_rsMatches);
   var grid=list.length?list.map(function(e){
     var badge=e.isNew?"<span class='rs-new'>"+_rsL("Nouveau","New","Novo")+"</span>":"";
-    var st=lead?"<span class='rs-st rs-free'>✓ "+_rsL("Débloqué","Unlocked","Liberado")+"</span>":"";
+    var st="";
     return "<div class='rs-card' onclick='openResForm("+e.id+")'><div class='rs-cv'>"+_rsCover(e,"rs-cv-img")+badge+st+"</div><div class='rs-cb'><div class='rs-k'>"+escapeHTML(_rsI(e.cat))+"</div><div class='rs-ct'>"+escapeHTML(_rsI(e.title))+"</div><div class='rs-cm'>"+_rsPages(e)+_rsL(" pages · "," pages · "," páginas · ")+_rsMin(e)+_rsL(" min de lecture"," min read"," min de leitura")+"</div></div></div>";
   }).join(""):"<div class='rs-empty'>"+_rsL("Aucun ebook ne correspond. Essayez un autre mot.","No ebook matches. Try another word.","Nenhum ebook encontrado. Tente outra palavra.")+"</div>";
   var focused=document.activeElement&&document.activeElement.id==="rs-q";
@@ -5082,7 +5085,7 @@ function resRenderReader(){
   if(locked&&N<3)pages+="<div class='rs-pg rs-pg-lock rs-pg-empty'>"+gate+"</div>";
   var thumbs="";for(var t=1;t<=N;t++){thumbs+="<div class='rs-th"+(locked&&t>2?" rs-th-l":"")+"' data-n='"+t+"' onclick='_rsGoto("+t+")'><canvas></canvas></div>";}
   var rel=(e.related||[]).map(resById).filter(Boolean).slice(0,3);
-  var relHTML=rel.length?"<div class='rs-sec'><h2>"+_rsL("À lire aussi","Read next","Leia também")+"</h2><span>"+_rsL("sur le même thème","on the same topic","no mesmo tema")+"</span></div><div class='rs-row'>"+rel.map(function(r){return _rsMini(r,"<div class='rs-why'>"+(lead?"✓ "+_rsL("Débloqué","Unlocked","Liberado"):_rsPages(r)+_rsL(" pages"," pages"," páginas"))+"</div>");}).join("")+"</div>":"";
+  var relHTML=rel.length?"<div class='rs-sec'><h2>"+_rsL("À lire aussi","Read next","Leia também")+"</h2><span>"+_rsL("sur le même thème","on the same topic","no mesmo tema")+"</span></div><div class='rs-row'>"+rel.map(function(r){return _rsMini(r,"<div class='rs-why'>"+_rsPages(r)+_rsL(" pages · "," pages · "," páginas · ")+_rsMin(r)+" min</div>");}).join("")+"</div>":"";
   host.innerHTML="<div class='rs-rd'><div class='rs-main'>"+
     "<a class='rs-back' href='"+(_landPaths()[3]||"/recursos")+"' onclick='resBack();return false;'>← "+_rsL("Tous les ebooks","All ebooks","Todos os ebooks")+"</a>"+
     "<div class='rs-k'>"+escapeHTML(_rsI(e.cat))+"</div><h1 class='rs-rt'>"+escapeHTML(_rsI(e.title))+"</h1>"+
@@ -5139,10 +5142,12 @@ function resUnlock(){
   if(!name||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){toast(_rsL("Indiquez votre nom et un e-mail valide","Please enter your name and a valid e-mail","Preencha nome e um e-mail válido"));return;}
   var also=_rsReadSummary(e.id),pr=_rsProg()[e.id]||{};
   var hot=also.length>=1;
-  _rsSet("pillier_res_lead",{name:name,email:email,company:company,role:role,at:Date.now(),first:e.id});
+  _rsSetLead({name:name,email:email,company:company,role:role,at:Date.now(),first:e.id});
+  var known=_rsGet("pillier_res_known",[]),returning=known.indexOf(email.toLowerCase())>=0;
+  if(!returning){known.push(email.toLowerCase());_rsSet("pillier_res_known",known.slice(-20));}
   if(hot)_rsSet("pillier_res_hot",1);
   _sendLead({name:name,email:email,company:company,role:role,report_id:e.id,report_title:e.title[2],lang:_rsLk(),source:"resources",
-    pages_read:(pr.max||2)+"/"+_rsPages(e),also_read:also.join(" · "),origin:_rsOrigin(),hot:hot});
+    pages_read:(pr.max||2)+"/"+_rsPages(e),also_read:also.join(" · "),origin:_rsOrigin(),hot:hot,returning:returning});
   var first=name.split(/\s+/)[0];
   resRenderReader();
   setTimeout(function(){_rsGoto(3);},120);
