@@ -1469,6 +1469,7 @@ canvas.rs-cv-img{height:184px;}
 .rs-sh{height:34px;padding:0 13px;border-radius:999px;border:1px solid var(--border2);background:none;display:inline-flex;align-items:center;gap:6px;font:700 12.5px var(--font-b);color:var(--text);text-decoration:none;cursor:pointer;}
 .rs-sh i{font-size:16px;}
 .rs-sh:hover{border-color:rgba(44,190,255,.5);}
+.rs-sh.rs-ok{border-color:#22c55e;color:#22c55e;}.rs-sh.rs-bad{border-color:#f0645d;color:#f0645d;}
 .rs-pbar{display:flex;align-items:center;gap:12px;font-size:12.5px;color:var(--text3);margin:16px 0 0;position:sticky;top:84px;z-index:3;background:var(--navy);padding:8px 0;}
 .rs-pbar .rs-prog{flex:1;margin:0;}
 .rs-tldr{margin:18px 0 22px;background:rgba(44,190,255,.07);border:1px solid rgba(44,190,255,.3);border-radius:14px;padding:14px 18px;}
@@ -5062,7 +5063,7 @@ function resRenderReader(){
   var share=function(src){return encodeURIComponent(_rsUrl(e)+"?utm_source="+src);};
   var wa="https://wa.me/?text="+encodeURIComponent(_rsI(e.title)+" ")+share("whatsapp");
   var li="https://www.linkedin.com/sharing/share-offsite/?url="+share("linkedin");
-  var shareBtns="<a class='rs-sh' href='"+wa+"' target='_blank' rel='noopener'><i class='ti ti-brand-whatsapp' style='color:#25D366'></i>WhatsApp</a><a class='rs-sh' href='"+li+"' target='_blank' rel='noopener'><i class='ti ti-brand-linkedin' style='color:#0A66C2'></i>LinkedIn</a><button class='rs-sh' onclick='_rsCopy()'><i class='ti ti-link'></i>"+_rsL("Copier le lien","Copy link","Copiar link")+"</button>";
+  var shareBtns="<a class='rs-sh' href='"+wa+"' target='_blank' rel='noopener'><i class='ti ti-brand-whatsapp' style='color:#25D366'></i>WhatsApp</a><a class='rs-sh' href='"+li+"' target='_blank' rel='noopener'><i class='ti ti-brand-linkedin' style='color:#0A66C2'></i>LinkedIn</a><button class='rs-sh' onclick='_rsCopy(event)'><i class='ti ti-link'></i>"+_rsL("Copier le lien","Copy link","Copiar link")+"</button>";
   var sum=(e.sum&&e.sum[_rsLk()])||null;
   var roles=[_rsL("Ingénieur(e)","Engineer","Engenheiro(a)"),_rsL("Chef de chantier / conducteur de travaux","Site / project manager","Gestor(a) / gerente de obras"),_rsL("Directeur / associé","Director / partner","Diretor(a) / sócio(a)"),_rsL("Technicien(ne) sécurité","Safety technician","Técnico(a) de segurança"),_rsL("Achats / finances","Purchasing / finance","Compras / financeiro"),_rsL("Autre","Other","Outro")];
   var gate="<div class='rs-gate' id='rs-gate'><h3>"+_rsL("Continuez la lecture : encore ","Keep reading: ","Continue lendo: faltam ")+(N-2)+_rsL(" pages"," more pages"," páginas")+"</h3>"+
@@ -5116,7 +5117,17 @@ function _rsGoto(n){
   if(el)el.scrollIntoView({behavior:"smooth",block:"start"});
   if(!lead&&n>2)setTimeout(function(){var f=document.getElementById("rs-f-name");if(f)f.focus({preventScroll:true});},500);
 }
-function _rsCopy(){var u=_rsUrl(_rsCur)+"?utm_source=link";try{navigator.clipboard.writeText(u);}catch(e){}toast(_rsL("Lien copié","Link copied","Link copiado"));}
+function _rsCopy(ev){
+  var u=_rsUrl(_rsCur)+"?utm_source=link",btn=ev&&ev.currentTarget;
+  var done=function(ok){
+    if(btn){if(!btn._lbl)btn._lbl=btn.innerHTML;btn.innerHTML=ok?"<i class='ti ti-check'></i>"+_rsL("Lien copié","Link copied","Link copiado"):"<i class='ti ti-alert-circle'></i>"+_rsL("Copie impossible","Couldn't copy","Não foi possível copiar");
+      btn.classList.add(ok?"rs-ok":"rs-bad");clearTimeout(btn._t);btn._t=setTimeout(function(){btn.innerHTML=btn._lbl;btn.classList.remove("rs-ok","rs-bad");},2200);}
+    toast(ok?"✓ "+_rsL("Lien copié","Link copied","Link copiado"):u);
+  };
+  var legacy=function(){try{var t=document.createElement("textarea");t.value=u;t.setAttribute("readonly","");t.style.cssText="position:fixed;top:-1000px;opacity:0";document.body.appendChild(t);t.select();var ok=document.execCommand("copy");t.remove();return ok;}catch(e){return false;}};
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(u).then(function(){done(true);},function(){done(legacy());});}
+  else done(legacy());
+}
 /* ---------- unlock (one sign-up → every ebook) ---------- */
 function _rsReadSummary(exceptId){
   var p=_rsProg();return RES_EBOOKS.filter(function(x){return x.id!==exceptId&&p[x.id]&&(p[x.id].max||p[x.id].t);}).map(function(x){return _rsI(x.title).split(":")[0]+" ("+(p[x.id].max||0)+"/"+_rsPages(x)+")";});
@@ -11944,7 +11955,7 @@ function showTab(i,btn){
 }
 
 function showLoad(show,txt){document.getElementById("loading").classList.toggle("show",show);if(txt)document.getElementById("load-txt").textContent=txt;}
-function toast(msg){var el=document.getElementById("toast");el.innerHTML=msg;el.classList.add("show");setTimeout(function(){el.classList.remove("show");},2800);}
+function toast(msg){var el=document.getElementById("toast");if(!el)return;if(el.parentNode!==document.body&&el.offsetParent===null)document.body.appendChild(el);el.innerHTML=msg;el.classList.add("show");setTimeout(function(){el.classList.remove("show");},2800);}
 
 // -- DOCUMENTS --
 var projectDocs={};
