@@ -4543,6 +4543,9 @@ function _landPathToTab(p){
 var _EBOOK_SLUGS={'1':1,'riscos':1,'risco':1,'risk':1,'risco-em-canteiros':1,
                   '2':2,'roi':2,'ia':2,'ia-preditiva':2,'maturidade':2,
                   '3':3,'financeiro':3,'financas':3,'financial':3,'microcompras':3};
+// Canonical slug written to the address bar when a report is opened.
+var _EBOOK_CANON={1:'riscos',2:'roi',3:'financeiro'};
+function _ebookPath(id){return (_landPaths()[3]||'/recursos')+'/'+(_EBOOK_CANON[id]||_EBOOK_CANON[1]);}
 function _ebookFromPath(p){
   var seg=String(p||'').toLowerCase().replace(/\/+$/,'').split('/').filter(Boolean);
   if(seg.length>=2 && /^(recursos|resources|ressources)$/.test(seg[0])) return _EBOOK_SLUGS[seg[1]]||0;
@@ -4611,7 +4614,7 @@ function goCapture(){
     if(urlTab===3&&_eb){
       // Per-ebook deep link (e.g. /recursos/riscos) — open that report's form,
       // keep the deep-link URL in the address bar (shareable / trackable).
-      setTimeout(function(){try{openResForm(_eb);}catch(e){}},300);
+      setTimeout(function(){try{openResForm(_eb,true);}catch(e){}},300);
     } else {
       try{history.replaceState(null,'',_landPaths()[urlTab]);}catch(e){}
     }
@@ -4650,6 +4653,7 @@ window.addEventListener('popstate',function(){
     var sc=document.getElementById('s-content'),sl=document.getElementById('s-login');
     if(sc){if(sl)sl.classList.remove('active');sc.classList.add('active');}
     _suppressUrlPush=true;showContentTab(t);_suppressUrlPush=false;
+    if(t===3){var _eb2=_ebookFromPath(location.pathname);if(_eb2){openResForm(_eb2,true);}else{var _rf=document.getElementById('res-lead-form');if(_rf)_rf.style.display='none';}}
   }catch(e){}
 });
 function showContentTab(idx){
@@ -4832,8 +4836,9 @@ var _resFiles={1:'/reports/Pillier_Riscos_Ebook_PT.pdf',2:'/reports/Pillier_AI_E
 // Fire-and-forget: failures never block the visitor's download.
 function _sendLead(p){try{fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)}).catch(function(){});}catch(_e){}}
 var _resFormHTML=null;
-function openResForm(id){
+function openResForm(id,noPush){
   _resReportId=id||1;
+  if(!noPush){try{var _ep=_ebookPath(_resReportId);if(location.pathname!==_ep)history.pushState(null,'',_ep);}catch(e){}}
   var f=document.getElementById('res-lead-form');
   if(f){
     // Capture the pristine form once; restore it on later opens so the
@@ -5119,7 +5124,7 @@ function applyLang(){
   syncLangSelects();
   // Re-localize the marketing URL to the new language (e.g. /recursos → /resources)
   // when a content tab is showing — replaceState so it doesn't add history.
-  try{var _sc=document.getElementById("s-content");if(_sc&&_sc.classList.contains("active")){var _p=_landPaths()[_curContentTab]||"/";if(location.pathname!==_p)history.replaceState(null,"",_p);}var _sl=document.getElementById("s-login");if(_sl&&_sl.classList.contains("active")&&_isAuthPath(location.pathname)&&location.pathname!==_authPath())history.replaceState(null,"",_authPath()+location.search);}catch(e){}
+  try{var _sc=document.getElementById("s-content");if(_sc&&_sc.classList.contains("active")){var _p=_landPaths()[_curContentTab]||"/";if(_curContentTab===3){var _ebL=_ebookFromPath(location.pathname);if(_ebL)_p=_ebookPath(_ebL);}if(location.pathname!==_p)history.replaceState(null,"",_p);}var _sl=document.getElementById("s-login");if(_sl&&_sl.classList.contains("active")&&_isAuthPath(location.pathname)&&location.pathname!==_authPath())history.replaceState(null,"",_authPath()+location.search);}catch(e){}
   try{_updateSeoTags(_curContentTab);}catch(e){} // refresh canonical/hreflang for the new language
   try{var _cb=document.getElementById("sb-cap-lbl");if(_cb)_cb.textContent=plL("Capturer un incident","Capture incident","Capturar incidente");}catch(e){}
   // Mobile profile panel labels (were hardcoded PT)
