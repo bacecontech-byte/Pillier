@@ -484,7 +484,7 @@ body.light-mode .pg-win{box-shadow:0 24px 60px rgba(16,34,43,0.10);}
 .mk-fl{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--border);padding-top:18px;}
 .mk-fl .fl{display:flex;gap:9px;font-size:13px;color:var(--text);}
 .mk-fl .fl i{color:#2cbeff;flex-shrink:0;font-size:16px;}
-.mk-res{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.mk-res{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
 @media(max-width:1180px){.mk-res{grid-template-columns:repeat(2,1fr);}}
 .mk-res-card{background:var(--navy2);border:1px solid var(--border);border-radius:16px;padding:24px;cursor:pointer;transition:border-color .15s,transform .15s;display:flex;flex-direction:column;}
 .mk-res-card:hover{border-color:rgba(44,190,255,0.28);transform:translateY(-2px);}
@@ -2663,10 +2663,31 @@ body.light-mode #ts-modal .ts-card{background:#fff;color:#10222b;border-color:rg
         </div>
         <!-- Report 5 -->
         <div class="mk-res-card" onclick="openResForm(5)">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;"><div class="mk-res-ico" style="margin-bottom:0;"><i class="ti ti-file-certificate"></i></div><span style="font-size:9px;font-weight:700;color:#4ade80;background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.4);border-radius:5px;padding:2px 7px;text-transform:uppercase;letter-spacing:0.05em;" id="mkr-new">New</span></div>
+          <div class="mk-res-ico"><i class="ti ti-file-certificate"></i></div>
           <div style="font-size:10px;color:#2cbeff;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;" id="rp-cat-5">Conformidade e Defesa Contratual</div>
           <h3 style="font-family:var(--font-d);font-size:16px;font-weight:700;color:var(--white);line-height:1.35;margin:0 0 10px;" id="rp-title-5">RDO Automatizado: Quem Não Registra, Não Prova</h3>
           <div style="font-size:12px;color:var(--text3);margin-top:auto;" id="res-meta-5">PDF · 7 páginas · Download gratuito</div>
+        </div>
+        <!-- Report 6 -->
+        <div class="mk-res-card" onclick="openResForm(6)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;"><div class="mk-res-ico" style="margin-bottom:0;"><i class="ti ti-receipt-tax"></i></div><span style="font-size:9px;font-weight:700;color:#4ade80;background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.4);border-radius:5px;padding:2px 7px;text-transform:uppercase;letter-spacing:0.05em;" class="mkr-new">New</span></div>
+          <div style="font-size:10px;color:#2cbeff;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;" id="rp-cat-6">Gestão Financeira de Obras</div>
+          <h3 style="font-family:var(--font-d);font-size:16px;font-weight:700;color:var(--white);line-height:1.35;margin:0 0 10px;" id="rp-title-6">Fechamento em Tempo Real: Na Reforma Tributária, Despesa Sem Nota É Imposto Perdido</h3>
+          <div style="font-size:12px;color:var(--text3);margin-top:auto;" id="res-meta-6">PDF · 7 páginas · Download gratuito</div>
+        </div>
+        <!-- Report 7 -->
+        <div class="mk-res-card" onclick="openResForm(7)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;"><div class="mk-res-ico" style="margin-bottom:0;"><i class="ti ti-brain"></i></div><span style="font-size:9px;font-weight:700;color:#4ade80;background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.4);border-radius:5px;padding:2px 7px;text-transform:uppercase;letter-spacing:0.05em;" class="mkr-new">New</span></div>
+          <div style="font-size:10px;color:#2cbeff;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;" id="rp-cat-7">Gestão do Conhecimento em Obras</div>
+          <h3 style="font-family:var(--font-d);font-size:16px;font-weight:700;color:var(--white);line-height:1.35;margin:0 0 10px;" id="rp-title-7">Memória da Empresa: O Erro Que Sua Construtora Já Pagou Duas Vezes</h3>
+          <div style="font-size:12px;color:var(--text3);margin-top:auto;" id="res-meta-7">PDF · 7 páginas · Download gratuito</div>
+        </div>
+        <!-- Report 8 -->
+        <div class="mk-res-card" onclick="openResForm(8)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;"><div class="mk-res-ico" style="margin-bottom:0;"><i class="ti ti-shield-check"></i></div><span style="font-size:9px;font-weight:700;color:#4ade80;background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.4);border-radius:5px;padding:2px 7px;text-transform:uppercase;letter-spacing:0.05em;" class="mkr-new">New</span></div>
+          <div style="font-size:10px;color:#2cbeff;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;" id="rp-cat-8">Prova Digital e Defesa Contratual</div>
+          <h3 style="font-family:var(--font-d);font-size:16px;font-weight:700;color:var(--white);line-height:1.35;margin:0 0 10px;" id="rp-title-8">RDO Digital e Valor Probatório: O Registro Que Resiste à Perícia</h3>
+          <div style="font-size:12px;color:var(--text3);margin-top:auto;" id="res-meta-8">PDF · 7 páginas · Download gratuito</div>
         </div>
       </div>
       <!-- Lead form -->
@@ -4559,9 +4580,10 @@ var _EBOOK_SLUGS={'1':1,'incidentes':1,'incidentes-criticos':1,'incidents':1,'ri
                   '2':2,'roi':2,'ia':2,'ia-preditiva':2,'maturidade':2,
                   '3':3,'financeiro':3,'financas':3,'financial':3,'microcompras':3,
                   '4':4,'memoria':4,'memoria-da-obra':4,'memory':4,'conhecimento':4,'knowledge':4,
-                  '5':5,'rdo':5,'rdo-automatizado':5,'conformidade':5,'compliance':5};
+                  '5':5,'rdo':5,'rdo-automatizado':5,'conformidade':5,'compliance':5,
+                  '6':6,'fechamento':6,'fechamento-tempo-real':6,'reforma-tributaria':6,'tempo-real':6,'7':7,'memoria-da-empresa':7,'empresa':7,'memoria-empresa':7,'8':8,'rdo-digital':8,'valor-probatorio':8,'prova':8,'prova-digital':8};
 // Canonical slug written to the address bar when a report is opened.
-var _EBOOK_CANON={1:'incidentes',2:'roi',3:'financeiro',4:'memoria',5:'rdo'};
+var _EBOOK_CANON={1:'incidentes',2:'roi',3:'financeiro',4:'memoria',5:'rdo',6:'fechamento',7:'memoria-da-empresa',8:'rdo-digital'};
 function _ebookPath(id){return (_landPaths()[3]||'/recursos')+'/'+(_EBOOK_CANON[id]||_EBOOK_CANON[1]);}
 function _ebookFromPath(p){
   var seg=String(p||'').toLowerCase().replace(/\/+$/,'').split('/').filter(Boolean);
@@ -4848,7 +4870,7 @@ var SOL_CONTENT={
 var _resLang='pt';
 var _resReportId=1;
 // Local PT ebook files (hosted in the repo, served by Vercel)
-var _resFiles={1:'/reports/Pillier_Gestao_Incidentes_Criticos_Ebook_PT.pdf',2:'/reports/Pillier_AI_Ebook_PT.pdf',3:'/reports/Pillier_Financeiro_Ebook_PT.pdf',4:'/reports/Pillier_Memoria_da_Obra_Ebook_PT.pdf',5:'/reports/Pillier_RDO_Automatizado_Ebook_PT.pdf'};
+var _resFiles={1:'/reports/Pillier_Gestao_Incidentes_Criticos_Ebook_PT.pdf',2:'/reports/Pillier_AI_Ebook_PT.pdf',3:'/reports/Pillier_Financeiro_Ebook_PT.pdf',4:'/reports/Pillier_Memoria_da_Obra_Ebook_PT.pdf',5:'/reports/Pillier_RDO_Automatizado_Ebook_PT.pdf',6:'/reports/Pillier_Fechamento_Tempo_Real_Ebook_PT.pdf',7:'/reports/Pillier_Memoria_da_Empresa_Ebook_PT.pdf',8:'/reports/Pillier_RDO_Digital_Valor_Probatorio_Ebook_PT.pdf'};
 // Send a resources lead to the server (stores in Supabase + emails the team).
 // Fire-and-forget: failures never block the visitor's download.
 function _sendLead(p){try{fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)}).catch(function(){});}catch(_e){}}
@@ -4929,9 +4951,9 @@ var _leadLang='pt';
 var _leadReportId=1;
 function showLeadForm(id){_leadReportId=id;var f=document.getElementById('lead-form');if(f)f.style.display=f.style.display==='none'?'block':'none';if(f&&f.style.display==='block'){setLeadLang('pt');}}
 function _resTx(l){
-  if(l==='pt')return{header:'Pillier Pesquisa',sub:'Relatórios e análises para líderes da construção civil.',cat1:'GESTÃO DE INCIDENTES CRÍTICOS',t1:'Gestão de Incidentes Críticos: O Acidente Grave Sempre Avisa Antes',dl:'PDF · 7 páginas · Download gratuito',cat2:'MODELO DE MATURIDADE',t2:'Do Papel à IA Preditiva: O ROI do Registro Automatizado em Canteiros',soon:'PDF · 7 páginas · Download gratuito',cat3:'GESTÃO FINANCEIRA DE OBRAS',t3:'Controle Financeiro no Canteiro: O Fim do Ponto Cego das Microcompras',dl3:'PDF · 7 páginas · Download gratuito',cat4:'GESTÃO DO CONHECIMENTO EM OBRAS',t4:'Memória da Obra: Quando o Engenheiro Sai, a Obra Esquece',cat5:'CONFORMIDADE E DEFESA CONTRATUAL',t5:'RDO Automatizado: Quem Não Registra, Não Prova',formTitle:'Baixar o relatório completo',name:'Nome',email:'E-mail',company:'Empresa',btn:'Baixar Relatório'};
-  if(l==='fr')return{header:'Pillier Recherche',sub:'Rapports et analyses pour les leaders de la construction.',cat1:'GESTION DES INCIDENTS CRITIQUES',t1:"Gestion des Incidents Critiques : L'Accident Grave Prévient Toujours Avant",dl:'PDF · 7 pages · Téléchargement gratuit',cat2:'MODÈLE DE MATURITÉ',t2:"Du Papier à l'IA Prédictive : Le ROI de l'Enregistrement Automatisé sur Chantier",soon:'PDF · 7 pages · Téléchargement gratuit',cat3:'GESTION FINANCIÈRE DE CHANTIER',t3:"Contrôle Financier sur le Chantier : La Fin de l'Angle Mort des Micro-Achats",dl3:'PDF · 7 pages · Téléchargement gratuit',cat4:'GESTION DES CONNAISSANCES EN CHANTIER',t4:"La Mémoire du Chantier : Quand l'Ingénieur Part, le Chantier Oublie",cat5:'CONFORMITÉ ET DÉFENSE CONTRACTUELLE',t5:"Rapport Journalier Automatisé : Ce Qui N'est Pas Consigné Ne Se Prouve Pas",formTitle:'Télécharger le rapport complet',name:'Nom',email:'E-mail',company:'Entreprise',btn:'Télécharger le Rapport'};
-  return{header:'Pillier Research',sub:'Reports and insights for construction leaders.',cat1:'CRITICAL INCIDENT MANAGEMENT',t1:'Critical Incident Management: Serious Accidents Always Warn You First',dl:'PDF · 7 pages · Free download',cat2:'MATURITY MODEL',t2:'From Paper to Predictive AI: The ROI of Automated Site Logging',soon:'PDF · 7 pages · Free download',cat3:'CONSTRUCTION FINANCIAL CONTROL',t3:'Financial Control on the Jobsite: Closing the Micro-Procurement Blind Spot',dl3:'PDF · 7 pages · Free download',cat4:'KNOWLEDGE MANAGEMENT IN CONSTRUCTION',t4:'Site Memory: When the Engineer Leaves, the Project Forgets',cat5:'COMPLIANCE & CONTRACT DEFENSE',t5:"Automated Daily Reports: If It Isn't Logged, It Can't Be Proven",formTitle:'Download the full report',name:'Name',email:'Email',company:'Company',btn:'Download Report'};
+  if(l==='pt')return{header:'Pillier Pesquisa',sub:'Relatórios e análises para líderes da construção civil.',cat1:'GESTÃO DE INCIDENTES CRÍTICOS',t1:'Gestão de Incidentes Críticos: O Acidente Grave Sempre Avisa Antes',dl:'PDF · 7 páginas · Download gratuito',cat2:'MODELO DE MATURIDADE',t2:'Do Papel à IA Preditiva: O ROI do Registro Automatizado em Canteiros',soon:'PDF · 7 páginas · Download gratuito',cat3:'GESTÃO FINANCEIRA DE OBRAS',t3:'Controle Financeiro no Canteiro: O Fim do Ponto Cego das Microcompras',dl3:'PDF · 7 páginas · Download gratuito',cat4:'GESTÃO DO CONHECIMENTO EM OBRAS',t4:'Memória da Obra: Quando o Engenheiro Sai, a Obra Esquece',cat5:'CONFORMIDADE E DEFESA CONTRATUAL',t5:'RDO Automatizado: Quem Não Registra, Não Prova',cat6:"GESTÃO FINANCEIRA DE OBRAS",t6:"Fechamento em Tempo Real: Na Reforma Tributária, Despesa Sem Nota É Imposto Perdido",cat7:"GESTÃO DO CONHECIMENTO EM OBRAS",t7:"Memória da Empresa: O Erro Que Sua Construtora Já Pagou Duas Vezes",cat8:"PROVA DIGITAL E DEFESA CONTRATUAL",t8:"RDO Digital e Valor Probatório: O Registro Que Resiste à Perícia",formTitle:'Baixar o relatório completo',name:'Nome',email:'E-mail',company:'Empresa',btn:'Baixar Relatório'};
+  if(l==='fr')return{header:'Pillier Recherche',sub:'Rapports et analyses pour les leaders de la construction.',cat1:'GESTION DES INCIDENTS CRITIQUES',t1:"Gestion des Incidents Critiques : L'Accident Grave Prévient Toujours Avant",dl:'PDF · 7 pages · Téléchargement gratuit',cat2:'MODÈLE DE MATURITÉ',t2:"Du Papier à l'IA Prédictive : Le ROI de l'Enregistrement Automatisé sur Chantier",soon:'PDF · 7 pages · Téléchargement gratuit',cat3:'GESTION FINANCIÈRE DE CHANTIER',t3:"Contrôle Financier sur le Chantier : La Fin de l'Angle Mort des Micro-Achats",dl3:'PDF · 7 pages · Téléchargement gratuit',cat4:'GESTION DES CONNAISSANCES EN CHANTIER',t4:"La Mémoire du Chantier : Quand l'Ingénieur Part, le Chantier Oublie",cat5:'CONFORMITÉ ET DÉFENSE CONTRACTUELLE',t5:"Rapport Journalier Automatisé : Ce Qui N'est Pas Consigné Ne Se Prouve Pas",cat6:"GESTION FINANCIÈRE DE CHANTIER",t6:"Clôture en Temps Réel : Avec la Réforme Fiscale, une Dépense Sans Facture Est un Impôt Perdu",cat7:"GESTION DES CONNAISSANCES EN CHANTIER",t7:"La Mémoire de l'Entreprise : L'Erreur Que Votre Entreprise a Déjà Payée Deux Fois",cat8:"PREUVE NUMÉRIQUE ET DÉFENSE CONTRACTUELLE",t8:"Rapport Journalier Numérique et Valeur Probante : Le Registre Qui Résiste à l'Expertise",formTitle:'Télécharger le rapport complet',name:'Nom',email:'E-mail',company:'Entreprise',btn:'Télécharger le Rapport'};
+  return{header:'Pillier Research',sub:'Reports and insights for construction leaders.',cat1:'CRITICAL INCIDENT MANAGEMENT',t1:'Critical Incident Management: Serious Accidents Always Warn You First',dl:'PDF · 7 pages · Free download',cat2:'MATURITY MODEL',t2:'From Paper to Predictive AI: The ROI of Automated Site Logging',soon:'PDF · 7 pages · Free download',cat3:'CONSTRUCTION FINANCIAL CONTROL',t3:'Financial Control on the Jobsite: Closing the Micro-Procurement Blind Spot',dl3:'PDF · 7 pages · Free download',cat4:'KNOWLEDGE MANAGEMENT IN CONSTRUCTION',t4:'Site Memory: When the Engineer Leaves, the Project Forgets',cat5:'COMPLIANCE & CONTRACT DEFENSE',t5:"Automated Daily Reports: If It Isn't Logged, It Can't Be Proven",cat6:"CONSTRUCTION FINANCIAL CONTROL",t6:"Real-Time Close: Under Brazil's Tax Reform, an Expense Without an Invoice Is Lost Tax",cat7:"KNOWLEDGE MANAGEMENT IN CONSTRUCTION",t7:"Company Memory: The Mistake Your Firm Has Already Paid For Twice",cat8:"DIGITAL EVIDENCE & CONTRACT DEFENSE",t8:"Digital Daily Reports as Evidence: The Record That Holds Up to Expert Review",formTitle:'Download the full report',name:'Name',email:'Email',company:'Company',btn:'Download Report'};
 }
 function translateResources(l){
   var tx=_resTx(l);
@@ -4956,6 +4978,15 @@ function translateResources(l){
   setT('rp-cat-5',tx.cat5);
   setT('rp-title-5',tx.t5);
   setT('res-meta-5',tx.dl3);
+  setT('rp-cat-6',tx.cat6);
+  setT('rp-title-6',tx.t6);
+  setT('res-meta-6',tx.dl3);
+  setT('rp-cat-7',tx.cat7);
+  setT('rp-title-7',tx.t7);
+  setT('res-meta-7',tx.dl3);
+  setT('rp-cat-8',tx.cat8);
+  setT('rp-title-8',tx.t8);
+  setT('res-meta-8',tx.dl3);
   setT('res-form-title',tx.formTitle);
   setP('res-f-name',tx.name);
   setP('res-f-email',tx.email);
@@ -13588,7 +13619,7 @@ function translateMarketingExtras(){
   setT('plan-term-yr',L('Annual','Annuel','Anual'));
   // --- Resources ---
   setT('mkr-title',L('Field-tested thinking for construction leaders','Des analyses éprouvées sur le terrain pour les leaders de la construction','Análises testadas em campo para líderes da construção'));
-  setT('mkr-new',L('New','Nouveau','Novo'));
+  document.querySelectorAll('.mkr-new').forEach(function(b){b.textContent=L('New','Nouveau','Novo');});
 }
 // Landing "Planos" dropdown — rendered from JS so it follows language + currency.
 function renderPricingDropdown(){
