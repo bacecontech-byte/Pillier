@@ -21,6 +21,47 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<!-- Home scroll reveal (preview: ?flow=1 turns it on for the visit, ?flow=0 off). Set before first paint so nothing flashes. -->
+<script>try{var _fq=new URLSearchParams(location.search);if(_fq.has("flow"))sessionStorage.setItem("pillier_flow",_fq.get("flow")==="0"?"0":"1");if(sessionStorage.getItem("pillier_flow")==="1"&&!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("flow");}catch(e){}</script>
+<style>
+/* Home scroll reveal: each block below starts hidden + offset; when ~22% of it is on screen it gets .in and its parts ease in */
+html.flow #content-panel-0{overflow-x:clip;}
+html.flow #content-panel-0 :is(#about-hero-sub,.hero-ask,.about-hero-grid>div:last-child,.mk-strip-lbl,.mk-norm,.mk-vp-text,.mk-device,.mk-stat,#about-tagline,.mk-section>[data-pg],.mk-cta,.mk-cta>*){transition:opacity .9s cubic-bezier(0.16,1,0.3,1) var(--d,0ms),transform 1.15s cubic-bezier(0.16,1,0.3,1) var(--d,0ms),border-color .15s !important;}
+html.flow #content-panel-0 .about-hero-grid:not(.in) :is(#about-hero-sub,.hero-ask,.about-hero-grid>div:last-child),
+html.flow #content-panel-0 .mk-strip:not(.in) :is(.mk-strip-lbl,.mk-norm),
+html.flow #content-panel-0 .mk-vp:not(.in) :is(.mk-vp-text,.mk-device),
+html.flow #content-panel-0 .mk-stats:not(.in) .mk-stat,
+html.flow #content-panel-0 #about-tagline:not(.in),
+html.flow #content-panel-0 .mk-section:not(.in)>[data-pg],
+html.flow #content-panel-0 .mk-cta:not(.in),html.flow #content-panel-0 .mk-cta:not(.in)>*{opacity:0;transform:var(--from,translate3d(0,72px,0) scale(.97));will-change:transform,opacity;}
+html.flow #content-panel-0 #about-hero-sub{--d:480ms;}
+html.flow #content-panel-0 .hero-ask{--d:620ms;--from:translate3d(-96px,0,0);}
+html.flow #content-panel-0 .about-hero-grid>div:last-child{--d:220ms;--from:translate3d(96px,0,0);}
+html.flow #content-panel-0 .mk-strip-lbl{--from:translate3d(0,-56px,0);}
+html.flow #content-panel-0 .mk-norm{--from:translate3d(96px,0,0);}
+html.flow #content-panel-0 .mk-norm:nth-child(1){--d:210ms}html.flow #content-panel-0 .mk-norm:nth-child(2){--d:300ms}html.flow #content-panel-0 .mk-norm:nth-child(3){--d:390ms}html.flow #content-panel-0 .mk-norm:nth-child(4){--d:480ms}html.flow #content-panel-0 .mk-norm:nth-child(5){--d:570ms}
+html.flow #content-panel-0 .mk-vp .mk-vp-text{--from:translate3d(-96px,0,0);}
+html.flow #content-panel-0 .mk-vp.rev .mk-vp-text{--from:translate3d(96px,0,0);}
+html.flow #content-panel-0 .mk-vp .mk-device{--d:160ms;--from:translate3d(96px,32px,0) rotate(4deg) scale(.92);}
+html.flow #content-panel-0 .mk-vp.rev .mk-device{--from:translate3d(-96px,32px,0) rotate(-4deg) scale(.92);}
+html.flow #content-panel-0 .mk-stat:nth-child(2n){--from:translate3d(0,-56px,0);}
+html.flow #content-panel-0 .mk-stat:nth-child(2){--d:110ms}html.flow #content-panel-0 .mk-stat:nth-child(3){--d:220ms}html.flow #content-panel-0 .mk-stat:nth-child(4){--d:330ms}
+html.flow #content-panel-0 #about-tagline{--d:120ms;}
+html.flow #content-panel-0 .mk-section>[data-pg],html.flow #content-panel-0 .mk-cta{--from:translate3d(0,56px,0) scale(.9);}
+html.flow #content-panel-0 .mk-cta>h2{--d:160ms;--from:translate3d(-96px,0,0);}
+html.flow #content-panel-0 .mk-cta>p{--d:260ms;--from:translate3d(96px,0,0);}
+html.flow #content-panel-0 .mk-cta>.mk-cta-row{--d:380ms;}
+/* headline words */
+html.flow #content-panel-0 .fl-w{display:inline-block;transition:opacity .8s cubic-bezier(0.16,1,0.3,1) var(--d,0ms),transform 1s cubic-bezier(0.16,1,0.3,1) var(--d,0ms),filter .8s cubic-bezier(0.16,1,0.3,1) var(--d,0ms);}
+html.flow #content-panel-0 .about-hero-grid:not(.in) .fl-w{opacity:0;transform:translate3d(0,.6em,0);filter:blur(8px);}
+/* micro-interactions on the same trigger: bars grow, tags pop */
+html.flow #content-panel-0 .mk-bar{transform-origin:bottom;transition:transform 1.2s cubic-bezier(0.16,1,0.3,1) var(--d,0ms);}
+html.flow #content-panel-0 .mk-vp:not(.in) .mk-bar{transform:scaleY(0);}
+html.flow #content-panel-0 .mk-col:nth-child(1) .mk-bar{--d:490ms}html.flow #content-panel-0 .mk-col:nth-child(2) .mk-bar{--d:600ms}html.flow #content-panel-0 .mk-col:nth-child(3) .mk-bar{--d:710ms}html.flow #content-panel-0 .mk-col:nth-child(4) .mk-bar{--d:820ms}html.flow #content-panel-0 .mk-col:nth-child(5) .mk-bar{--d:930ms}
+html.flow #content-panel-0 .mk-device .mk-tag{transition:opacity .4s cubic-bezier(0.16,1,0.3,1) var(--d,0ms),transform .7s cubic-bezier(.34,1.56,.64,1) var(--d,0ms);}
+html.flow #content-panel-0 .mk-vp:not(.in) .mk-device .mk-tag{opacity:0;transform:scale(.55);}
+html.flow #content-panel-0 .mk-device .mk-tag:nth-child(1){--d:780ms}html.flow #content-panel-0 .mk-device .mk-tag:nth-child(2){--d:910ms}html.flow #content-panel-0 .mk-device .mk-tag:nth-child(3){--d:1040ms}
+</style>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{--navy:#10222b;--navy2:#16323b;--navy3:#1c3a44;--blue:#2cbeff;--blue2:#2cbeff;--blue-light:rgba(44,190,255,0.08);--white:#f0f0f5;--border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.1);--text:#d0d0da;--text2:#8a8a95;--text3:#6a6a75;--green:#4ade80;--orange:#fbbf24;--red:#f87171;--font-d:"Syne",sans-serif;--font-b:"DM Sans",sans-serif;}
@@ -14627,78 +14668,34 @@ function cloudSiteName(proj){
 </div>
 
 <script>
-/* ══ Scroll flow (preview: add ?flow=1 to the URL) ═══════════════════════════
-   Every Home block reveals as it enters the screen — mixing vertical (rise /
-   drop) and horizontal (slide left / right) — and keeps moving while you scroll
-   (parallax + a horizontal drift on the norms strip). Re-plays when scrolling
-   back. Off for people who ask their system for reduced motion. */
+/* ══ Home scroll reveal (preview: ?flow=1) ════════════════════════════════════
+   The CSS in <head> keeps every Home block below the hero hidden and offset.
+   When ~22% of a block is on screen (or a third of the screen for tall blocks)
+   it gets .in and its parts ease in, staggered; bars grow, tags pop and the
+   stat numbers count up on the same trigger. A block that drops back below the
+   screen resets, so it plays again on the way down. */
 (function(){
-  var on=false;
-  try{var q=new URLSearchParams(location.search);if(q.has("flow"))sessionStorage.setItem("pillier_flow",q.get("flow")==="0"?"0":"1");on=sessionStorage.getItem("pillier_flow")==="1";}catch(e){}
-  if(!on)return;
-  if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)return;
-  var css=document.createElement("style");
-  css.textContent=[
-    ".fl{opacity:0;transition:opacity .85s cubic-bezier(.2,.7,.2,1),translate .95s cubic-bezier(.2,.7,.2,1),scale .95s cubic-bezier(.2,.7,.2,1),filter .85s ease;will-change:opacity,translate}",
-    ".fl.fl-up{translate:0 70px}.fl.fl-down{translate:0 -60px}.fl.fl-left{translate:-110px 0}.fl.fl-right{translate:110px 0}",
-    ".fl.fl-zoom{scale:.9;translate:0 40px}.fl.fl-blur{filter:blur(10px)}",
-    ".fl.in{opacity:1;translate:0 0;scale:1;filter:none}",
-    ".fl-w{display:inline-block}",
-    ".fl-bars .mk-bar{transform:scaleY(0);transform-origin:bottom;transition:transform 1s cubic-bezier(.2,.8,.2,1)}",
-    ".fl-bars.in .mk-bar{transform:scaleY(1)}",
-    ".fl-pop .mk-tag{scale:.6;opacity:0;transition:scale .5s cubic-bezier(.3,1.6,.5,1),opacity .4s}",
-    ".fl-pop.in .mk-tag{scale:1;opacity:1}",
-    ".fl-par{will-change:transform}",
-    "#content-panel-0{overflow-x:clip}"
-  ].join("\n");
-  document.head.appendChild(css);
-  var P=document.getElementById("content-panel-0");if(!P)return;
-  var items=[];
-  function mark(el,dir,delay,extra){if(!el)return;el.classList.add("fl","fl-"+dir);if(extra)extra.split(" ").forEach(function(c){el.classList.add(c);});if(delay)el.style.transitionDelay=delay+"ms";items.push(el);}
-  // Hero: headline words rise one by one, sub + ask slide in, twin image comes from the right
+  var root=document.documentElement;if(!root.classList.contains("flow"))return;
+  var P=document.getElementById("content-panel-0");
+  if(!P||!("IntersectionObserver" in window)){root.classList.remove("flow");return;}
+  // Headline words, staggered (re-split if the language switch rewrites the text)
   var h=document.getElementById("about-headline");
-  if(h&&!h._fl){h._fl=1;var words=h.textContent.trim().split(/\s+/);h.innerHTML=words.map(function(w){return "<span class='fl-w'>"+w.replace(/</g,"&lt;")+"</span>";}).join(" ");
-    h.querySelectorAll(".fl-w").forEach(function(w,i){mark(w,"up",80+i*70,"fl-blur");});}
-  mark(document.getElementById("about-hero-sub"),"up",420);
-  mark(P.querySelector(".hero-ask"),"left",560);
-  var heroImg=P.querySelector(".about-hero-grid img");if(heroImg){mark(heroImg.parentNode,"right",200);heroImg.classList.add("fl-par");heroImg.dataset.par="-0.10";}
-  // Norms strip: label drops, each norm slides in from the right, then the row drifts with scroll
-  mark(P.querySelector(".mk-strip-lbl"),"down",0);
-  P.querySelectorAll(".mk-norm").forEach(function(n,i){mark(n,"right",120+i*110);});
-  var row=P.querySelector(".mk-strip-row");if(row){row.classList.add("fl-par");row.dataset.parx="-0.18";}
-  // Value blocks: text and device come from opposite sides (alternating), charts grow, tags pop
-  P.querySelectorAll(".mk-vp").forEach(function(vp,k){
-    var rev=vp.classList.contains("rev"),t=vp.querySelector(".mk-vp-text"),d=vp.querySelector(".mk-device");
-    mark(t,rev?"right":"left",0);mark(d,rev?"left":"right",160,"fl-pop");
-    if(d){d.classList.add("fl-par");d.dataset.par=(k%2?"0.07":"-0.07");if(d.querySelector(".mk-chart"))d.classList.add("fl-bars");
-      d.querySelectorAll(".mk-bar").forEach(function(b,i){b.style.transitionDelay=(350+i*110)+"ms";});
-      d.querySelectorAll(".mk-tag").forEach(function(b,i){b.style.transitionDelay=(500+i*120)+"ms";});}
-  });
-  // Impact stats: rise one after another and count up; the row drifts sideways
-  P.querySelectorAll(".mk-stat").forEach(function(s,i){mark(s,i%2?"down":"up",i*120);var n=s.querySelector(".n");if(n){n.dataset.flTo=n.textContent;}});
-  var stats=P.querySelector(".mk-stats");if(stats){stats.classList.add("fl-par");stats.dataset.parx="0.08";}
-  mark(document.getElementById("about-tagline"),"up",500);
-  // Playground and final call-to-action
-  var pgw=P.querySelector("[data-pg]");if(pgw)mark(pgw.parentNode,"zoom",0);
-  var cta=P.querySelector(".mk-cta");if(cta){mark(cta,"up",0);cta.querySelectorAll("h2,p,.mk-cta-row").forEach(function(x,i){mark(x,i%2?"left":"right",150+i*140);});}
-  // Count-up for "70%", "3×", "100%", "0"
-  function countUp(n){var to=n.dataset.flTo||"",m=to.match(/^(\d+)(.*)$/);if(!m)return;var end=+m[1],suf=m[2],t0=performance.now();
-    (function step(t){var p=Math.min(1,(t-t0)/1100),e=1-Math.pow(1-p,3);n.textContent=Math.round(end*e)+suf;if(p<1)requestAnimationFrame(step);})(t0);}
-  // Reveal when entering, reset when fully out (so it plays again on the way back)
-  var io=new IntersectionObserver(function(es){es.forEach(function(x){
-    var el=x.target;
-    if(x.isIntersecting){el.classList.add("in");var n=el.querySelector&&el.querySelector(".n[data-fl-to]");if(n&&!el._cnt){el._cnt=1;countUp(n);}}
-    else if(x.boundingClientRect.top>window.innerHeight||x.boundingClientRect.bottom<0){el.classList.remove("in");el._cnt=0;}
-  });},{threshold:0.12,rootMargin:"0px 0px -6% 0px"});
-  items.forEach(function(el){io.observe(el);});
-  // Continuous motion while scrolling: vertical parallax + horizontal drift
-  var pars=[].slice.call(P.querySelectorAll(".fl-par")),tick=false;
-  function frame(){tick=false;if(P.offsetParent===null)return;var vh=window.innerHeight;
-    pars.forEach(function(el){var r=el.getBoundingClientRect();if(r.bottom<-200||r.top>vh+200)return;var c=(r.top+r.height/2-vh/2);
-      var y=el.dataset.par?(+el.dataset.par*c):0,xx=el.dataset.parx?(+el.dataset.parx*c):0;el.style.transform="translate3d("+xx.toFixed(1)+"px,"+y.toFixed(1)+"px,0)";});}
-  window.addEventListener("scroll",function(){if(!tick){tick=true;requestAnimationFrame(frame);}},{passive:true});
-  window.addEventListener("resize",frame);
-  setTimeout(frame,50);
+  function split(){if(!h||h.querySelector(".fl-w"))return;var words=h.textContent.trim().split(/\s+/);
+    h.innerHTML=words.map(function(w,i){return "<span class='fl-w' style='--d:"+(60+i*80)+"ms'>"+w.replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</span>";}).join(" ");}
+  split();if(h&&window.MutationObserver)new MutationObserver(split).observe(h,{childList:true,characterData:true});
+  var easeOut=function(t){return t>=1?1:1-Math.pow(2,-10*t);};
+  function countUp(n,delay){var to=n.dataset.flTo||(n.dataset.flTo=n.textContent),m=to.match(/^(\d+)(.*)$/);if(!m)return;
+    var end=+m[1],suf=m[2],t0=performance.now()+delay;n.textContent="0"+suf;cancelAnimationFrame(n._flR);
+    (function step(t){var p=Math.max(0,Math.min(1,(t-t0)/1400));n.textContent=Math.round(end*easeOut(p))+suf;if(p<1)n._flR=requestAnimationFrame(step);})(performance.now());}
+  var groups=[].slice.call(P.querySelectorAll(".about-hero-grid,.mk-strip,.mk-vp,.mk-stats,#about-tagline,.mk-cta"));
+  var pg=P.querySelector(".mk-section>[data-pg]");if(pg)groups.push(pg.parentNode);
+  var io=new IntersectionObserver(function(es){es.forEach(function(x){var el=x.target,vh=window.innerHeight;
+    if(x.isIntersecting&&(x.intersectionRatio>=.22||x.intersectionRect.height>=vh*.33)){
+      if(el.classList.contains("in"))return;el.classList.add("in");
+      el.querySelectorAll(".mk-stat .n").forEach(function(n,i){countUp(n,i*110);});}
+    else if(!x.isIntersecting&&x.boundingClientRect.top>=vh)el.classList.remove("in");
+  });},{threshold:[0,.1,.22,.35,.5],rootMargin:"0px 0px -6% 0px"});
+  groups.forEach(function(g){io.observe(g);});
 })();
 </script>
 </body>
