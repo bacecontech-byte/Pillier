@@ -14626,5 +14626,80 @@ function cloudSiteName(proj){
   </div>
 </div>
 
+<script>
+/* ══ Scroll flow (preview: add ?flow=1 to the URL) ═══════════════════════════
+   Every Home block reveals as it enters the screen — mixing vertical (rise /
+   drop) and horizontal (slide left / right) — and keeps moving while you scroll
+   (parallax + a horizontal drift on the norms strip). Re-plays when scrolling
+   back. Off for people who ask their system for reduced motion. */
+(function(){
+  var on=false;
+  try{var q=new URLSearchParams(location.search);if(q.has("flow"))sessionStorage.setItem("pillier_flow",q.get("flow")==="0"?"0":"1");on=sessionStorage.getItem("pillier_flow")==="1";}catch(e){}
+  if(!on)return;
+  if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  var css=document.createElement("style");
+  css.textContent=[
+    ".fl{opacity:0;transition:opacity .85s cubic-bezier(.2,.7,.2,1),translate .95s cubic-bezier(.2,.7,.2,1),scale .95s cubic-bezier(.2,.7,.2,1),filter .85s ease;will-change:opacity,translate}",
+    ".fl.fl-up{translate:0 70px}.fl.fl-down{translate:0 -60px}.fl.fl-left{translate:-110px 0}.fl.fl-right{translate:110px 0}",
+    ".fl.fl-zoom{scale:.9;translate:0 40px}.fl.fl-blur{filter:blur(10px)}",
+    ".fl.in{opacity:1;translate:0 0;scale:1;filter:none}",
+    ".fl-w{display:inline-block}",
+    ".fl-bars .mk-bar{transform:scaleY(0);transform-origin:bottom;transition:transform 1s cubic-bezier(.2,.8,.2,1)}",
+    ".fl-bars.in .mk-bar{transform:scaleY(1)}",
+    ".fl-pop .mk-tag{scale:.6;opacity:0;transition:scale .5s cubic-bezier(.3,1.6,.5,1),opacity .4s}",
+    ".fl-pop.in .mk-tag{scale:1;opacity:1}",
+    ".fl-par{will-change:transform}",
+    "#content-panel-0{overflow-x:clip}"
+  ].join("\n");
+  document.head.appendChild(css);
+  var P=document.getElementById("content-panel-0");if(!P)return;
+  var items=[];
+  function mark(el,dir,delay,extra){if(!el)return;el.classList.add("fl","fl-"+dir);if(extra)extra.split(" ").forEach(function(c){el.classList.add(c);});if(delay)el.style.transitionDelay=delay+"ms";items.push(el);}
+  // Hero: headline words rise one by one, sub + ask slide in, twin image comes from the right
+  var h=document.getElementById("about-headline");
+  if(h&&!h._fl){h._fl=1;var words=h.textContent.trim().split(/\s+/);h.innerHTML=words.map(function(w){return "<span class='fl-w'>"+w.replace(/</g,"&lt;")+"</span>";}).join(" ");
+    h.querySelectorAll(".fl-w").forEach(function(w,i){mark(w,"up",80+i*70,"fl-blur");});}
+  mark(document.getElementById("about-hero-sub"),"up",420);
+  mark(P.querySelector(".hero-ask"),"left",560);
+  var heroImg=P.querySelector(".about-hero-grid img");if(heroImg){mark(heroImg.parentNode,"right",200);heroImg.classList.add("fl-par");heroImg.dataset.par="-0.10";}
+  // Norms strip: label drops, each norm slides in from the right, then the row drifts with scroll
+  mark(P.querySelector(".mk-strip-lbl"),"down",0);
+  P.querySelectorAll(".mk-norm").forEach(function(n,i){mark(n,"right",120+i*110);});
+  var row=P.querySelector(".mk-strip-row");if(row){row.classList.add("fl-par");row.dataset.parx="-0.18";}
+  // Value blocks: text and device come from opposite sides (alternating), charts grow, tags pop
+  P.querySelectorAll(".mk-vp").forEach(function(vp,k){
+    var rev=vp.classList.contains("rev"),t=vp.querySelector(".mk-vp-text"),d=vp.querySelector(".mk-device");
+    mark(t,rev?"right":"left",0);mark(d,rev?"left":"right",160,"fl-pop");
+    if(d){d.classList.add("fl-par");d.dataset.par=(k%2?"0.07":"-0.07");if(d.querySelector(".mk-chart"))d.classList.add("fl-bars");
+      d.querySelectorAll(".mk-bar").forEach(function(b,i){b.style.transitionDelay=(350+i*110)+"ms";});
+      d.querySelectorAll(".mk-tag").forEach(function(b,i){b.style.transitionDelay=(500+i*120)+"ms";});}
+  });
+  // Impact stats: rise one after another and count up; the row drifts sideways
+  P.querySelectorAll(".mk-stat").forEach(function(s,i){mark(s,i%2?"down":"up",i*120);var n=s.querySelector(".n");if(n){n.dataset.flTo=n.textContent;}});
+  var stats=P.querySelector(".mk-stats");if(stats){stats.classList.add("fl-par");stats.dataset.parx="0.08";}
+  mark(document.getElementById("about-tagline"),"up",500);
+  // Playground and final call-to-action
+  var pgw=P.querySelector("[data-pg]");if(pgw)mark(pgw.parentNode,"zoom",0);
+  var cta=P.querySelector(".mk-cta");if(cta){mark(cta,"up",0);cta.querySelectorAll("h2,p,.mk-cta-row").forEach(function(x,i){mark(x,i%2?"left":"right",150+i*140);});}
+  // Count-up for "70%", "3×", "100%", "0"
+  function countUp(n){var to=n.dataset.flTo||"",m=to.match(/^(\d+)(.*)$/);if(!m)return;var end=+m[1],suf=m[2],t0=performance.now();
+    (function step(t){var p=Math.min(1,(t-t0)/1100),e=1-Math.pow(1-p,3);n.textContent=Math.round(end*e)+suf;if(p<1)requestAnimationFrame(step);})(t0);}
+  // Reveal when entering, reset when fully out (so it plays again on the way back)
+  var io=new IntersectionObserver(function(es){es.forEach(function(x){
+    var el=x.target;
+    if(x.isIntersecting){el.classList.add("in");var n=el.querySelector&&el.querySelector(".n[data-fl-to]");if(n&&!el._cnt){el._cnt=1;countUp(n);}}
+    else if(x.boundingClientRect.top>window.innerHeight||x.boundingClientRect.bottom<0){el.classList.remove("in");el._cnt=0;}
+  });},{threshold:0.12,rootMargin:"0px 0px -6% 0px"});
+  items.forEach(function(el){io.observe(el);});
+  // Continuous motion while scrolling: vertical parallax + horizontal drift
+  var pars=[].slice.call(P.querySelectorAll(".fl-par")),tick=false;
+  function frame(){tick=false;if(P.offsetParent===null)return;var vh=window.innerHeight;
+    pars.forEach(function(el){var r=el.getBoundingClientRect();if(r.bottom<-200||r.top>vh+200)return;var c=(r.top+r.height/2-vh/2);
+      var y=el.dataset.par?(+el.dataset.par*c):0,xx=el.dataset.parx?(+el.dataset.parx*c):0;el.style.transform="translate3d("+xx.toFixed(1)+"px,"+y.toFixed(1)+"px,0)";});}
+  window.addEventListener("scroll",function(){if(!tick){tick=true;requestAnimationFrame(frame);}},{passive:true});
+  window.addEventListener("resize",frame);
+  setTimeout(frame,50);
+})();
+</script>
 </body>
 </html>
