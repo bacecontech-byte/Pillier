@@ -38,11 +38,45 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method === 'POST') return handleLead(req, res);
 
+  // ---- GET /sitemap.xml (rewritten here): every public page + every ebook, in PT / EN / FR ----
+  if (req.query && req.query.sitemap) return handleSitemap(req, res);
+
   // ---- GET: public frontend config ----
   res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
   res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=300');
   const turnstileSiteKey = (process.env.TURNSTILE_SITE_KEY || '').replace(/[^\w-]/g, '');
   return res.status(200).send('window.PILLIER_CONFIG = { turnstileSiteKey: "' + turnstileSiteKey + '" };');
+}
+
+// ---- Sitemap: built from the ebook catalog inside index.html, so a newly published ebook
+// is listed automatically (no list to maintain here). ----
+async function handleSitemap(req, res) {
+  const base = 'https://pillier.com.br';
+  const pages = [
+    { pt: '/', en: '/en', fr: '/fr', pr: '1.0' },
+    { pt: '/produto', en: '/en/product', fr: '/fr/produit', pr: '0.9' },
+    { pt: '/planos', en: '/en/plans', fr: '/fr/plans', pr: '0.8' },
+    { pt: '/recursos', en: '/en/resources', fr: '/fr/ressources', pr: '0.8' },
+  ];
+  try {
+    const host = req.headers['x-forwarded-host'] || req.headers.host || 'pillier.com.br';
+    const r = await fetch('https://' + host + '/index.html');
+    const html = r.ok ? await r.text() : '';
+    const block = html.slice(html.indexOf('var RES_EBOOKS'), html.indexOf('];', html.indexOf('var RES_EBOOKS')));
+    const seen = new Set();
+    for (const m of block.matchAll(/\{id:\d+,slug:"([a-z0-9-]+)"/g)) {
+      if (seen.has(m[1])) continue; seen.add(m[1]);
+      pages.push({ pt: '/recursos/' + m[1], en: '/en/resources/' + m[1], fr: '/fr/ressources/' + m[1], pr: '0.7' });
+    }
+  } catch (e) { /* ebooks left out this time; the main pages are still listed */ }
+  const alt = (p) => ['pt-BR:pt', 'en:en', 'fr:fr', 'x-default:pt']
+    .map((x) => { const [hl, k] = x.split(':'); return '<xhtml:link rel="alternate" hreflang="' + hl + '" href="' + base + p[k] + '"/>'; }).join('');
+  const urls = [];
+  for (const p of pages) for (const k of ['pt', 'en', 'fr'])
+    urls.push('<url><loc>' + base + p[k] + '</loc>' + alt(p) + '<priority>' + (k === 'pt' ? p.pr : (p.pr - 0.2).toFixed(1)) + '</priority></url>');
+  res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=3600');
+  return res.status(200).send('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' + urls.join('\n') + '\n</urlset>\n');
 }
 
 // ---- POST: resources download lead ----

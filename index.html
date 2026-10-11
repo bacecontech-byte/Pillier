@@ -1,14 +1,34 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Pillier</title>
+<title>Pillier: RDO digital e gestão de obra com IA</title>
+<meta name="description" content="Capture fotos e voz no canteiro e a Pillier gera o RDO, registra incidentes com a NBR aplicável e controla os custos da obra. Teste grátis.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<!-- Link previews (WhatsApp, LinkedIn, Google) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pillier">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="fr_FR">
+<meta property="og:title" content="Pillier: RDO digital e gestão de obra com IA">
+<meta property="og:description" content="Capture fotos e voz no canteiro e a Pillier gera o RDO, registra incidentes com a NBR aplicável e controla os custos da obra. Teste grátis.">
+<meta property="og:url" content="https://pillier.com.br/">
+<meta property="og:image" content="https://pillier.com.br/assets/og-pillier.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pillier: RDO digital e gestão de obra com IA">
+<meta name="twitter:description" content="Capture fotos e voz no canteiro e a Pillier gera o RDO, registra incidentes com a NBR aplicável e controla os custos da obra. Teste grátis.">
+<meta name="twitter:image" content="https://pillier.com.br/assets/og-pillier.jpg">
+<!-- Structured data for Google: company, website, software + price -->
+<script type="application/ld+json">[{"@context": "https://schema.org", "@type": "Organization", "name": "Pillier", "url": "https://pillier.com.br/", "logo": "https://pillier.com.br/icon-512.png"}, {"@context": "https://schema.org", "@type": "WebSite", "name": "Pillier", "url": "https://pillier.com.br/", "inLanguage": ["pt-BR", "en", "fr"]}, {"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Pillier", "applicationCategory": "BusinessApplication", "applicationSubCategory": "Gestão de obras", "operatingSystem": "Web, Android, iOS", "url": "https://pillier.com.br/", "inLanguage": "pt-BR", "description": "Capture fotos e voz no canteiro e a Pillier gera o RDO, registra incidentes com a NBR aplicável e controla os custos da obra. Teste grátis.", "offers": {"@type": "Offer", "price": "299", "priceCurrency": "BRL", "url": "https://pillier.com.br/planos"}}]</script>
 <!-- SEO: canonical + hreflang language alternates (kept in sync per tab/language by JS) -->
 <link rel="canonical" href="https://pillier.com.br/">
 <link rel="alternate" hreflang="pt-BR" href="https://pillier.com.br/">
-<link rel="alternate" hreflang="en" href="https://pillier.com.br/">
-<link rel="alternate" hreflang="fr" href="https://pillier.com.br/">
+<link rel="alternate" hreflang="en" href="https://pillier.com.br/en">
+<link rel="alternate" hreflang="fr" href="https://pillier.com.br/fr">
 <link rel="alternate" hreflang="x-default" href="https://pillier.com.br/">
 <!-- Security: DOMPurify (XSS protection for innerHTML) -->
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
@@ -3526,7 +3546,12 @@ body.light-mode .set-toggle{background:rgba(0,0,0,0.18);}
 var SB_URL="https://rzdoeehbpdgjxtfbbmwp.supabase.co";
 var SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ6ZG9lZWhicGRnanh0ZmJibXdwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzNjk0NzksImV4cCI6MjA5Njk0NTQ3OX0.XcysRlpgefqmw_zh7osXwqgL5-G71kFH-Uv-HuINLow";
 var GROQ="server";
-var db=null,lang=0,entries=[],kbIdx=-1,kbCustomCat="",isRec=false,mr=null,chunks=[];
+// Language: /en… addresses are English, /fr… French. Every other address is Portuguese
+// unless the visitor already picked a language (Google always gets Portuguese at "/").
+function _pathLang(p){p=String(p||"").toLowerCase();if(/^\/en(\/|$)/.test(p))return 1;if(/^\/fr(\/|$)/.test(p))return 0;return null;}
+function _initialLang(){var pl=_pathLang(location.pathname);if(pl!==null){try{localStorage.setItem("pillier_lang",pl);}catch(e){}return pl;}
+  var st=null;try{st=localStorage.getItem("pillier_lang");}catch(e){}if(st!==null&&st!==""){var n=parseInt(st,10);if(n===0||n===1||n===2)return n;}return 2;}
+var db=null,lang=_initialLang(),entries=[],kbIdx=-1,kbCustomCat="",isRec=false,mr=null,chunks=[];
 var dbCoId=null,dbOk=false,rtChannel=null;
 var me={name:"",co:"",av:"",email:""};
 var notifs=[],notifOpen=false,projects=[],chatHistory=[];
@@ -4760,8 +4785,8 @@ var _suppressUrlPush=false,_curContentTab=0;
 // Localized clean slugs per language (Home is "/").
 var _LAND_SLUGS={
   pt:['/','/produto','/planos','/recursos'],
-  en:['/','/product','/plans','/resources'],
-  fr:['/','/produit','/plans','/ressources']
+  en:['/en','/en/product','/en/plans','/en/resources'],
+  fr:['/fr','/fr/produit','/fr/plans','/fr/ressources']
 };
 // Sign-in page has its own URL so a refresh keeps you there (/entrar, /login, /connexion).
 var _AUTH_SLUGS={pt:'/entrar',en:'/login',fr:'/connexion'};
@@ -4777,19 +4802,62 @@ function _seoLink(hreflang){
   if(!el){el=document.createElement('link');el.setAttribute('rel',hreflang?'alternate':'canonical');if(hreflang)el.setAttribute('hreflang',hreflang);document.head.appendChild(el);}
   return el;
 }
+// Google title + description per tab and language ([fr, en, pt]); ebooks get theirs from the catalog.
+var _SEO=[
+  {t:["Pillier : rapport journalier et gestion de chantier par IA","Pillier: digital daily reports & AI construction management","Pillier: RDO digital e gestão de obra com IA"],
+   d:["Capturez photos et voix sur le chantier : Pillier rédige le rapport journalier, consigne les incidents avec la norme applicable et suit les coûts. Essai gratuit.","Capture photos and voice on site and Pillier writes the daily report, logs incidents with the applicable standard and tracks project costs. Free trial.","Capture fotos e voz no canteiro e a Pillier gera o RDO, registra incidentes com a NBR aplicável e controla os custos da obra. Teste grátis."]},
+  {t:["Logiciel de gestion de chantier par IA | Pillier","AI construction management software | Pillier","Software de gestão de obra com IA | Pillier"],
+   d:["Rapports journaliers automatiques, incidents avec cause et solution, normes DTU et Eurocode, finances et historique des prix. Une seule app mobile.","Automatic daily reports, incidents with cause and fix, building standards, finance and price history. All in one mobile app.","RDO automático, incidentes com causa e solução, normas ABNT e NR, financeiro e histórico de preços. Tudo em um só app, no celular."]},
+  {t:["Offres et tarifs | Pillier, gestion de chantier par IA","Plans & pricing | Pillier, AI construction management","Planos e preços | Pillier, gestão de obra com IA"],
+   d:["Commencez par un essai gratuit. Projets illimités, rapport journalier numérique, base de connaissances et agents IA pour toutes les entreprises du BTP.","Start with a free trial. Unlimited projects, digital daily reports, knowledge base and AI agents for construction firms of every size.","A partir de R$ 299/mês. Projetos ilimitados, RDO digital, base de conhecimento e agentes de IA para construtoras de todos os tamanhos."]},
+  {t:["Ebooks gratuits sur la gestion de chantier | Pillier","Free construction management ebooks | Pillier","Ebooks grátis sobre gestão de obra | Pillier"],
+   d:["Guides pratiques sur le rapport journalier, les incidents, le contrôle financier et la mémoire du chantier, pour ingénieurs et conducteurs de travaux.","Practical guides on daily reports, incidents, cost control and project memory, written for construction engineers and managers.","Guias práticos sobre RDO, incidentes, controle financeiro e memória da obra, escritos para engenheiros e gestores da construção civil."]}
+];
+function _seoMeta(attr,key,val){var el=document.head.querySelector('meta['+attr+'="'+key+'"]');if(!el){el=document.createElement('meta');el.setAttribute(attr,key);document.head.appendChild(el);}el.setAttribute('content',val);}
+function _seoClip(t,n){t=String(t||'').replace(/\s+/g,' ').trim();return t.length>n?t.slice(0,n-1).replace(/\s+\S*$/,'')+'…':t;}
+// SEO: title, description, link previews, canonical + hreflang alternates for the visible tab
+// (or the open ebook), so each language version is its own page on Google.
 function _updateSeoTags(idx){
   try{
-    var o=location.origin;
-    _seoLink(null).href=o+(_landPaths()[idx]||'/');           // canonical = current language
-    _seoLink('pt-BR').href=o+_LAND_SLUGS.pt[idx];
-    _seoLink('en').href=o+_LAND_SLUGS.en[idx];
-    _seoLink('fr').href=o+_LAND_SLUGS.fr[idx];
-    _seoLink('x-default').href=o+_LAND_SLUGS.pt[idx];          // x-default → PT (primary market)
+    var o=location.origin,L=lang===1?1:lang===0?0:2;
     try{document.documentElement.lang=lang===1?'en':lang===0?'fr':'pt-BR';}catch(e){}
+    var sa=document.getElementById('s-app');if(sa&&sa.classList.contains('active')){document.title='Pillier';return;}
+    var e=(idx===3&&typeof _rsCur!=='undefined'&&_rsCur)?_rsCur:null,t,d,paths;
+    if(e){var slug=_EBOOK_CANON[e.id];
+      var et=String(e.title[L]||'');if(et.length>62&&et.indexOf(':')>0)et=et.split(':')[0];t=_seoClip(et,62)+' | Pillier';d=_seoClip((e.sum&&e.sum[['fr','en','pt'][L]]||[])[0]||_SEO[3].d[L],158);
+      paths={pt:_LAND_SLUGS.pt[3]+'/'+slug,en:_LAND_SLUGS.en[3]+'/'+slug,fr:_LAND_SLUGS.fr[3]+'/'+slug};}
+    else{var S=_SEO[idx]||_SEO[0];t=S.t[L];d=S.d[L];idx=_SEO[idx]?idx:0;paths={pt:_LAND_SLUGS.pt[idx],en:_LAND_SLUGS.en[idx],fr:_LAND_SLUGS.fr[idx]};}
+    var cur=lang===1?paths.en:lang===0?paths.fr:paths.pt;
+    document.title=t;
+    _seoMeta('name','description',d);
+    _seoMeta('property','og:title',t);_seoMeta('property','og:description',d);_seoMeta('property','og:url',o+cur);
+    _seoMeta('property','og:locale',lang===1?'en_US':lang===0?'fr_FR':'pt_BR');
+    _seoMeta('name','twitter:title',t);_seoMeta('name','twitter:description',d);
+    if(e&&e.cover)_seoMeta('property','og:image',o+String(e.cover).split('?')[0]);else _seoMeta('property','og:image',o+'/assets/og-pillier.jpg');
+    _seoLink(null).href=o+cur;
+    _seoLink('pt-BR').href=o+paths.pt;
+    _seoLink('en').href=o+paths.en;
+    _seoLink('fr').href=o+paths.fr;
+    _seoLink('x-default').href=o+paths.pt;                       // x-default → PT (primary market)
+  }catch(err){}
+}
+// First visit on the Portuguese site with an English / French browser: offer the switch (never automatic).
+function _langOffer(){
+  try{
+    if(localStorage.getItem('pillier_lang')!==null||localStorage.getItem('pillier_lang_offer'))return;
+    var bl=String(navigator.language||'').toLowerCase(),to=bl.indexOf('en')===0?1:bl.indexOf('fr')===0?0:-1;if(to<0)return;
+    var sc=document.getElementById('s-content');if(!sc||!sc.classList.contains('active'))return;
+    var b=document.createElement('div');b.id='lang-offer';
+    b.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:9000;display:flex;align-items:center;gap:10px;background:var(--navy2);border:1px solid var(--border2);color:var(--text);border-radius:999px;padding:8px 8px 8px 16px;font:500 13.5px var(--font-b);box-shadow:0 12px 32px rgba(0,0,0,.25);white-space:nowrap;';
+    var done=function(){try{localStorage.setItem('pillier_lang_offer','1');}catch(x){}b.remove();};
+    b.innerHTML='<i class="ti ti-language" style="font-size:17px;color:#2cbeff;"></i><button id="lang-offer-go" style="background:#2cbeff;color:#04222f;border:none;border-radius:999px;padding:7px 14px;font:700 13px var(--font-b);cursor:pointer;">'+(to===1?'View in English':'Voir en français')+'</button><button id="lang-offer-x" aria-label="Fechar" style="background:none;border:none;color:var(--text3);font-size:18px;line-height:1;cursor:pointer;padding:4px 6px;">&times;</button>';
+    document.body.appendChild(b);
+    document.getElementById('lang-offer-go').onclick=function(){done();setLang(to,null);};
+    document.getElementById('lang-offer-x').onclick=done;
   }catch(e){}
 }
 function _landPathToTab(p){
-  p=String(p||'/').toLowerCase().replace(/\/{2,}/g,'/').replace(/\/+$/,'');if(!p)p='/';
+  p=String(p||'/').toLowerCase().replace(/\/{2,}/g,'/').replace(/\/+$/,'').replace(/^\/(en|fr)(?=\/|$)/,'');if(!p)p='/';
   var m={'/':0,'/home':0,'/produto':1,'/product':1,'/produit':1,'/produtos':1,'/products':1,'/solucoes':1,'/solucao':1,'/solutions':1,
          '/planos':2,'/plans':2,'/pricing':2,
          '/recursos':3,'/resources':3,'/ressources':3};
@@ -4878,7 +4946,7 @@ var _EBOOK_SLUGS=(function(){var m={};RES_EBOOKS.forEach(function(e){m[String(e.
 var _EBOOK_CANON=(function(){var m={};RES_EBOOKS.forEach(function(e){m[e.id]=e.slug;});return m;})();
 function _ebookPath(id){return (_landPaths()[3]||'/recursos')+'/'+(_EBOOK_CANON[id]||_EBOOK_CANON[1]);}
 function _ebookFromPath(p){
-  var seg=String(p||'').toLowerCase().replace(/\/+$/,'').split('/').filter(Boolean);
+  var seg=String(p||'').toLowerCase().replace(/\/+$/,'').replace(/^\/(en|fr)(?=\/|$)/,'').split('/').filter(Boolean);
   if(seg.length>=2 && /^(recursos|resources|ressources)$/.test(seg[0])) return _EBOOK_SLUGS[seg[1]]||0;
   return 0;
 }
@@ -5393,8 +5461,9 @@ function openResForm(id,noPush){
   try{var sc=document.getElementById("s-content"),sl=document.getElementById("s-login");if(sc&&!sc.classList.contains("active")){if(sl)sl.classList.remove("active");sc.classList.add("active");}
     if(_curContentTab!==3){_suppressUrlPush=true;showContentTab(3);_suppressUrlPush=false;}}catch(_x){}
   _rsShow("reader");resRenderReader();window.scrollTo(0,0);
+  try{_updateSeoTags(3);}catch(_x){}
 }
-function resShowList(){_rsCur=null;if(_rsObs)_rsObs.disconnect();_rsShow("list");resRenderList();}
+function resShowList(){_rsCur=null;if(_rsObs)_rsObs.disconnect();_rsShow("list");resRenderList();try{_updateSeoTags(3);}catch(e){}}
 function resBack(){try{var p=_landPaths()[3]||"/recursos";if(location.pathname!==p)history.pushState(null,"",p);}catch(e){}resShowList();window.scrollTo(0,0);}
 function resRenderAll(){if(_rsCur)resRenderReader();else resRenderList();}
 if(document.readyState!=="loading")setTimeout(resRenderList,0);else document.addEventListener("DOMContentLoaded",function(){resRenderList();});
@@ -7516,17 +7585,12 @@ function closeIncModal(){
 // ── End incident modal ───────────────────────────────────────────────────
 window.addEventListener("load",async function(){
   // Auto-detect browser language for first-time visitors
-  var stored=localStorage.getItem("pillier_lang");
-  if(stored===null){
-    var bl=navigator.language||navigator.userLanguage||"fr";
-    bl=bl.toLowerCase();
-    if(bl.startsWith("pt"))lang=2;
-    else if(bl.startsWith("en"))lang=1;
-    else lang=0;
-  } else {
-    lang=parseInt(stored)||0;
-  }
+  // Language comes from the address (see _initialLang): Portuguese by default, /en and /fr for the others.
+  // Visitors whose browser is in English or French get a small switch offer instead of an automatic change.
+  var _hadLang=localStorage.getItem("pillier_lang")!==null;
+  lang=_initialLang();
   applyLang();
+  if(!_hadLang&&lang===2)setTimeout(_langOffer,1800);
   initLoginScreen();
 
   // Code-reveal page (/code?code=NNNNNN opened from the email link) — just display the code.

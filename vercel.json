@@ -7,6 +7,10 @@
   ],
   "rewrites": [
     {
+      "source": "/sitemap.xml",
+      "destination": "/api/config?sitemap=1"
+    },
+    {
       "source": "/reports/Pillier_Riscos_Ebook_PT.pdf",
       "destination": "/reports/Pillier_Gestao_Incidentes_Criticos_Ebook_PT.pdf"
     },
@@ -115,6 +119,48 @@
           "value": "/"
         }
       ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/product",
+      "destination": "/en/product",
+      "permanent": true
+    },
+    {
+      "source": "/products",
+      "destination": "/en/product",
+      "permanent": true
+    },
+    {
+      "source": "/resources",
+      "destination": "/en/resources",
+      "permanent": true
+    },
+    {
+      "source": "/resources/:slug",
+      "destination": "/en/resources/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/produit",
+      "destination": "/fr/produit",
+      "permanent": true
+    },
+    {
+      "source": "/ressources",
+      "destination": "/fr/ressources",
+      "permanent": true
+    },
+    {
+      "source": "/ressources/:slug",
+      "destination": "/fr/ressources/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/plans",
+      "destination": "/en/plans",
+      "permanent": true
     }
   ]
 }
