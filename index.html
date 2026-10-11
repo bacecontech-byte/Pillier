@@ -24,6 +24,7 @@
 <meta name="twitter:image" content="https://pillier.com.br/assets/og-pillier.jpg">
 <!-- Structured data for Google: company, website, software + price -->
 <script type="application/ld+json">[{"@context": "https://schema.org", "@type": "Organization", "name": "Pillier", "url": "https://pillier.com.br/", "logo": "https://pillier.com.br/icon-512.png"}, {"@context": "https://schema.org", "@type": "WebSite", "name": "Pillier", "url": "https://pillier.com.br/", "inLanguage": ["pt-BR", "en", "fr"]}, {"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Pillier", "applicationCategory": "BusinessApplication", "applicationSubCategory": "Gestão de obras", "operatingSystem": "Web, Android, iOS", "url": "https://pillier.com.br/", "inLanguage": "pt-BR", "description": "Capture fotos e voz no canteiro e a Pillier gera o RDO, registra incidentes com a NBR aplicável e controla os custos da obra. Teste grátis.", "offers": {"@type": "Offer", "price": "299", "priceCurrency": "BRL", "url": "https://pillier.com.br/planos"}}]</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "inLanguage": "pt-BR", "mainEntity": [{"@type": "Question", "name": "O que é a Pillier?", "acceptedAnswer": {"@type": "Answer", "text": "A Pillier é uma plataforma de gestão de obra com inteligência artificial para construtoras, engenheiros e arquitetos no Brasil. Você registra fotos e áudios no canteiro e a Pillier gera o RDO, documenta incidentes com causa provável, solução e normas aplicáveis, e organiza o financeiro e os documentos da obra."}}, {"@type": "Question", "name": "Como fazer um RDO digital com a Pillier?", "acceptedAnswer": {"@type": "Answer", "text": "Pelo celular, tire fotos ou grave um áudio no canteiro. A Pillier monta o RDO do dia com atividades, equipe, ocorrências e fotos. O responsável revisa, assina na própria plataforma e compartilha o relatório com o cliente."}}, {"@type": "Question", "name": "O RDO digital tem validade jurídica?", "acceptedAnswer": {"@type": "Answer", "text": "O RDO digital pode servir como prova quando mostra quando, onde e por quem cada registro foi feito. A Pillier registra data, hora e localização de cada captura, e o responsável pode assinar o RDO eletronicamente. Se o seu contrato exigir assinatura com certificado digital ICP-Brasil, confirme esse requisito com o contratante."}}, {"@type": "Question", "name": "A Pillier funciona no celular e sem internet?", "acceptedAnswer": {"@type": "Answer", "text": "Sim. A Pillier funciona no navegador do celular e pode ser instalada como aplicativo. No canteiro sem sinal, as capturas ficam salvas e são sincronizadas quando a conexão volta."}}, {"@type": "Question", "name": "Quais normas técnicas a Pillier considera?", "acceptedAnswer": {"@type": "Answer", "text": "Normas brasileiras ABNT NBR (por exemplo a NBR 6118) e normas regulamentadoras como a NR-18 e a NR-35, além de DTU, NF e Eurocódigos para obras na França. A Pillier sugere as normas provavelmente aplicáveis a cada incidente para o engenheiro verificar."}}, {"@type": "Question", "name": "Quanto custa a Pillier?", "acceptedAnswer": {"@type": "Answer", "text": "Os planos começam em R$ 299 por mês (Starter). O Pro custa R$ 499/mês, o Team R$ 999/mês e o Enterprise tem preço sob consulta. Você pode testar grátis antes de assinar."}}, {"@type": "Question", "name": "Para quem é a Pillier?", "acceptedAnswer": {"@type": "Answer", "text": "Para engenheiros e arquitetos autônomos, pequenas e médias construtoras, empreiteiras e grandes empresas de construção, infraestrutura e incorporação que querem registrar a obra e encontrar respostas em segundos."}}]}</script>
 <!-- SEO: canonical + hreflang language alternates (kept in sync per tab/language by JS) -->
 <link rel="canonical" href="https://pillier.com.br/">
 <link rel="alternate" hreflang="pt-BR" href="https://pillier.com.br/">
@@ -239,6 +240,9 @@ html.flow .content-panel .rs-grid .rs-card:nth-child(9){--from:translate3d(0,72p
 html.flow .content-panel .rs-grid .rs-card:nth-child(10){--from:translate3d(0,-56px,0);--d:220ms}
 html.flow .content-panel .rs-grid .rs-card:nth-child(11){--from:translate3d(0,72px,0) scale(.97);--d:320ms}
 html.flow .content-panel .rs-grid .rs-card:nth-child(12){--from:translate3d(0,-56px,0);--d:420ms}
+html.flow .content-panel .mk-faq:not(.in) .mk-faq-i{opacity:0;transform:translate3d(0,40px,0);will-change:transform,opacity;}
+html.flow .content-panel .mk-faq:not(.fl-done) .mk-faq-i{transition:opacity .9s cubic-bezier(0.16,1,0.3,1) var(--d,0ms),transform 1.15s cubic-bezier(0.16,1,0.3,1) var(--d,0ms) !important;}
+html.flow .content-panel .mk-faq .mk-faq-i:nth-child(1){--d:0ms}html.flow .content-panel .mk-faq .mk-faq-i:nth-child(2){--d:80ms}html.flow .content-panel .mk-faq .mk-faq-i:nth-child(3){--d:160ms}html.flow .content-panel .mk-faq .mk-faq-i:nth-child(4){--d:240ms}html.flow .content-panel .mk-faq .mk-faq-i:nth-child(5){--d:320ms}html.flow .content-panel .mk-faq .mk-faq-i:nth-child(6){--d:400ms}html.flow .content-panel .mk-faq .mk-faq-i:nth-child(7){--d:480ms}
 /* headline words (Início, Produto, Planos) */
 html.flow .content-panel .fl-w{display:inline-block;transition:opacity .8s cubic-bezier(0.16,1,0.3,1) var(--d,0ms),transform 1s cubic-bezier(0.16,1,0.3,1) var(--d,0ms),filter .8s cubic-bezier(0.16,1,0.3,1) var(--d,0ms);}
 html.flow .content-panel :is(.about-hero-grid,.content-panel>.mk-section:first-child):not(.in) .fl-w{opacity:0;transform:translate3d(0,.6em,0);filter:blur(8px);}
@@ -721,6 +725,14 @@ body.light-mode .pg-win{box-shadow:0 24px 60px rgba(16,34,43,0.10);}
 .mk-quote{max-width:820px;margin:0 auto;text-align:center;}
 .mk-quote blockquote{font-family:var(--font-d);font-size:clamp(20px,2.8vw,27px);font-weight:600;color:var(--white);line-height:1.4;margin:0;}
 .mk-quote .by{margin-top:22px;display:flex;align-items:center;justify-content:center;gap:12px;font-size:14px;color:var(--text2);}
+.mk-faq{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:10px;}
+.mk-faq-i{background:var(--navy2);border:1px solid var(--border);border-radius:14px;padding:0 20px;}
+.mk-faq-i summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;font-family:var(--font-d);font-weight:700;font-size:16px;line-height:1.35;color:var(--white);}
+.mk-faq-i summary::-webkit-details-marker{display:none;}
+.mk-faq-i summary i{color:#2cbeff;font-size:18px;flex-shrink:0;transition:transform .2s;}
+.mk-faq-i[open] summary i{transform:rotate(45deg);}
+.mk-faq-i summary:focus-visible{outline:2px solid #2cbeff;outline-offset:4px;border-radius:6px;}
+.mk-faq-i p{margin:0 0 18px;color:var(--text2);font-size:14.5px;line-height:1.7;max-width:70ch;}
 .mk-cta{background:linear-gradient(135deg,rgba(44,190,255,0.1),transparent);border:1px solid rgba(44,190,255,0.28);border-radius:24px;padding:48px 32px;text-align:center;max-width:900px;margin:0 auto;}
 .mk-cta h2{font-family:var(--font-d);font-size:clamp(26px,3.6vw,34px);font-weight:800;color:var(--white);margin:0 0 12px;}
 .mk-cta p{color:var(--text2);font-size:16px;margin:0 auto 26px;max-width:520px;}
@@ -2594,17 +2606,17 @@ body.light-mode #ts-modal .ts-card{background:#fff;color:#10222b;border-color:rg
     </a>
     <div id="content-tabs" class="ch-nav">
       <button onclick="showContentTab(0)" class="content-tab active" id="ctab-0">Home</button>
-      <button onclick="showContentTab(1)" class="content-tab" id="ctab-1">Product</button>
+      <button onclick="showContentTab(1)" class="content-tab" id="ctab-1">Produto</button>
       <div style="position:relative;display:none;">
         <div id="sol-tab-dropdown" style="display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);background:var(--navy2);border:1px solid var(--border2);border-radius:14px;padding:20px;min-width:640px;box-shadow:0 20px 60px rgba(0,0,0,0.4);z-index:300;">
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;">
             <div>
-              <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;font-weight:700;" id="soldd-h1">Pillier IA Agents</div>
+              <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;font-weight:700;" id="soldd-h1">Agentes IA Pillier</div>
               <div style="display:flex;flex-direction:column;gap:2px;">
-                <div onclick="jumpToSol(1,'sec-a1')" class="sol-menu-item" id="soldd-a1">Capture Agent</div>
-                <div onclick="jumpToSol(1,'sec-a2')" class="sol-menu-item" id="soldd-a2">Docs Agent</div>
-                <div onclick="jumpToSol(1,'sec-a3')" class="sol-menu-item" id="soldd-a3">Norm Agent</div>
-                <div onclick="jumpToSol(1,'sec-a4')" class="sol-menu-item" id="soldd-a4">Insight Agent</div>
+                <div onclick="jumpToSol(1,'sec-a1')" class="sol-menu-item" id="soldd-a1">Agente Captura</div>
+                <div onclick="jumpToSol(1,'sec-a2')" class="sol-menu-item" id="soldd-a2">Agente Docs</div>
+                <div onclick="jumpToSol(1,'sec-a3')" class="sol-menu-item" id="soldd-a3">Agente Norma</div>
+                <div onclick="jumpToSol(1,'sec-a4')" class="sol-menu-item" id="soldd-a4">Agente Insight</div>
               </div>
             </div>
             <div>
@@ -2612,40 +2624,40 @@ body.light-mode #ts-modal .ts-card{background:#fff;color:#10222b;border-color:rg
               <div style="display:flex;flex-direction:column;gap:2px;">
                 <div onclick="jumpToSol(1,'sec-c1')" class="sol-menu-item" id="soldd-c1">Pillier IA Chat</div>
                 <div onclick="jumpToSol(1,'sec-c2')" class="sol-menu-item" id="soldd-c2">Dashboard</div>
-                <div onclick="jumpToSol(1,'sec-c3')" class="sol-menu-item" id="soldd-c3">Knowledge Base</div>
-                <div onclick="jumpToSol(1,'sec-c4')" class="sol-menu-item" id="soldd-c4">Real-time Collaboration</div>
+                <div onclick="jumpToSol(1,'sec-c3')" class="sol-menu-item" id="soldd-c3">Base de conhecimento</div>
+                <div onclick="jumpToSol(1,'sec-c4')" class="sol-menu-item" id="soldd-c4">Colaboração em tempo real</div>
               </div>
             </div>
             <div>
-              <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;font-weight:700;" id="soldd-h3">Industries</div>
+              <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;font-weight:700;" id="soldd-h3">Setores</div>
               <div style="display:flex;flex-direction:column;gap:2px;">
-                <div onclick="jumpToSol(1,'sec-i1')" class="sol-menu-item" id="soldd-i1">Civil construction</div>
-                <div onclick="jumpToSol(1,'sec-i2')" class="sol-menu-item" id="soldd-i2">Architecture</div>
-                <div onclick="jumpToSol(1,'sec-i3')" class="sol-menu-item" id="soldd-i3">Structural engineering</div>
-                <div onclick="jumpToSol(1,'sec-i4')" class="sol-menu-item" id="soldd-i4">Infrastructure &amp; public works</div>
-                <div onclick="jumpToSol(1,'sec-i5')" class="sol-menu-item" id="soldd-i5">Renovation &amp; retrofit</div>
-                <div onclick="jumpToSol(1,'sec-i6')" class="sol-menu-item" id="soldd-i6">Real estate development</div>
+                <div onclick="jumpToSol(1,'sec-i1')" class="sol-menu-item" id="soldd-i1">Construção civil</div>
+                <div onclick="jumpToSol(1,'sec-i2')" class="sol-menu-item" id="soldd-i2">Arquitetura</div>
+                <div onclick="jumpToSol(1,'sec-i3')" class="sol-menu-item" id="soldd-i3">Engenharia estrutural</div>
+                <div onclick="jumpToSol(1,'sec-i4')" class="sol-menu-item" id="soldd-i4">Infraestrutura &amp; obras públicas</div>
+                <div onclick="jumpToSol(1,'sec-i5')" class="sol-menu-item" id="soldd-i5">Reforma &amp; retrofit</div>
+                <div onclick="jumpToSol(1,'sec-i6')" class="sol-menu-item" id="soldd-i6">Incorporação imobiliária</div>
               </div>
             </div>
           </div>
           <div style="border-top:1px solid var(--border);margin-top:16px;padding-top:14px;">
-            <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;font-weight:700;" id="soldd-h4">Company size</div>
+            <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;font-weight:700;" id="soldd-h4">Tamanho da empresa</div>
             <div style="display:flex;flex-wrap:wrap;gap:6px;">
-              <div class="sol-tag" id="soldd-s1">Independent professionals</div>
-              <div class="sol-tag" id="soldd-s2">Small construction firms</div>
-              <div class="sol-tag" id="soldd-s3">Mid-size contractors</div>
-              <div class="sol-tag" id="soldd-s4">Large enterprises</div>
+              <div class="sol-tag" id="soldd-s1">Profissionais autônomos</div>
+              <div class="sol-tag" id="soldd-s2">Pequenas construtoras</div>
+              <div class="sol-tag" id="soldd-s3">Empreiteiras médias</div>
+              <div class="sol-tag" id="soldd-s4">Grandes empresas</div>
             </div>
           </div>
         </div>
       </div>
-      <button onclick="showContentTab(2)" class="content-tab" id="ctab-2">Plans</button>
-      <button onclick="showContentTab(3)" class="content-tab" id="ctab-3">Resources</button>
-      <button onclick="goCapture()" id="ctab-capture" class="content-tab ch-cap"><i class="ti ti-camera" style="font-size:16px;"></i> <span id="ctab-capture-lbl">Capture now</span></button>
+      <button onclick="showContentTab(2)" class="content-tab" id="ctab-2">Planos</button>
+      <button onclick="showContentTab(3)" class="content-tab" id="ctab-3">Recursos</button>
+      <button onclick="goCapture()" id="ctab-capture" class="content-tab ch-cap"><i class="ti ti-camera" style="font-size:16px;"></i> <span id="ctab-capture-lbl">Capturar agora</span></button>
     </div>
     <div class="ch-right">
       <div style="position:relative;" id="content-lang-wrap">
-        <button onclick="toggleContentLang()" id="content-lang-btn" class="ch-chip" aria-label="Language"><span id="content-lang-label">EN</span></button>
+        <button onclick="toggleContentLang()" id="content-lang-btn" class="ch-chip" aria-label="Language"><span id="content-lang-label">PT</span></button>
         <div id="content-lang-menu" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--navy2);border:1px solid var(--border2);border-radius:10px;padding:6px;min-width:130px;box-shadow:0 8px 24px rgba(0,0,0,0.3);z-index:300;">
           <div onclick="changeLang(1);toggleContentLang();" class="lang-menu-item"><span style="font-size:14px;">🇬🇧</span> English</div>
           <div onclick="changeLang(2);toggleContentLang();" class="lang-menu-item"><span style="font-size:14px;">🇧🇷</span> Português</div>
@@ -2653,8 +2665,8 @@ body.light-mode #ts-modal .ts-card{background:#fff;color:#10222b;border-color:rg
         </div>
       </div>
       <button onclick="setTheme(document.body.classList.contains('light-mode')?'dark':'light')" aria-label="Theme" class="ch-chip"><i class="ti ti-contrast" style="font-size:16px;"></i></button>
-      <button onclick="showAuthPage()" id="ctab-login" class="ch-out">Log in</button>
-      <a href="https://cal.com/pillier-ai-demo/30min" target="_blank" id="content-demo-btn" class="ch-solid">Schedule a demo</a>
+      <button onclick="showAuthPage()" id="ctab-login" class="ch-out">Entrar</button>
+      <a href="https://cal.com/pillier-ai-demo/30min" target="_blank" id="content-demo-btn" class="ch-solid">Agendar uma demo</a>
       <button onclick="toggleLandingMenu()" id="content-mob-menu" class="ch-chip" aria-label="Menu" style="display:none;"><i class="ti ti-menu-2"></i></button>
     </div>
   </div>
@@ -2665,11 +2677,11 @@ body.light-mode #ts-modal .ts-card{background:#fff;color:#10222b;border-color:rg
     <div style="display:grid;grid-template-columns:0.9fr 1.1fr;gap:56px;align-items:center;max-width:1280px;margin:0 auto;padding:72px 48px 48px;" class="about-hero-grid">
       <!-- Left: headline -->
       <div style="display:flex;flex-direction:column;justify-content:center;padding:0;">
-        <div style="font-family:var(--font-d);font-size:clamp(34px,4.4vw,54px);font-weight:800;color:var(--white);line-height:1.08;letter-spacing:-0.02em;margin-bottom:20px;" id="about-headline">Meet your construction buddy.</div>
-        <div style="font-size:17px;color:var(--text2);line-height:1.6;max-width:440px;margin-bottom:32px;" id="about-hero-sub">Capture, document and control your job site in one place.</div>
+        <div style="font-family:var(--font-d);font-size:clamp(34px,4.4vw,54px);font-weight:800;color:var(--white);line-height:1.08;letter-spacing:-0.02em;margin-bottom:20px;" id="about-headline">Pillier, seu parceiro de obra.</div>
+        <div style="font-size:17px;color:var(--text2);line-height:1.6;max-width:440px;margin-bottom:32px;" id="about-hero-sub">Capture, documente e controle sua obra em um só lugar.</div>
         <!-- Claude-style input - functional -->
         <div class="hero-ask" style="max-width:520px;background:var(--navy2);border:1px solid var(--border2);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#2cbeff'" onmouseout="this.style.borderColor='var(--border2)'">
-          <textarea id="about-ask-input" placeholder="How can Pillier help you today?" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();askBaceFromAbout();}" style="flex:1;min-width:0;background:none;border:none;outline:none;color:var(--text);font-family:var(--font-b);font-size:15px;resize:none;max-height:120px;line-height:1.4;"></textarea>
+          <textarea id="about-ask-input" placeholder="Como a Pillier pode te ajudar hoje?" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();askBaceFromAbout();}" style="flex:1;min-width:0;background:none;border:none;outline:none;color:var(--text);font-family:var(--font-b);font-size:15px;resize:none;max-height:120px;line-height:1.4;"></textarea>
           <button onclick="askBaceFromAbout()" style="display:flex;align-items:center;gap:6px;background:#2cbeff;color:#fff;border:none;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-b);flex-shrink:0;" id="about-ask-btn">Ask Pillier <span style="font-size:15px;">↑</span></button>
         </div>
       </div>
@@ -2683,7 +2695,7 @@ body.light-mode #ts-modal .ts-card{background:#fff;color:#10222b;border-color:rg
     <!-- Standards / compliance strip -->
     <div class="mk-section" style="padding-block:0;">
       <div class="mk-strip">
-        <div class="mk-strip-lbl" id="mkh-strip-lbl">References the standards that keep you covered</div>
+        <div class="mk-strip-lbl" id="mkh-strip-lbl">Referencia as normas que protegem você</div>
         <div class="mk-strip-row">
           <span class="mk-norm"><i class="ti ti-book-2"></i> ABNT NBR</span>
           <span class="mk-norm"><i class="ti ti-shield-check"></i> NR</span>
@@ -2699,8 +2711,8 @@ body.light-mode #ts-modal .ts-card{background:#fff;color:#10222b;border-color:rg
       <!-- Value 1 -->
       <div class="mk-vp">
         <div class="mk-vp-text">
-          <div class="mk-vp-lead"><span class="mk-vp-ico"><i class="ti ti-camera"></i></span><h3 id="v1-title">Capture what matters, instantly</h3></div>
-          <p id="v1-desc">Photo or voice — Pillier turns a 30-minute paper report into a 60-second AI-analyzed incident record. Description, probable cause, recommended solution, and applicable norms — all generated automatically.</p>
+          <div class="mk-vp-lead"><span class="mk-vp-ico"><i class="ti ti-camera"></i></span><h3 id="v1-title">Capture o essencial, instantaneamente</h3></div>
+          <p id="v1-desc">Foto ou voz — Pillier transforma um relatório em papel de 30 minutos em um registro analisado por IA em 60 segundos. Descrição, causa provável, solução recomendada e normas aplicáveis — tudo gerado automaticamente.</p>
         </div>
         <div class="mk-device">
           <div class="mk-device-bar"><span class="mk-dot" style="background:#f87171;"></span><span class="mk-dot" style="background:#fbbf24;"></span><span class="mk-dot" style="background:#4ade80;"></span><span style="margin-left:8px;font-size:12px;color:var(--text3);font-family:var(--font-m,monospace);">voice &rarr; record</span></div>
@@ -2714,19 +2726,19 @@ body.light-mode #ts-modal .ts-card{background:#fff;color:#10222b;border-color:rg
       <!-- Value 2 -->
       <div class="mk-vp rev">
         <div class="mk-vp-text">
-          <div class="mk-vp-lead"><span class="mk-vp-ico"><i class="ti ti-brain"></i></span><h3 id="v2-title">Build institutional memory</h3></div>
-          <p id="v2-desc">Every incident captured becomes searchable knowledge. After 90 days, Pillier identifies patterns humans miss — recurring categories, high-risk trades, projects that need attention. Your next project starts smarter than your last.</p>
+          <div class="mk-vp-lead"><span class="mk-vp-ico"><i class="ti ti-brain"></i></span><h3 id="v2-title">Construa memória institucional</h3></div>
+          <p id="v2-desc">Cada incidente capturado vira conhecimento pesquisável. Após 90 dias, Pillier identifica padrões que humanos não veem — categorias recorrentes, especialidades de risco, projetos que precisam de atenção. Seu próximo projeto começa mais inteligente que o anterior.</p>
         </div>
         <div class="mk-device">
           <div class="mk-device-bar"><span class="mk-dot" style="background:#f87171;"></span><span class="mk-dot" style="background:#fbbf24;"></span><span class="mk-dot" style="background:#4ade80;"></span><span style="margin-left:8px;font-size:12px;color:var(--text3);font-family:var(--font-m,monospace);">insight agent</span></div>
           <div class="mk-device-body">
-            <div class="mk-ai"><span class="mk-pulse"></span> <span id="mkh-chart-cap">Incidents by category</span></div>
+            <div class="mk-ai"><span class="mk-pulse"></span> <span id="mkh-chart-cap">Incidentes por categoria</span></div>
             <div class="mk-chart" role="img" aria-label="Incidents by category">
-              <div class="mk-col"><div class="mk-track"><div class="mk-bar hi" style="height:88%"></div></div><div class="mk-cat"><i class="ti ti-droplet"></i><span id="mkc-1">Water</span></div></div>
-              <div class="mk-col"><div class="mk-track"><div class="mk-bar" style="height:62%"></div></div><div class="mk-cat"><i class="ti ti-wall"></i><span id="mkc-2">Struct.</span></div></div>
-              <div class="mk-col"><div class="mk-track"><div class="mk-bar" style="height:44%"></div></div><div class="mk-cat"><i class="ti ti-bolt"></i><span id="mkc-3">Elec.</span></div></div>
-              <div class="mk-col"><div class="mk-track"><div class="mk-bar" style="height:30%"></div></div><div class="mk-cat"><i class="ti ti-shield"></i><span id="mkc-4">Safety</span></div></div>
-              <div class="mk-col"><div class="mk-track"><div class="mk-bar" style="height:20%"></div></div><div class="mk-cat"><i class="ti ti-dots"></i><span id="mkc-5">Other</span></div></div>
+              <div class="mk-col"><div class="mk-track"><div class="mk-bar hi" style="height:88%"></div></div><div class="mk-cat"><i class="ti ti-droplet"></i><span id="mkc-1">Água</span></div></div>
+              <div class="mk-col"><div class="mk-track"><div class="mk-bar" style="height:62%"></div></div><div class="mk-cat"><i class="ti ti-wall"></i><span id="mkc-2">Estrut.</span></div></div>
+              <div class="mk-col"><div class="mk-track"><div class="mk-bar" style="height:44%"></div></div><div class="mk-cat"><i class="ti ti-bolt"></i><span id="mkc-3">Elét.</span></div></div>
+              <div class="mk-col"><div class="mk-track"><div class="mk-bar" style="height:30%"></div></div><div class="mk-cat"><i class="ti ti-shield"></i><span id="mkc-4">Seg.</span></div></div>
+              <div class="mk-col"><div class="mk-track"><div class="mk-bar" style="height:20%"></div></div><div class="mk-cat"><i class="ti ti-dots"></i><span id="mkc-5">Outros</span></div></div>
             </div>
           </div>
         </div>
@@ -2735,15 +2747,15 @@ body.light-mode #ts-modal .ts-card{background:#fff;color:#10222b;border-color:rg
       <!-- Value 3 -->
       <div class="mk-vp">
         <div class="mk-vp-text">
-          <div class="mk-vp-lead"><span class="mk-vp-ico"><i class="ti ti-shield-check"></i></span><h3 id="v3-title">Stay compliant, stay protected</h3></div>
-          <p id="v3-desc">Every record is timestamped, geotagged, and audit-ready. Pillier automatically references applicable norms (ABNT NBR, NRs, DTU) — so when inspectors or lawyers come knocking, your documentation speaks for itself.</p>
+          <div class="mk-vp-lead"><span class="mk-vp-ico"><i class="ti ti-shield-check"></i></span><h3 id="v3-title">Mantenha-se em conformidade, protegido</h3></div>
+          <p id="v3-desc">Cada registro tem data/hora, geolocalização e está pronto para auditoria. Pillier referencia automaticamente normas aplicáveis (ABNT NBR, NRs, DTU) — assim, quando fiscais ou advogados aparecem, sua documentação fala por si.</p>
         </div>
         <div class="mk-device">
           <div class="mk-device-bar"><span class="mk-dot" style="background:#f87171;"></span><span class="mk-dot" style="background:#fbbf24;"></span><span class="mk-dot" style="background:#4ade80;"></span><span style="margin-left:8px;font-size:12px;color:var(--text3);font-family:var(--font-m,monospace);">audit trail</span></div>
           <div class="mk-device-body">
             <div class="mk-f" style="margin-top:0;"><div class="k">record #2418</div><div class="v" style="font-family:var(--font-m,monospace);font-size:12px;color:var(--text2);"><i class="ti ti-map-pin" style="font-size:12px;"></i> -23.5614, -46.6560 &middot; 2026-09-14 08:41</div></div>
             <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;"><span class="mk-tag norm">NBR 6118</span><span class="mk-tag norm">NR-18</span><span class="mk-tag ok"><i class="ti ti-lock" style="font-size:12px;"></i></span></div>
-            <div class="mk-f"><div class="k" id="mkh-int-k">Integrity</div><div class="v" id="mkh-int-v">Sealed record — tamper-proof and verifiable.</div></div>
+            <div class="mk-f"><div class="k" id="mkh-int-k">Integridade</div><div class="v" id="mkh-int-v">Registro selado — inalterável e verificável.</div></div>
           </div>
         </div>
       </div>
@@ -2752,12 +2764,12 @@ body.light-mode #ts-modal .ts-card{background:#fff;color:#10222b;border-color:rg
     <!-- Impact stats -->
     <div class="mk-section" style="padding-top:0;">
       <div class="mk-stats">
-        <div class="mk-stat"><div class="n" style="color:#2cbeff;">70%</div><div class="l" id="imp-1">less time documenting</div></div>
-        <div class="mk-stat"><div class="n" style="color:#4ade80;">3&times;</div><div class="l" id="imp-2">faster pattern detection</div></div>
-        <div class="mk-stat"><div class="n" style="color:#38bdf8;">100%</div><div class="l" id="imp-3">incidents traceable</div></div>
-        <div class="mk-stat"><div class="n" style="color:#fbbf24;">0</div><div class="l" id="imp-4">paper needed — 100% digital</div></div>
+        <div class="mk-stat"><div class="n" style="color:#2cbeff;">70%</div><div class="l" id="imp-1">menos tempo em documentação</div></div>
+        <div class="mk-stat"><div class="n" style="color:#4ade80;">3&times;</div><div class="l" id="imp-2">mais rápido para identificar padrões</div></div>
+        <div class="mk-stat"><div class="n" style="color:#38bdf8;">100%</div><div class="l" id="imp-3">dos incidentes rastreáveis</div></div>
+        <div class="mk-stat"><div class="n" style="color:#fbbf24;">0</div><div class="l" id="imp-4">papel necessário — 100% digital</div></div>
       </div>
-      <div style="text-align:center;margin-top:20px;font-size:13.5px;color:var(--text3);font-style:italic;" id="about-tagline">Built by engineers, for engineers.</div>
+      <div style="text-align:center;margin-top:20px;font-size:13.5px;color:var(--text3);font-style:italic;" id="about-tagline">Desenvolvido por engenheiros, para engenheiros.</div>
     </div>
 
     <!-- Product playground (interactive demo) -->
@@ -2765,14 +2777,20 @@ body.light-mode #ts-modal .ts-card{background:#fff;color:#10222b;border-color:rg
       <div data-pg></div>
     </div>
 
+    <!-- FAQ: answers people ask search engines and AI assistants (also in FAQPage structured data) -->
+    <div class="mk-section" style="padding-top:8px;">
+      <div class="mk-head" style="margin-bottom:26px;"><h2 id="faq-title">Perguntas frequentes</h2></div>
+      <div class="mk-faq"><details class="mk-faq-i"><summary><span id="faq-q1">O que é a Pillier?</span><i class="ti ti-plus" aria-hidden="true"></i></summary><p id="faq-a1">A Pillier é uma plataforma de gestão de obra com inteligência artificial para construtoras, engenheiros e arquitetos no Brasil. Você registra fotos e áudios no canteiro e a Pillier gera o RDO, documenta incidentes com causa provável, solução e normas aplicáveis, e organiza o financeiro e os documentos da obra.</p></details><details class="mk-faq-i"><summary><span id="faq-q2">Como fazer um RDO digital com a Pillier?</span><i class="ti ti-plus" aria-hidden="true"></i></summary><p id="faq-a2">Pelo celular, tire fotos ou grave um áudio no canteiro. A Pillier monta o RDO do dia com atividades, equipe, ocorrências e fotos. O responsável revisa, assina na própria plataforma e compartilha o relatório com o cliente.</p></details><details class="mk-faq-i"><summary><span id="faq-q3">O RDO digital tem validade jurídica?</span><i class="ti ti-plus" aria-hidden="true"></i></summary><p id="faq-a3">O RDO digital pode servir como prova quando mostra quando, onde e por quem cada registro foi feito. A Pillier registra data, hora e localização de cada captura, e o responsável pode assinar o RDO eletronicamente. Se o seu contrato exigir assinatura com certificado digital ICP-Brasil, confirme esse requisito com o contratante.</p></details><details class="mk-faq-i"><summary><span id="faq-q4">A Pillier funciona no celular e sem internet?</span><i class="ti ti-plus" aria-hidden="true"></i></summary><p id="faq-a4">Sim. A Pillier funciona no navegador do celular e pode ser instalada como aplicativo. No canteiro sem sinal, as capturas ficam salvas e são sincronizadas quando a conexão volta.</p></details><details class="mk-faq-i"><summary><span id="faq-q5">Quais normas técnicas a Pillier considera?</span><i class="ti ti-plus" aria-hidden="true"></i></summary><p id="faq-a5">Normas brasileiras ABNT NBR (por exemplo a NBR 6118) e normas regulamentadoras como a NR-18 e a NR-35, além de DTU, NF e Eurocódigos para obras na França. A Pillier sugere as normas provavelmente aplicáveis a cada incidente para o engenheiro verificar.</p></details><details class="mk-faq-i"><summary><span id="faq-q6">Quanto custa a Pillier?</span><i class="ti ti-plus" aria-hidden="true"></i></summary><p id="faq-a6">Os planos começam em R$ 299 por mês (Starter). O Pro custa R$ 499/mês, o Team R$ 999/mês e o Enterprise tem preço sob consulta. Você pode testar grátis antes de assinar.</p></details><details class="mk-faq-i"><summary><span id="faq-q7">Para quem é a Pillier?</span><i class="ti ti-plus" aria-hidden="true"></i></summary><p id="faq-a7">Para engenheiros e arquitetos autônomos, pequenas e médias construtoras, empreiteiras e grandes empresas de construção, infraestrutura e incorporação que querem registrar a obra e encontrar respostas em segundos.</p></details></div>
+    </div>
+
     <!-- Final CTA -->
     <div class="mk-section" style="padding-top:0;">
       <div class="mk-cta">
-        <h2 id="mkh-cta-t">Put an AI engineer on every site</h2>
-        <p id="mkh-cta-p">Start free. Capture your first incident in under a minute — no credit card, no setup call.</p>
+        <h2 id="mkh-cta-t">Um engenheiro de IA em cada canteiro</h2>
+        <p id="mkh-cta-p">Comece grátis. Capture seu primeiro incidente em menos de um minuto — sem cartão de crédito, sem call de configuração.</p>
         <div class="mk-cta-row">
-          <a class="mk-btn mk-btn-primary" href="#" onclick="showAuthPage();return false;" id="mkh-cta-b1">Start free</a>
-          <a class="mk-btn mk-btn-ghost" href="https://cal.com/pillier-ai-demo/30min" target="_blank" id="mkh-cta-b2">Book a demo</a>
+          <a class="mk-btn mk-btn-primary" href="#" onclick="showAuthPage();return false;" id="mkh-cta-b1">Começar grátis</a>
+          <a class="mk-btn mk-btn-ghost" href="https://cal.com/pillier-ai-demo/30min" target="_blank" id="mkh-cta-b2">Agendar demo</a>
         </div>
       </div>
     </div>
@@ -2780,9 +2798,9 @@ body.light-mode #ts-modal .ts-card{background:#fff;color:#10222b;border-color:rg
   <div id="content-panel-1" class="content-panel" style="display:none;padding:0;">
     <!-- Hero -->
     <div class="mk-section" style="text-align:center;padding-bottom:24px;">
-      <div style="font-family:var(--font-d);font-size:clamp(32px,5vw,52px);font-weight:800;color:var(--white);line-height:1.05;letter-spacing:-0.02em;margin:0 auto;max-width:820px;" id="sol-title">The frontier, on every site</div>
-      <div style="font-size:17px;color:var(--text2);line-height:1.6;max-width:600px;margin:18px auto 28px;" id="sol-sub">Deploy Pillier across your construction sites. Help every team capture instantly, file automatically, and build without friction.</div>
-      <button class="mk-btn mk-btn-primary" onclick="showContentTab(2)" id="sol-cta">Get your Pillier Plan</button>
+      <div style="font-family:var(--font-d);font-size:clamp(32px,5vw,52px);font-weight:800;color:var(--white);line-height:1.05;letter-spacing:-0.02em;margin:0 auto;max-width:820px;" id="sol-title">A fronteira, em cada canteiro</div>
+      <div style="font-size:17px;color:var(--text2);line-height:1.6;max-width:600px;margin:18px auto 28px;" id="sol-sub">Implante o Pillier em todos os seus canteiros. Ajude cada equipe a capturar instantaneamente, arquivar automaticamente e construir sem atrito.</div>
+      <button class="mk-btn mk-btn-primary" onclick="showContentTab(2)" id="sol-cta">Obtenha seu plano Pillier</button>
     </div>
 
     <!-- Product playground (interactive demo) -->
@@ -2793,55 +2811,55 @@ body.light-mode #ts-modal .ts-card{background:#fff;color:#10222b;border-color:rg
     <!-- AI Agents -->
     <div class="mk-section" style="padding-top:28px;">
       <div class="mk-agents">
-        <div class="mk-agent" id="sec-a1"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-camera"></i></span><div><h3 id="sol-a1-t">Capture Agent</h3><div class="role">photo &middot; voice</div></div></div><p id="sol-a1-d">Turns a photo or voice note into a structured incident record — description, cause, solution — in under 60 seconds.</p></div>
-        <div class="mk-agent" id="sec-a2"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-file-text"></i></span><div><h3 id="sol-a2-t">Docs Agent</h3><div class="role">PDF &middot; specs</div></div></div><p id="sol-a2-d">Reads PDF plans, contracts and specs. Extracts dimensions, references and requirements automatically.</p></div>
-        <div class="mk-agent" id="sec-a3"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-ruler-2"></i></span><div><h3 id="sol-a3-t">Norm Agent</h3><div class="role">ABNT &middot; DTU &middot; NF</div></div></div><p id="sol-a3-d">Suggests the standards likely relevant — ABNT NBR, NRs, DTU, Eurocode. References to verify.</p></div>
-        <div class="mk-agent" id="sec-a4"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-chart-dots-3"></i></span><div><h3 id="sol-a4-t">Insight Agent</h3><div class="role">cross-project</div></div></div><p id="sol-a4-d">Detects recurring patterns and risk trends across projects. Surfaces issues before they escalate.</p></div>
+        <div class="mk-agent" id="sec-a1"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-camera"></i></span><div><h3 id="sol-a1-t">Agente Captura</h3><div class="role">photo &middot; voice</div></div></div><p id="sol-a1-d">Transforma uma foto ou nota de voz em um registro estruturado — descrição, causa, solução — em menos de 60 segundos.</p></div>
+        <div class="mk-agent" id="sec-a2"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-file-text"></i></span><div><h3 id="sol-a2-t">Agente Docs</h3><div class="role">PDF &middot; specs</div></div></div><p id="sol-a2-d">Lê plantas PDF, contratos e especificações. Extrai dimensões, referências e requisitos automaticamente.</p></div>
+        <div class="mk-agent" id="sec-a3"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-ruler-2"></i></span><div><h3 id="sol-a3-t">Agente Norma</h3><div class="role">ABNT &middot; DTU &middot; NF</div></div></div><p id="sol-a3-d">Sugere as normas provavelmente aplicáveis — ABNT NBR, NRs, DTU, Eurocode. Referências para verificar.</p></div>
+        <div class="mk-agent" id="sec-a4"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-chart-dots-3"></i></span><div><h3 id="sol-a4-t">Agente Insight</h3><div class="role">cross-project</div></div></div><p id="sol-a4-d">Detecta padrões recorrentes e tendências de risco entre projetos. Traz problemas à tona antes que se agravem.</p></div>
       </div>
     </div>
 
     <!-- How it works flow -->
     <div class="mk-section" style="padding-top:16px;">
-      <div class="mk-head" style="margin-bottom:32px;"><h2 id="mks-flow-title">Capture to insight, in one flow</h2></div>
+      <div class="mk-head" style="margin-bottom:32px;"><h2 id="mks-flow-title">Da captura ao insight, em um só fluxo</h2></div>
       <div class="mk-flow">
-        <div class="mk-flow-step"><div class="mk-flow-num">1</div><h3 id="mks-s1t">Capture</h3><p id="mks-s1d">Photo or voice from the field — works offline, syncs when you are back in range.</p></div>
-        <div class="mk-flow-step"><div class="mk-flow-num">2</div><h3 id="mks-s2t">Analyse</h3><p id="mks-s2d">AI writes the description, probable cause and recommended action.</p></div>
-        <div class="mk-flow-step"><div class="mk-flow-num">3</div><h3 id="mks-s3t">Reference</h3><p id="mks-s3d">The relevant ABNT / NR / DTU norm is attached, ready to verify.</p></div>
-        <div class="mk-flow-step"><div class="mk-flow-num">4</div><h3 id="mks-s4t">Remember</h3><p id="mks-s4d">Every record feeds the knowledge base — searchable, and mined for patterns.</p></div>
+        <div class="mk-flow-step"><div class="mk-flow-num">1</div><h3 id="mks-s1t">Capturar</h3><p id="mks-s1d">Foto ou voz do campo — funciona offline e sincroniza quando volta o sinal.</p></div>
+        <div class="mk-flow-step"><div class="mk-flow-num">2</div><h3 id="mks-s2t">Analisar</h3><p id="mks-s2d">A IA escreve a descrição, a causa provável e a ação recomendada.</p></div>
+        <div class="mk-flow-step"><div class="mk-flow-num">3</div><h3 id="mks-s3t">Referenciar</h3><p id="mks-s3d">A norma ABNT / NR / DTU pertinente é anexada, pronta para verificar.</p></div>
+        <div class="mk-flow-step"><div class="mk-flow-num">4</div><h3 id="mks-s4t">Memorizar</h3><p id="mks-s4d">Cada registro alimenta a base de conhecimento — pesquisável e minerado por padrões.</p></div>
       </div>
     </div>
 
     <!-- Pillier Core -->
     <div class="mk-section" style="padding-top:16px;">
       <div class="mk-agents">
-        <div class="mk-agent" id="sec-c1"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-message-chatbot"></i></span><h3 id="sol-c1-t">Pillier IA Chat</h3></div><p id="sol-c1-d">A construction-specialized assistant that answers technical questions using your project data and applicable norms.</p></div>
-        <div class="mk-agent" id="sec-c2"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-layout-dashboard"></i></span><h3 id="sol-c2-t">Dashboard</h3></div><p id="sol-c2-d">KPIs, AI insights and real-time incident status across all your projects — one view, always up to date.</p></div>
-        <div class="mk-agent" id="sec-c3"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-database"></i></span><h3 id="sol-c3-t">Knowledge Base</h3></div><p id="sol-c3-d">Every incident becomes searchable knowledge. Your next project starts smarter than your last.</p></div>
-        <div class="mk-agent" id="sec-c4"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-users"></i></span><h3 id="sol-c4-t">Real-time Collaboration</h3></div><p id="sol-c4-d">Instant notifications between team members when an incident is captured or resolved.</p></div>
+        <div class="mk-agent" id="sec-c1"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-message-chatbot"></i></span><h3 id="sol-c1-t">Pillier IA Chat</h3></div><p id="sol-c1-d">Assistente especializado em construção que responde perguntas técnicas com base nos dados do projeto e normas.</p></div>
+        <div class="mk-agent" id="sec-c2"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-layout-dashboard"></i></span><h3 id="sol-c2-t">Dashboard</h3></div><p id="sol-c2-d">KPIs, insights de IA e status de incidentes em tempo real em todos os seus projetos — uma visão, sempre atualizada.</p></div>
+        <div class="mk-agent" id="sec-c3"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-database"></i></span><h3 id="sol-c3-t">Base de conhecimento</h3></div><p id="sol-c3-d">Cada incidente vira conhecimento pesquisável. Seu próximo projeto começa mais inteligente.</p></div>
+        <div class="mk-agent" id="sec-c4"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-users"></i></span><h3 id="sol-c4-t">Colaboração em tempo real</h3></div><p id="sol-c4-d">Notificações instantâneas entre membros da equipe quando um incidente é registrado ou resolvido.</p></div>
       </div>
     </div>
 
     <!-- Industries -->
     <div class="mk-section" style="padding-top:16px;">
-      <div class="mk-head" style="margin-bottom:26px;"><h2 id="mks-ind-title">Built for how your sector works</h2></div>
+      <div class="mk-head" style="margin-bottom:26px;"><h2 id="mks-ind-title">Feito para como o seu setor trabalha</h2></div>
       <div class="mk-agents cols3">
-        <div class="mk-agent" id="sec-i1"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-building-skyscraper"></i></span><h3 id="sol-i1-t">Civil construction</h3></div><p id="sol-i1-d">Residential and commercial builds, from single-family homes to high-rise developments. Foundation, structural, quality control and safety captures.</p></div>
-        <div class="mk-agent" id="sec-i2"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-ruler"></i></span><h3 id="sol-i2-t">Architecture</h3></div><p id="sol-i2-d">Track how designs are executed on site, document deviations, and maintain a visual record of the built reality vs. the planned design.</p></div>
-        <div class="mk-agent" id="sec-i3"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-building-bridge-2"></i></span><h3 id="sol-i3-t">Structural engineering</h3></div><p id="sol-i3-d">Cracks, deflections, settlement — captured, referenced against NBR 6118 or Eurocode 2, and turned into defensible records.</p></div>
-        <div class="mk-agent" id="sec-i4"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-road"></i></span><h3 id="sol-i4-t">Infrastructure &amp; public works</h3></div><p id="sol-i4-d">Roads, bridges, tunnels, water systems. Timestamped, geotagged, norm-referenced records that hold up in audits and tenders.</p></div>
-        <div class="mk-agent" id="sec-i5"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-recycle"></i></span><h3 id="sol-i5-t">Renovation &amp; retrofit</h3></div><p id="sol-i5-d">Document what plans do not show: hidden pipes, unexpected structural conditions, materials that no longer meet current codes.</p></div>
-        <div class="mk-agent" id="sec-i6"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-buildings"></i></span><h3 id="sol-i6-t">Real estate development</h3></div><p id="sol-i6-d">Portfolio-scale visibility across multiple sites. Cross-project pattern detection and early warning on troubled projects.</p></div>
+        <div class="mk-agent" id="sec-i1"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-building-skyscraper"></i></span><h3 id="sol-i1-t">Construção civil</h3></div><p id="sol-i1-d">Residencial e comercial, de casas unifamiliares a edifícios de grande porte. Fundação, estrutura, qualidade e segurança.</p></div>
+        <div class="mk-agent" id="sec-i2"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-ruler"></i></span><h3 id="sol-i2-t">Arquitetura</h3></div><p id="sol-i2-d">Acompanhe a execução dos projetos em obra, documente desvios, mantenha registro visual do construído vs. o projetado.</p></div>
+        <div class="mk-agent" id="sec-i3"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-building-bridge-2"></i></span><h3 id="sol-i3-t">Engenharia estrutural</h3></div><p id="sol-i3-d">Fissuras, deformações, recalques — capturados, referenciados à NBR 6118 ou Eurocode 2, virados em registros defensáveis.</p></div>
+        <div class="mk-agent" id="sec-i4"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-road"></i></span><h3 id="sol-i4-t">Infraestrutura &amp; obras públicas</h3></div><p id="sol-i4-d">Rodovias, pontes, túneis, redes. Registros com data/hora, geolocalização e referência normativa que se sustentam em auditorias.</p></div>
+        <div class="mk-agent" id="sec-i5"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-recycle"></i></span><h3 id="sol-i5-t">Reforma &amp; retrofit</h3></div><p id="sol-i5-d">Documente o que as plantas não mostram: tubulações escondidas, condições inesperadas, materiais fora de norma.</p></div>
+        <div class="mk-agent" id="sec-i6"><div class="mk-agent-top"><span class="mk-agent-ico"><i class="ti ti-buildings"></i></span><h3 id="sol-i6-t">Incorporação imobiliária</h3></div><p id="sol-i6-d">Visibilidade de portfólio em vários canteiros. Detecção de padrões e alerta precoce em obras problemáticas.</p></div>
       </div>
     </div>
 
     <!-- CTA -->
     <div class="mk-section" style="padding-top:16px;">
       <div class="mk-cta">
-        <h2 id="mks-cta-t">See it on your own site</h2>
-        <p id="mks-cta-p">Bring one active project. We will show you a real capture-to-record in your first session.</p>
+        <h2 id="mks-cta-t">Veja no seu próprio canteiro</h2>
+        <p id="mks-cta-p">Traga um canteiro ativo. Mostramos uma captura-a-registro real já na primeira sessão.</p>
         <div class="mk-cta-row">
-          <a class="mk-btn mk-btn-primary" href="/planos" onclick="showContentTab(2);return false;" id="mks-cta-b1">See plans</a>
-          <a class="mk-btn mk-btn-ghost" href="https://cal.com/pillier-ai-demo/30min" target="_blank" id="mks-cta-b2">Book a demo</a>
+          <a class="mk-btn mk-btn-primary" href="/planos" onclick="showContentTab(2);return false;" id="mks-cta-b1">Ver planos</a>
+          <a class="mk-btn mk-btn-ghost" href="https://cal.com/pillier-ai-demo/30min" target="_blank" id="mks-cta-b2">Agendar demo</a>
         </div>
       </div>
     </div>
@@ -2851,18 +2869,18 @@ body.light-mode #ts-modal .ts-card{background:#fff;color:#10222b;border-color:rg
   <div id="content-panel-2" class="content-panel" style="display:none;padding:0;">
     <!-- Hero -->
     <div class="mk-section" style="text-align:center;padding-bottom:12px;">
-      <div style="font-family:var(--font-d);font-size:clamp(32px,5vw,52px);font-weight:800;color:var(--white);line-height:1.05;letter-spacing:-0.02em;margin:0 auto;" id="plan-title">Plans</div>
-      <div style="font-size:17px;color:var(--text2);line-height:1.6;max-width:520px;margin:16px auto 0;" id="plan-sub">Start with a free trial. Scale as your team grows.</div>
+      <div style="font-family:var(--font-d);font-size:clamp(32px,5vw,52px);font-weight:800;color:var(--white);line-height:1.05;letter-spacing:-0.02em;margin:0 auto;" id="plan-title">Planos</div>
+      <div style="font-size:17px;color:var(--text2);line-height:1.6;max-width:520px;margin:16px auto 0;" id="plan-sub">Comece com um teste gratuito. Escale conforme sua equipe cresce.</div>
     </div>
 
     <!-- Billing toggle -->
     <div class="mk-section" style="padding-top:24px;padding-bottom:0;">
       <div style="display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:36px;">
         <div class="mk-seg" role="group" aria-label="Billing period">
-          <button class="active" id="plan-term-mo" onclick="setPlanTerm('mo')">Monthly</button>
-          <button id="plan-term-yr" onclick="setPlanTerm('yr')">Annual</button>
+          <button class="active" id="plan-term-mo" onclick="setPlanTerm('mo')">Mensal</button>
+          <button id="plan-term-yr" onclick="setPlanTerm('yr')">Anual</button>
         </div>
-        <div style="font-size:12px;color:var(--text3);" id="mkp-curnote">Prices shown in your language's currency.</div>
+        <div style="font-size:12px;color:var(--text3);" id="mkp-curnote">Preços exibidos na moeda do seu idioma.</div>
       </div>
 
       <div class="mk-plans">
@@ -2870,35 +2888,35 @@ body.light-mode #ts-modal .ts-card{background:#fff;color:#10222b;border-color:rg
         <div class="mk-plan feat">
           <span class="mk-plan-badge" id="mkp-popular">POPULAR</span>
           <h3>Starter</h3>
-          <div class="ptag" id="p-starter-tag">For solo professionals</div>
-          <div class="mk-price"><span class="amt" id="p-starter-price">R$ 299</span><span class="per" id="p-starter-per">/mo</span></div>
-          <div class="mk-price-sub" id="p-starter-period">billed monthly</div>
-          <a class="mk-btn mk-btn-primary" href="#" onclick="showAuthPage();return false;" id="p-starter-cta">Try Pillier</a>
+          <div class="ptag" id="p-starter-tag">Para profissionais autônomos</div>
+          <div class="mk-price"><span class="amt" id="p-starter-price">R$ 299</span><span class="per" id="p-starter-per">/mês</span></div>
+          <div class="mk-price-sub" id="p-starter-period">cobrado mensalmente</div>
+          <a class="mk-btn mk-btn-primary" href="#" onclick="showAuthPage();return false;" id="p-starter-cta">Testar Pillier</a>
           <div class="mk-fl">
-            <div style="font-size:13px;font-weight:600;color:var(--white);margin-bottom:2px;" id="p-starter-inc-label">Includes:</div>
-            <div class="fl"><i class="ti ti-check"></i><span id="p-starter-f1">1 active project</span></div>
-            <div class="fl"><i class="ti ti-check"></i><span id="p-starter-f2">Photo &amp; voice capture</span></div>
+            <div style="font-size:13px;font-weight:600;color:var(--white);margin-bottom:2px;" id="p-starter-inc-label">Inclui:</div>
+            <div class="fl"><i class="ti ti-check"></i><span id="p-starter-f1">1 projeto ativo</span></div>
+            <div class="fl"><i class="ti ti-check"></i><span id="p-starter-f2">Captura por foto e voz</span></div>
             <div class="fl"><i class="ti ti-check"></i><span id="p-starter-f3">Pillier IA Chat</span></div>
-            <div class="fl"><i class="ti ti-check"></i><span id="p-starter-f4">Dashboard with KPIs</span></div>
-            <div class="fl"><i class="ti ti-check"></i><span id="p-starter-f5">Capture Agent + Norm Agent</span></div>
-            <div class="fl"><i class="ti ti-check"></i><span id="p-starter-f6">Email support</span></div>
+            <div class="fl"><i class="ti ti-check"></i><span id="p-starter-f4">Dashboard com KPIs</span></div>
+            <div class="fl"><i class="ti ti-check"></i><span id="p-starter-f5">Agente Captura + Agente Norma</span></div>
+            <div class="fl"><i class="ti ti-check"></i><span id="p-starter-f6">Suporte por e-mail</span></div>
           </div>
         </div>
         <!-- Pro -->
         <div class="mk-plan">
           <h3>Pro</h3>
-          <div class="ptag" id="p-pro-tag">For growing practices</div>
-          <div class="mk-price"><span class="amt" id="p-pro-price">R$ 499</span><span class="per" id="p-pro-per">/mo</span></div>
-          <div class="mk-price-sub" id="p-pro-period">billed monthly</div>
-          <a class="mk-btn mk-btn-ghost" href="#" onclick="showAuthPage();return false;" id="p-pro-cta">Try Pillier</a>
+          <div class="ptag" id="p-pro-tag">Para escritórios em crescimento</div>
+          <div class="mk-price"><span class="amt" id="p-pro-price">R$ 499</span><span class="per" id="p-pro-per">/mês</span></div>
+          <div class="mk-price-sub" id="p-pro-period">cobrado mensalmente</div>
+          <a class="mk-btn mk-btn-ghost" href="#" onclick="showAuthPage();return false;" id="p-pro-cta">Testar Pillier</a>
           <div class="mk-fl">
-            <div style="font-size:13px;font-weight:600;color:var(--white);margin-bottom:2px;" id="p-pro-inc-label">Everything in Starter, plus:</div>
-            <div class="fl"><i class="ti ti-check"></i><span id="p-pro-f1">Unlimited projects</span></div>
-            <div class="fl"><i class="ti ti-check"></i><span id="p-pro-f2">Docs Agent (PDF analysis)</span></div>
-            <div class="fl"><i class="ti ti-check"></i><span id="p-pro-f3">Insight Agent (pattern detection)</span></div>
-            <div class="fl"><i class="ti ti-check"></i><span id="p-pro-f4">Custom report exports</span></div>
-            <div class="fl"><i class="ti ti-check"></i><span id="p-pro-f5">Advanced knowledge base search</span></div>
-            <div class="fl"><i class="ti ti-check"></i><span id="p-pro-f6">Priority support</span></div>
+            <div style="font-size:13px;font-weight:600;color:var(--white);margin-bottom:2px;" id="p-pro-inc-label">Tudo do Starter, mais:</div>
+            <div class="fl"><i class="ti ti-check"></i><span id="p-pro-f1">Projetos ilimitados</span></div>
+            <div class="fl"><i class="ti ti-check"></i><span id="p-pro-f2">Agente Docs (análise de PDF)</span></div>
+            <div class="fl"><i class="ti ti-check"></i><span id="p-pro-f3">Agente Insight (detecção de padrões)</span></div>
+            <div class="fl"><i class="ti ti-check"></i><span id="p-pro-f4">Exportação de relatórios personalizados</span></div>
+            <div class="fl"><i class="ti ti-check"></i><span id="p-pro-f5">Busca avançada na base</span></div>
+            <div class="fl"><i class="ti ti-check"></i><span id="p-pro-f6">Suporte prioritário</span></div>
           </div>
         </div>
       </div>
@@ -2907,34 +2925,34 @@ body.light-mode #ts-modal .ts-card{background:#fff;color:#10222b;border-color:rg
       <div class="mk-plans" style="margin-top:20px;">
         <div class="mk-plan ghost">
           <h3>Team</h3>
-          <div class="ptag" id="p-team-tag">For small &amp; mid-size firms</div>
-          <div class="mk-price"><span class="amt" id="p-team-price">R$ 999</span><span class="per" id="p-team-per">/mo</span></div>
-          <div class="mk-price-sub" id="p-team-period">billed monthly</div>
-          <a class="mk-btn mk-btn-ghost" href="#" onclick="showAuthPage();return false;" id="p-team-cta">Try Pillier</a>
+          <div class="ptag" id="p-team-tag">Para pequenas e médias empresas</div>
+          <div class="mk-price"><span class="amt" id="p-team-price">R$ 999</span><span class="per" id="p-team-per">/mês</span></div>
+          <div class="mk-price-sub" id="p-team-period">cobrado mensalmente</div>
+          <a class="mk-btn mk-btn-ghost" href="#" onclick="showAuthPage();return false;" id="p-team-cta">Testar Pillier</a>
           <div class="mk-fl">
-            <div style="font-size:13px;font-weight:600;color:var(--white);margin-bottom:2px;" id="p-team-inc-label">Everything in Pro, plus:</div>
-            <div class="fl"><i class="ti ti-check"></i><span id="p-team-f1">Up to 15 team members</span></div>
-            <div class="fl"><i class="ti ti-check"></i><span id="p-team-f2">Real-time collaboration</span></div>
-            <div class="fl"><i class="ti ti-check"></i><span id="p-team-f3">Team notifications &amp; alerts</span></div>
-            <div class="fl"><i class="ti ti-check"></i><span id="p-team-f4">Shared knowledge base</span></div>
-            <div class="fl"><i class="ti ti-check"></i><span id="p-team-f5">Central billing</span></div>
-            <div class="fl"><i class="ti ti-check"></i><span id="p-team-f6">Onboarding session included</span></div>
+            <div style="font-size:13px;font-weight:600;color:var(--white);margin-bottom:2px;" id="p-team-inc-label">Tudo do Pro, mais:</div>
+            <div class="fl"><i class="ti ti-check"></i><span id="p-team-f1">Até 15 membros da equipe</span></div>
+            <div class="fl"><i class="ti ti-check"></i><span id="p-team-f2">Colaboração em tempo real</span></div>
+            <div class="fl"><i class="ti ti-check"></i><span id="p-team-f3">Notificações e alertas de equipe</span></div>
+            <div class="fl"><i class="ti ti-check"></i><span id="p-team-f4">Base de conhecimento compartilhada</span></div>
+            <div class="fl"><i class="ti ti-check"></i><span id="p-team-f5">Cobrança centralizada</span></div>
+            <div class="fl"><i class="ti ti-check"></i><span id="p-team-f6">Sessão de onboarding incluída</span></div>
           </div>
         </div>
         <div class="mk-plan ghost">
           <h3>Enterprise</h3>
-          <div class="ptag" id="p-ent-tag">For large operations</div>
-          <div class="mk-price"><span class="amt" style="font-size:26px;" id="p-ent-price">Contact us</span></div>
-          <div class="mk-price-sub" id="p-ent-period">Custom pricing &amp; terms</div>
-          <a class="mk-btn mk-btn-ghost" href="https://cal.com/pillier-ai-demo/30min" target="_blank" id="p-ent-cta">Contact sales</a>
+          <div class="ptag" id="p-ent-tag">Para grandes operações</div>
+          <div class="mk-price"><span class="amt" style="font-size:26px;" id="p-ent-price">Fale conosco</span></div>
+          <div class="mk-price-sub" id="p-ent-period">Preços e termos personalizados</div>
+          <a class="mk-btn mk-btn-ghost" href="https://cal.com/pillier-ai-demo/30min" target="_blank" id="p-ent-cta">Contato comercial</a>
           <div class="mk-fl">
-            <div style="font-size:13px;font-weight:600;color:var(--white);margin-bottom:2px;" id="p-ent-inc-label">Everything in Team, plus:</div>
-            <div class="fl"><i class="ti ti-check"></i><span id="p-ent-f1">Unlimited team members</span></div>
+            <div style="font-size:13px;font-weight:600;color:var(--white);margin-bottom:2px;" id="p-ent-inc-label">Tudo do Team, mais:</div>
+            <div class="fl"><i class="ti ti-check"></i><span id="p-ent-f1">Membros ilimitados</span></div>
             <div class="fl"><i class="ti ti-check"></i><span id="p-ent-f2">SSO (Single Sign-On)</span></div>
-            <div class="fl"><i class="ti ti-check"></i><span id="p-ent-f3">Role-based access control</span></div>
-            <div class="fl"><i class="ti ti-check"></i><span id="p-ent-f4">Custom integrations (ERP, BIM)</span></div>
-            <div class="fl"><i class="ti ti-check"></i><span id="p-ent-f5">Dedicated account manager</span></div>
-            <div class="fl"><i class="ti ti-check"></i><span id="p-ent-f6">SLA guarantee &amp; audit logs</span></div>
+            <div class="fl"><i class="ti ti-check"></i><span id="p-ent-f3">Controle de acesso por perfil</span></div>
+            <div class="fl"><i class="ti ti-check"></i><span id="p-ent-f4">Integrações personalizadas (ERP, BIM)</span></div>
+            <div class="fl"><i class="ti ti-check"></i><span id="p-ent-f5">Gerente de conta dedicado</span></div>
+            <div class="fl"><i class="ti ti-check"></i><span id="p-ent-f6">Garantia de SLA e logs de auditoria</span></div>
           </div>
         </div>
       </div>
@@ -2943,16 +2961,16 @@ body.light-mode #ts-modal .ts-card{background:#fff;color:#10222b;border-color:rg
     <!-- Bottom CTA banner -->
     <div class="mk-section" style="padding-top:16px;">
       <div class="mk-cta">
-        <h2 id="cta-banner-t">Not sure which plan is right?</h2>
-        <p id="cta-banner-sub">Talk to us — we will help you choose the right fit for your team.</p>
-        <div class="mk-cta-row"><a class="mk-btn mk-btn-primary" href="https://cal.com/pillier-ai-demo/30min" target="_blank" id="cta-banner-btn">Schedule a demo</a></div>
+        <h2 id="cta-banner-t">Não sabe qual plano escolher?</h2>
+        <p id="cta-banner-sub">Fale com a gente — vamos ajudar a escolher o melhor para sua equipe.</p>
+        <div class="mk-cta-row"><a class="mk-btn mk-btn-primary" href="https://cal.com/pillier-ai-demo/30min" target="_blank" id="cta-banner-btn">Agendar uma demo</a></div>
       </div>
     </div>
   </div>
 
   <!-- TAB 3: Resources -->
   <div id="content-panel-3" class="content-panel" style="display:none;padding:0;">
-    <div class="rs-wrap"><div id="res-list-view"></div><div id="res-reader-view" style="display:none;"></div></div>
+    <div class="rs-wrap"><div id="res-list-view"><!-- Static ebook list: read by search engines and AI assistants that do not run JavaScript; replaced by the live library on load. --><div class="rs-static"><h1>Pillier Pesquisa: ebooks grátis sobre gestão de obra</h1><p>Relatórios e análises para líderes da construção civil.</p><ul><li><a href="/recursos/incidentes">Gestão de Incidentes Críticos: O Acidente Grave Sempre Avisa Antes</a><p>Para cada lesão grave há, em média, ~600 quase-acidentes: o aviso existe, falta quem escute. Em 2022 o Brasil registrou 612,9 mil acidentes de trabalho e 2.538 óbitos, quase 7 por dia. Gerir quase-acidentes com a disciplina de prazo e custo reduz os eventos graves.</p></li><li><a href="/recursos/roi">Do Papel à IA Preditiva: O ROI do Registro Automatizado em Canteiros</a><p>Em canteiros manuais, o atraso do campo ao escritório é de 24 a 72 horas; num canteiro conectado, é tempo real. No estágio preditivo, o registro leva menos de 60 segundos e a completude dos dados passa de 95%. Programas digitais relatam 20–35% menos incidentes registráveis.</p></li><li><a href="/recursos/financeiro">Controle Financeiro no Canteiro: O Fim do Ponto Cego das Microcompras</a><p>A margem não vaza nos grandes contratos: vaza nas microcompras invisíveis do dia a dia. Dados falhos e má comunicação respondem por 48% do retrabalho na construção nos EUA (US$ 31,3 bi/ano). A captura com IA no canteiro reduz o fechamento de semanas para quase tempo real.</p></li><li><a href="/recursos/memoria">Memória da Obra: Quando o Engenheiro Sai, a Obra Esquece</a><p>42% do conhecimento de uma função existe só na cabeça de quem a exerce. Cada profissional perde 5,3 h por semana esperando informação ou refazendo o que já existia. Com 108% de rotatividade anual, a equipe muda mais rápido do que a obra termina.</p></li><li><a href="/recursos/rdo">RDO Automatizado: Quem Não Registra, Não Prova</a><p>A principal causa de disputas na construção são pleitos mal fundamentados. Uma disputa de construção dura em média 15,4 meses. O RDO capturado no momento, com foto, clima e ciência do contratante, é a melhor defesa.</p></li><li><a href="/recursos/fechamento">Fechamento em Tempo Real: Na Reforma Tributária, Despesa Sem Nota É Imposto Perdido</a><p>Na reforma tributária, o crédito de IBS e CBS depende de nota fiscal eletrônica idônea (art. 47 da LC 214/2025). O Pix paga em segundos, mas uma nota leva em média 17,4 dias para ser processada. Capturar a nota junto com o pagamento recupera crédito que hoje se perde nas microcompras.</p></li><li><a href="/recursos/memoria-da-empresa">Memória da Empresa: O Erro Que Sua Construtora Já Pagou Duas Vezes</a><p>O erro evitável custa 5% do valor da obra, acima da margem média do setor. Com custos indiretos, o erro chega a 10–25% do custo da obra. Quatro construtoras economizaram 9,83% do valor das obras treinando equipes para prevenir erros.</p></li><li><a href="/recursos/rdo-digital">RDO Digital e Valor Probatório: O Registro Que Resiste à Perícia</a><p>Uma arbitragem com perícia dura em média 49 meses; sem perícia, 21. Os honorários periciais custam em média R$ 408 mil por arbitragem com laudo. Vale o registro que prova autoria, data e hora e que ninguém o alterou.</p></li></ul></div></div><div id="res-reader-view" style="display:none;"></div></div>
   </div>
 
   <!-- Footer -->
@@ -2969,44 +2987,44 @@ body.light-mode #ts-modal .ts-card{background:#fff;color:#10222b;border-color:rg
             <svg width="43" height="41" viewBox="0 0 322.71 305.81" fill="none" aria-hidden="true" style="flex-shrink:0;display:block;"><path fill="#2cbeff" d="M67.65,200.75H0v105.05h67.66v-9.23s.12-52.48,0-95.83ZM67.66,305.81V56.54h136.2c10.68,0,19.73,1.78,27.15,5.34,7.41,3.55,13.05,8.6,16.91,15.13,3.86,6.54,5.78,14.39,5.78,23.59,0,13.65-4.38,24.33-13.14,32.05-8.75,7.73-20.98,11.57-36.71,11.57h-79.66l-56.55,56.51,154.91.03c20.18,0,37.74-4.3,52.73-12.9,14.99-8.62,26.63-20.55,34.94-35.83,8.3-15.28,12.48-32.56,12.48-51.86s-4.09-36.87-12.25-51.87c-8.16-14.97-19.59-26.77-34.27-35.38-14.68-8.6-31.97-12.91-51.86-12.91H62C27.77,0,0,27.77,0,62v82.22l67.61,56.53"/></svg>
             <span>Pillier</span>
           </a>
-          <div style="font-size:14px;color:var(--text2);line-height:1.6;margin-top:16px;max-width:320px;" id="footer-tagline">Capture the field. Keep the knowledge.</div>
+          <div style="font-size:14px;color:var(--text2);line-height:1.6;margin-top:16px;max-width:320px;" id="footer-tagline">Capture o campo. Preserve o conhecimento.</div>
           <div style="display:flex;gap:12px;margin-top:20px;">
             <a href="mailto:dyken@pillier.com.br" style="display:flex;align-items:center;gap:6px;color:var(--text2);text-decoration:none;font-size:13px;transition:color 0.15s;" onmouseover="this.style.color='#2cbeff'" onmouseout="this.style.color='var(--text2)'"><i class="ti ti-mail" style="font-size:16px;"></i> dyken@pillier.com.br</a>
           </div>
         </div>
         <!-- Product -->
         <div>
-          <div style="font-size:12px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;" id="footer-h1">Product</div>
+          <div style="font-size:12px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;" id="footer-h1">Produto</div>
           <div style="display:flex;flex-direction:column;gap:10px;">
-            <a href="/produto" onclick="showContentPage(1);return false;" style="color:var(--text2);font-size:13px;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='#2cbeff'" onmouseout="this.style.color='var(--text2)'" id="footer-l1">Solutions</a>
-            <a href="/planos" onclick="showContentPage(2);return false;" style="color:var(--text2);font-size:13px;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='#2cbeff'" onmouseout="this.style.color='var(--text2)'" id="footer-l2">Plans</a>
-            <a href="/recursos" onclick="showContentPage(3);return false;" style="color:var(--text2);font-size:13px;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='#2cbeff'" onmouseout="this.style.color='var(--text2)'" id="footer-l3">Resources</a>
-            <a href="#" onclick="showAuthPage();return false;" style="color:var(--text2);font-size:13px;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='#2cbeff'" onmouseout="this.style.color='var(--text2)'" id="footer-l4">Sign in</a>
+            <a href="/produto" onclick="showContentPage(1);return false;" style="color:var(--text2);font-size:13px;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='#2cbeff'" onmouseout="this.style.color='var(--text2)'" id="footer-l1">Produto</a>
+            <a href="/planos" onclick="showContentPage(2);return false;" style="color:var(--text2);font-size:13px;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='#2cbeff'" onmouseout="this.style.color='var(--text2)'" id="footer-l2">Planos</a>
+            <a href="/recursos" onclick="showContentPage(3);return false;" style="color:var(--text2);font-size:13px;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='#2cbeff'" onmouseout="this.style.color='var(--text2)'" id="footer-l3">Recursos</a>
+            <a href="#" onclick="showAuthPage();return false;" style="color:var(--text2);font-size:13px;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='#2cbeff'" onmouseout="this.style.color='var(--text2)'" id="footer-l4">Entrar</a>
           </div>
         </div>
         <!-- Company -->
         <div>
-          <div style="font-size:12px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;" id="footer-h2">Company</div>
+          <div style="font-size:12px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;" id="footer-h2">Empresa</div>
           <div style="display:flex;flex-direction:column;gap:10px;">
             <a href="/" onclick="showContentPage(0);return false;" style="color:var(--text2);font-size:13px;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='#2cbeff'" onmouseout="this.style.color='var(--text2)'" id="footer-l5">Home</a>
-            <a href="https://cal.com/pillier-ai-demo/30min" target="_blank" style="color:var(--text2);font-size:13px;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='#2cbeff'" onmouseout="this.style.color='var(--text2)'" id="footer-l6">Schedule a demo</a>
-            <a href="mailto:dyken@pillier.com.br" style="color:var(--text2);font-size:13px;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='#2cbeff'" onmouseout="this.style.color='var(--text2)'" id="footer-l7">Contact</a>
+            <a href="https://cal.com/pillier-ai-demo/30min" target="_blank" style="color:var(--text2);font-size:13px;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='#2cbeff'" onmouseout="this.style.color='var(--text2)'" id="footer-l6">Agendar uma demo</a>
+            <a href="mailto:dyken@pillier.com.br" style="color:var(--text2);font-size:13px;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='#2cbeff'" onmouseout="this.style.color='var(--text2)'" id="footer-l7">Contato</a>
           </div>
         </div>
         <!-- Legal -->
         <div>
           <div style="font-size:12px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;" id="footer-h3">Legal</div>
           <div style="display:flex;flex-direction:column;gap:10px;">
-            <a href="/privacy" onclick="showPrivacyPage();return false;" style="color:var(--text2);font-size:13px;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='#2cbeff'" onmouseout="this.style.color='var(--text2)'" id="footer-l8">Privacy Policy</a>
-            <a href="/terms" onclick="showTermsPage();return false;" style="color:var(--text2);font-size:13px;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='#2cbeff'" onmouseout="this.style.color='var(--text2)'" id="footer-l9">Terms of Service</a>
-            <a href="#" style="color:var(--text2);font-size:13px;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='#2cbeff'" onmouseout="this.style.color='var(--text2)'" id="footer-l10">Cookie Policy</a>
+            <a href="/privacy" onclick="showPrivacyPage();return false;" style="color:var(--text2);font-size:13px;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='#2cbeff'" onmouseout="this.style.color='var(--text2)'" id="footer-l8">Política de Privacidade</a>
+            <a href="/terms" onclick="showTermsPage();return false;" style="color:var(--text2);font-size:13px;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='#2cbeff'" onmouseout="this.style.color='var(--text2)'" id="footer-l9">Termos de Serviço</a>
+            <a href="#" style="color:var(--text2);font-size:13px;text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='#2cbeff'" onmouseout="this.style.color='var(--text2)'" id="footer-l10">Política de Cookies</a>
           </div>
         </div>
       </div>
       <!-- Bottom bar -->
       <div style="padding-top:28px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
-        <div style="font-size:12px;color:var(--text3);" id="footer-copyright">© 2026 Pillier. All rights reserved.</div>
-        <div style="font-size:12px;color:var(--text3);" id="footer-madewith">Built by engineers, for engineers.</div>
+        <div style="font-size:12px;color:var(--text3);" id="footer-copyright">© 2026 Pillier. Todos os direitos reservados.</div>
+        <div style="font-size:12px;color:var(--text3);" id="footer-madewith">Desenvolvido por engenheiros, para engenheiros.</div>
       </div>
     </div>
   </footer>
@@ -5750,7 +5768,12 @@ function changeLang(i){
   toast(STRINGS[i].toastWelcome||"Langue mise à jour");
 }
 
+// FAQ on Início: [fr, en, pt]
+var _FAQ=[{"q": ["Qu'est-ce que Pillier ?", "What is Pillier?", "O que é a Pillier?"], "a": ["Pillier est une plateforme de gestion de chantier par intelligence artificielle pour les entreprises du BTP, ingénieurs et architectes. Vous enregistrez photos et notes vocales sur le chantier : Pillier rédige le rapport journalier, documente les incidents avec cause probable, solution et normes applicables, et organise les finances et les documents du chantier.", "Pillier is an AI construction management platform for builders, engineers and architects. You record photos and voice notes on site and Pillier writes the daily report, documents incidents with probable cause, solution and applicable standards, and organizes the project's finances and documents.", "A Pillier é uma plataforma de gestão de obra com inteligência artificial para construtoras, engenheiros e arquitetos no Brasil. Você registra fotos e áudios no canteiro e a Pillier gera o RDO, documenta incidentes com causa provável, solução e normas aplicáveis, e organiza o financeiro e os documentos da obra."]}, {"q": ["Comment faire un rapport journalier numérique avec Pillier ?", "How do I create a digital daily report with Pillier?", "Como fazer um RDO digital com a Pillier?"], "a": ["Depuis votre téléphone, prenez des photos ou enregistrez une note vocale sur le chantier. Pillier assemble le rapport du jour avec les activités, l'équipe, les événements et les photos. Le responsable le relit, le signe dans la plateforme et le partage avec le client.", "From your phone, take photos or record a voice note on site. Pillier assembles the day's report with activities, crew, events and photos. The person in charge reviews it, signs it in the platform and shares it with the client.", "Pelo celular, tire fotos ou grave um áudio no canteiro. A Pillier monta o RDO do dia com atividades, equipe, ocorrências e fotos. O responsável revisa, assina na própria plataforma e compartilha o relatório com o cliente."]}, {"q": ["Un rapport journalier numérique a-t-il une valeur juridique ?", "Is a digital daily report legally valid?", "O RDO digital tem validade jurídica?"], "a": ["Un rapport journalier numérique peut servir de preuve lorsqu'il montre quand, où et par qui chaque enregistrement a été fait. Pillier enregistre la date, l'heure et la localisation de chaque capture, et le responsable peut signer le rapport électroniquement. Si votre contrat exige une signature avec certificat qualifié, vérifiez cette exigence avec le maître d'ouvrage.", "A digital daily report can serve as evidence when it shows when, where and by whom each record was made. Pillier records the date, time and location of every capture, and the person in charge can sign the report electronically. If your contract requires a signature with a qualified digital certificate (ICP-Brasil in Brazil), confirm that requirement with the client.", "O RDO digital pode servir como prova quando mostra quando, onde e por quem cada registro foi feito. A Pillier registra data, hora e localização de cada captura, e o responsável pode assinar o RDO eletronicamente. Se o seu contrato exigir assinatura com certificado digital ICP-Brasil, confirme esse requisito com o contratante."]}, {"q": ["Pillier fonctionne-t-il sur téléphone et sans internet ?", "Does Pillier work on a phone and offline?", "A Pillier funciona no celular e sem internet?"], "a": ["Oui. Pillier fonctionne dans le navigateur du téléphone et peut être installé comme une application. Sur un chantier sans réseau, les captures restent enregistrées et se synchronisent dès que la connexion revient.", "Yes. Pillier runs in your phone's browser and can be installed as an app. On a site with no signal, captures are saved and sync as soon as the connection returns.", "Sim. A Pillier funciona no navegador do celular e pode ser instalada como aplicativo. No canteiro sem sinal, as capturas ficam salvas e são sincronizadas quando a conexão volta."]}, {"q": ["Quelles normes techniques Pillier prend-il en compte ?", "Which technical standards does Pillier cover?", "Quais normas técnicas a Pillier considera?"], "a": ["Au Brésil, les normes ABNT NBR (par exemple la NBR 6118) et les normes réglementaires comme la NR-18 et la NR-35 ; en France, les DTU, les NF et les Eurocodes. Pillier suggère les normes probablement applicables à chaque incident, à vérifier par l'ingénieur.", "In Brazil, ABNT NBR standards (for example NBR 6118) and regulatory standards such as NR-18 and NR-35; in France, DTU, NF and Eurocodes. Pillier suggests the standards likely to apply to each incident for the engineer to verify.", "Normas brasileiras ABNT NBR (por exemplo a NBR 6118) e normas regulamentadoras como a NR-18 e a NR-35, além de DTU, NF e Eurocódigos para obras na França. A Pillier sugere as normas provavelmente aplicáveis a cada incidente para o engenheiro verificar."]}, {"q": ["Combien coûte Pillier ?", "How much does Pillier cost?", "Quanto custa a Pillier?"], "a": ["Les offres commencent avec Starter, puis Pro et Team ; Enterprise est sur devis. Les prix s'affichent dans votre devise sur la page Offres, et vous pouvez essayer gratuitement avant de vous abonner.", "Plans start with Starter, followed by Pro and Team; Enterprise is priced on request. Prices are shown in your currency on the Plans page, and you can try Pillier for free before subscribing.", "Os planos começam em R$ 299 por mês (Starter). O Pro custa R$ 499/mês, o Team R$ 999/mês e o Enterprise tem preço sob consulta. Você pode testar grátis antes de assinar."]}, {"q": ["À qui s'adresse Pillier ?", "Who is Pillier for?", "Para quem é a Pillier?"], "a": ["Aux ingénieurs et architectes indépendants, aux petites et moyennes entreprises du BTP, aux entreprises générales et aux grands groupes de construction, d'infrastructure et de promotion immobilière qui veulent documenter le chantier et retrouver une réponse en quelques secondes.", "Independent engineers and architects, small and mid-size builders, general contractors and large construction, infrastructure and real estate companies that want to document the site and find answers in seconds.", "Para engenheiros e arquitetos autônomos, pequenas e médias construtoras, empreiteiras e grandes empresas de construção, infraestrutura e incorporação que querem registrar a obra e encontrar respostas em segundos."]}];
+function _faqLang(){var L=lang===1?1:lang===0?0:2,t=document.getElementById("faq-title");if(t)t.textContent=["Questions fréquentes","Frequently asked questions","Perguntas frequentes"][L];
+  _FAQ.forEach(function(f,i){var q=document.getElementById("faq-q"+(i+1)),a=document.getElementById("faq-a"+(i+1));if(q)q.textContent=f.q[L];if(a)a.textContent=f.a[L];});}
 function applyLang(){
+  try{_faqLang();}catch(e){}
   translateNav();
   syncLangSelects();
   // Re-localize the marketing URL to the new language (e.g. /recursos → /resources)
@@ -14910,7 +14933,7 @@ function cloudSiteName(proj){
 (function(){
   var root=document.documentElement;if(!root.classList.contains("flow"))return;
   if(!("IntersectionObserver" in window)){root.classList.remove("flow");return;}
-  var GROUPS=".about-hero-grid,.mk-strip,.mk-vp,.mk-stats,#about-tagline,.mk-cta,.content-panel>.mk-section:first-child,.mk-head,.mk-agents,.mk-flow,#content-panel-2>.mk-section:nth-child(2),.mk-plans,.rs-head,.rs-sec,.rs-row,.rs-grid";
+  var GROUPS=".about-hero-grid,.mk-strip,.mk-vp,.mk-stats,#about-tagline,.mk-cta,.content-panel>.mk-section:first-child,.mk-head,.mk-agents,.mk-flow,#content-panel-2>.mk-section:nth-child(2),.mk-plans,.rs-head,.rs-sec,.rs-row,.rs-grid,.mk-faq";
   // Headline words, staggered (re-split when the language switch rewrites the text)
   ["about-headline","sol-title","plan-title"].forEach(function(id){var h=document.getElementById(id);if(!h)return;
     function split(){if(h.querySelector(".fl-w"))return;var words=h.textContent.trim().split(/\s+/);

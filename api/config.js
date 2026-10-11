@@ -40,6 +40,8 @@ export default async function handler(req, res) {
 
   // ---- GET /sitemap.xml (rewritten here): every public page + every ebook, in PT / EN / FR ----
   if (req.query && req.query.sitemap) return handleSitemap(req, res);
+  // ---- GET /llms.txt (rewritten here): plain-text summary of Pillier for AI assistants ----
+  if (req.query && req.query.llms) return handleLlms(req, res);
 
   // ---- GET: public frontend config ----
   res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
@@ -77,6 +79,69 @@ async function handleSitemap(req, res) {
   res.setHeader('Content-Type', 'application/xml; charset=utf-8');
   res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=3600');
   return res.status(200).send('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' + urls.join('\n') + '\n</urlset>\n');
+}
+
+// ---- llms.txt: what Pillier is, in plain text, for AI assistants (ChatGPT, Claude, Perplexity, Gemini).
+// The ebook list is read from the catalog in index.html, so new ebooks appear automatically. ----
+async function handleLlms(req, res) {
+  const base = 'https://pillier.com.br';
+  let ebooks = [];
+  try {
+    const host = req.headers['x-forwarded-host'] || req.headers.host || 'pillier.com.br';
+    const r = await fetch('https://' + host + '/index.html');
+    const html = r.ok ? await r.text() : '';
+    const a = html.indexOf('var RES_EBOOKS');
+    const block = html.slice(a, html.indexOf('];', a));
+    for (const part of block.split(/\n\s*\{id:/).slice(1)) {
+      const slug = (part.match(/slug:"([a-z0-9-]+)"/) || [])[1];
+      const title = (part.match(/title:\[(?:"(?:[^"\\]|\\.)*",){2}"((?:[^"\\]|\\.)*)"\]/) || [])[1];
+      const sum = (part.match(/pt:\["((?:[^"\\]|\\.)*)"/) || [])[1];
+      if (slug && title) ebooks.push({ slug, title: title.replace(/\\"/g, '"'), sum: (sum || '').replace(/\\"/g, '"') });
+    }
+  } catch (e) { /* summary still served without the ebook list */ }
+  const L = [];
+  L.push('# Pillier');
+  L.push('');
+  L.push('> Pillier é uma plataforma de gestão de obra com inteligência artificial para construtoras, engenheiros e arquitetos no Brasil: RDO digital (relatório diário de obra) gerado a partir de fotos e áudios do canteiro, registro de incidentes com causa provável, solução e normas aplicáveis (ABNT NBR, NR), financeiro da obra com histórico de preços, documentos e base de conhecimento. Site em português, com versões em inglês e francês.');
+  L.push('');
+  L.push('Pillier (English): an AI construction management platform for builders, engineers and architects. Photos and voice notes from the job site become the daily report (RDO), incident records with probable cause, fix and applicable standards, plus project finance, documents and a searchable knowledge base.');
+  L.push('');
+  L.push('## O que a Pillier faz');
+  L.push('- RDO digital: o relatório diário de obra é montado a partir das capturas do dia (atividades, equipe, ocorrências, fotos) e assinado eletronicamente pelo responsável.');
+  L.push('- Captura de incidentes por foto ou voz: a IA descreve o problema, a causa provável, a solução recomendada e as normas provavelmente aplicáveis (ABNT NBR, NR-18, NR-35; DTU, NF e Eurocódigos para obras na França).');
+  L.push('- Pillier IA: assistente especializado em construção que responde com base nos registros da própria obra e da empresa.');
+  L.push('- Financeiro da obra: despesas, notas e histórico de preços de materiais.');
+  L.push('- Plantas e documentos, base de conhecimento pesquisável, colaboração em equipe em tempo real.');
+  L.push('- Funciona no navegador do celular, pode ser instalada como aplicativo e salva capturas sem internet para sincronizar depois.');
+  L.push('');
+  L.push('## Para quem');
+  L.push('Engenheiros e arquitetos autônomos, pequenas e médias construtoras, empreiteiras, empresas de infraestrutura e incorporadoras.');
+  L.push('');
+  L.push('## Planos');
+  L.push('- Starter: R$ 299/mês (1 projeto ativo, captura por foto e voz, Pillier IA, dashboard)');
+  L.push('- Pro: R$ 499/mês (projetos ilimitados, análise de PDF, detecção de padrões)');
+  L.push('- Team: R$ 999/mês (até 15 membros, colaboração em tempo real)');
+  L.push('- Enterprise: sob consulta (SSO, integrações ERP/BIM, SLA)');
+  L.push('- Teste grátis disponível: ' + base + '/planos');
+  L.push('');
+  L.push('## Páginas');
+  L.push('- [Início](' + base + '/): visão geral');
+  L.push('- [Produto](' + base + '/produto): agentes de IA, fluxo de captura, setores atendidos');
+  L.push('- [Planos e preços](' + base + '/planos)');
+  L.push('- [Recursos](' + base + '/recursos): ebooks gratuitos sobre gestão de obra');
+  L.push('- [Agendar demonstração](https://cal.com/pillier-ai-demo/30min)');
+  if (ebooks.length) {
+    L.push('');
+    L.push('## Ebooks gratuitos (português)');
+    for (const e of ebooks) L.push('- [' + e.title + '](' + base + '/recursos/' + e.slug + ')' + (e.sum ? ': ' + e.sum : ''));
+  }
+  L.push('');
+  L.push('## Versões em outros idiomas');
+  L.push('- English: ' + base + '/en');
+  L.push('- Français: ' + base + '/fr');
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=3600');
+  return res.status(200).send(L.join('\n') + '\n');
 }
 
 // ---- POST: resources download lead ----

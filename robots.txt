@@ -3,3 +3,5 @@ Allow: /
 Disallow: /api/
 
 Sitemap: https://pillier.com.br/sitemap.xml
+
+# Plain-text summary for AI assistants: https://pillier.com.br/llms.txt

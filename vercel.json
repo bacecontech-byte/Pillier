@@ -11,6 +11,10 @@
       "destination": "/api/config?sitemap=1"
     },
     {
+      "source": "/llms.txt",
+      "destination": "/api/config?llms=1"
+    },
+    {
       "source": "/reports/Pillier_Riscos_Ebook_PT.pdf",
       "destination": "/reports/Pillier_Gestao_Incidentes_Criticos_Ebook_PT.pdf"
     },
