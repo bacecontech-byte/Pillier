@@ -21,46 +21,214 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<!-- Home scroll reveal (preview: ?flow=1 turns it on for the visit, ?flow=0 off). Set before first paint so nothing flashes. -->
-<script>try{var _fq=new URLSearchParams(location.search);if(_fq.has("flow"))sessionStorage.setItem("pillier_flow",_fq.get("flow")==="0"?"0":"1");if(sessionStorage.getItem("pillier_flow")==="1"&&!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("flow");}catch(e){}</script>
+<!-- Scroll reveal on all public tabs. On for everyone; ?flow=0 turns it off for the visit (?flow=1 back on); off with reduced motion. Set before first paint so nothing flashes. -->
+<script>try{var _fq=new URLSearchParams(location.search);if(_fq.has("flow"))sessionStorage.setItem("pillier_flow",_fq.get("flow")==="0"?"0":"1");if(sessionStorage.getItem("pillier_flow")!=="0"&&!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("flow");}catch(e){}</script>
 <style>
-/* Home scroll reveal: each block below starts hidden + offset; when ~22% of it is on screen it gets .in and its parts ease in */
-html.flow #content-panel-0{overflow-x:clip;}
-html.flow #content-panel-0 :is(#about-hero-sub,.hero-ask,.about-hero-grid>div:last-child,.mk-strip-lbl,.mk-norm,.mk-vp-text,.mk-device,.mk-stat,#about-tagline,.mk-section>[data-pg],.mk-cta,.mk-cta>*){transition:opacity .9s cubic-bezier(0.16,1,0.3,1) var(--d,0ms),transform 1.15s cubic-bezier(0.16,1,0.3,1) var(--d,0ms),border-color .15s !important;}
-html.flow #content-panel-0 .about-hero-grid:not(.in) :is(#about-hero-sub,.hero-ask,.about-hero-grid>div:last-child),
-html.flow #content-panel-0 .mk-strip:not(.in) :is(.mk-strip-lbl,.mk-norm),
-html.flow #content-panel-0 .mk-vp:not(.in) :is(.mk-vp-text,.mk-device),
-html.flow #content-panel-0 .mk-stats:not(.in) .mk-stat,
-html.flow #content-panel-0 #about-tagline:not(.in),
-html.flow #content-panel-0 .mk-section:not(.in)>[data-pg],
-html.flow #content-panel-0 .mk-cta:not(.in),html.flow #content-panel-0 .mk-cta:not(.in)>*{opacity:0;transform:var(--from,translate3d(0,72px,0) scale(.97));will-change:transform,opacity;}
-html.flow #content-panel-0 #about-hero-sub{--d:480ms;}
-html.flow #content-panel-0 .hero-ask{--d:620ms;--from:translate3d(-96px,0,0);}
-html.flow #content-panel-0 .about-hero-grid>div:last-child{--d:220ms;--from:translate3d(96px,0,0);}
-html.flow #content-panel-0 .mk-strip-lbl{--from:translate3d(0,-56px,0);}
-html.flow #content-panel-0 .mk-norm{--from:translate3d(96px,0,0);}
-html.flow #content-panel-0 .mk-norm:nth-child(1){--d:210ms}html.flow #content-panel-0 .mk-norm:nth-child(2){--d:300ms}html.flow #content-panel-0 .mk-norm:nth-child(3){--d:390ms}html.flow #content-panel-0 .mk-norm:nth-child(4){--d:480ms}html.flow #content-panel-0 .mk-norm:nth-child(5){--d:570ms}
-html.flow #content-panel-0 .mk-vp .mk-vp-text{--from:translate3d(-96px,0,0);}
-html.flow #content-panel-0 .mk-vp.rev .mk-vp-text{--from:translate3d(96px,0,0);}
-html.flow #content-panel-0 .mk-vp .mk-device{--d:160ms;--from:translate3d(96px,32px,0) rotate(4deg) scale(.92);}
-html.flow #content-panel-0 .mk-vp.rev .mk-device{--from:translate3d(-96px,32px,0) rotate(-4deg) scale(.92);}
-html.flow #content-panel-0 .mk-stat:nth-child(2n){--from:translate3d(0,-56px,0);}
-html.flow #content-panel-0 .mk-stat:nth-child(2){--d:110ms}html.flow #content-panel-0 .mk-stat:nth-child(3){--d:220ms}html.flow #content-panel-0 .mk-stat:nth-child(4){--d:330ms}
-html.flow #content-panel-0 #about-tagline{--d:120ms;}
-html.flow #content-panel-0 .mk-section>[data-pg],html.flow #content-panel-0 .mk-cta{--from:translate3d(0,56px,0) scale(.9);}
-html.flow #content-panel-0 .mk-cta>h2{--d:160ms;--from:translate3d(-96px,0,0);}
-html.flow #content-panel-0 .mk-cta>p{--d:260ms;--from:translate3d(96px,0,0);}
-html.flow #content-panel-0 .mk-cta>.mk-cta-row{--d:380ms;}
-/* headline words */
-html.flow #content-panel-0 .fl-w{display:inline-block;transition:opacity .8s cubic-bezier(0.16,1,0.3,1) var(--d,0ms),transform 1s cubic-bezier(0.16,1,0.3,1) var(--d,0ms),filter .8s cubic-bezier(0.16,1,0.3,1) var(--d,0ms);}
-html.flow #content-panel-0 .about-hero-grid:not(.in) .fl-w{opacity:0;transform:translate3d(0,.6em,0);filter:blur(8px);}
-/* micro-interactions on the same trigger: bars grow, tags pop */
-html.flow #content-panel-0 .mk-bar{transform-origin:bottom;transition:transform 1.2s cubic-bezier(0.16,1,0.3,1) var(--d,0ms);}
-html.flow #content-panel-0 .mk-vp:not(.in) .mk-bar{transform:scaleY(0);}
-html.flow #content-panel-0 .mk-col:nth-child(1) .mk-bar{--d:490ms}html.flow #content-panel-0 .mk-col:nth-child(2) .mk-bar{--d:600ms}html.flow #content-panel-0 .mk-col:nth-child(3) .mk-bar{--d:710ms}html.flow #content-panel-0 .mk-col:nth-child(4) .mk-bar{--d:820ms}html.flow #content-panel-0 .mk-col:nth-child(5) .mk-bar{--d:930ms}
-html.flow #content-panel-0 .mk-device .mk-tag{transition:opacity .4s cubic-bezier(0.16,1,0.3,1) var(--d,0ms),transform .7s cubic-bezier(.34,1.56,.64,1) var(--d,0ms);}
-html.flow #content-panel-0 .mk-vp:not(.in) .mk-device .mk-tag{opacity:0;transform:scale(.55);}
-html.flow #content-panel-0 .mk-device .mk-tag:nth-child(1){--d:780ms}html.flow #content-panel-0 .mk-device .mk-tag:nth-child(2){--d:910ms}html.flow #content-panel-0 .mk-device .mk-tag:nth-child(3){--d:1040ms}
+/* Scroll reveal on every public tab: each block starts hidden + offset; when ~22% of it is on screen it gets .in
+   and its parts ease in (staggered by --d). .fl-done hands transitions back to the elements (hover effects) after the reveal. */
+html.flow .content-panel{overflow-x:clip;}
+html.flow .content-panel .about-hero-grid:not(.in) #about-hero-sub,
+html.flow .content-panel .about-hero-grid:not(.in) .hero-ask,
+html.flow .content-panel .about-hero-grid:not(.in)>div:last-child,
+html.flow .content-panel .mk-strip:not(.in) .mk-strip-lbl,
+html.flow .content-panel .mk-strip:not(.in) .mk-norm:nth-child(1),
+html.flow .content-panel .mk-strip:not(.in) .mk-norm:nth-child(2),
+html.flow .content-panel .mk-strip:not(.in) .mk-norm:nth-child(3),
+html.flow .content-panel .mk-strip:not(.in) .mk-norm:nth-child(4),
+html.flow .content-panel .mk-strip:not(.in) .mk-norm:nth-child(5),
+html.flow .content-panel .mk-vp:not(.in) .mk-vp-text,
+html.flow .content-panel .mk-vp.rev:not(.in) .mk-vp-text,
+html.flow .content-panel .mk-vp:not(.in) .mk-device,
+html.flow .content-panel .mk-vp.rev:not(.in) .mk-device,
+html.flow .content-panel .mk-stats:not(.in) .mk-stat:nth-child(1),
+html.flow .content-panel .mk-stats:not(.in) .mk-stat:nth-child(2),
+html.flow .content-panel .mk-stats:not(.in) .mk-stat:nth-child(3),
+html.flow .content-panel .mk-stats:not(.in) .mk-stat:nth-child(4),
+html.flow .content-panel #about-tagline:not(.in),
+html.flow .content-panel .mk-section:not(.in)>[data-pg],
+html.flow .content-panel .mk-cta:not(.in),
+html.flow .content-panel .mk-cta:not(.in)>h2,
+html.flow .content-panel .mk-cta:not(.in)>p,
+html.flow .content-panel .mk-cta:not(.in)>.mk-cta-row,
+html.flow .content-panel>.mk-section:first-child:not(.in) #sol-sub,
+html.flow .content-panel>.mk-section:first-child:not(.in) #sol-cta,
+html.flow .content-panel>.mk-section:first-child:not(.in) #plan-sub,
+html.flow .content-panel .mk-head:not(.in)>*,
+html.flow .content-panel .mk-agents:not(.cols3):not(.in) .mk-agent:nth-child(1),
+html.flow .content-panel .mk-agents:not(.cols3):not(.in) .mk-agent:nth-child(2),
+html.flow .content-panel .mk-agents:not(.cols3):not(.in) .mk-agent:nth-child(3),
+html.flow .content-panel .mk-agents:not(.cols3):not(.in) .mk-agent:nth-child(4),
+html.flow .content-panel .mk-agents.cols3:not(.in) .mk-agent:nth-child(1),
+html.flow .content-panel .mk-agents.cols3:not(.in) .mk-agent:nth-child(2),
+html.flow .content-panel .mk-agents.cols3:not(.in) .mk-agent:nth-child(3),
+html.flow .content-panel .mk-agents.cols3:not(.in) .mk-agent:nth-child(4),
+html.flow .content-panel .mk-agents.cols3:not(.in) .mk-agent:nth-child(5),
+html.flow .content-panel .mk-agents.cols3:not(.in) .mk-agent:nth-child(6),
+html.flow .content-panel .mk-flow:not(.in) .mk-flow-step:nth-child(1),
+html.flow .content-panel .mk-flow:not(.in) .mk-flow-step:nth-child(2),
+html.flow .content-panel .mk-flow:not(.in) .mk-flow-step:nth-child(3),
+html.flow .content-panel .mk-flow:not(.in) .mk-flow-step:nth-child(4),
+html.flow #content-panel-2>.mk-section:nth-child(2):not(.in)>div:first-child,
+html.flow .content-panel .mk-plans:not(.in) .mk-plan:nth-child(odd),
+html.flow .content-panel .mk-plans:not(.in) .mk-plan:nth-child(even),
+html.flow .content-panel .rs-head:not(.in)>h1,
+html.flow .content-panel .rs-head:not(.in)>p,
+html.flow .content-panel .rs-head:not(.in)>.rs-search,
+html.flow .content-panel .rs-head:not(.in)>.rs-chips,
+html.flow .content-panel .rs-sec:not(.in),
+html.flow .content-panel .rs-row:not(.in) .rs-mini:nth-child(1),
+html.flow .content-panel .rs-row:not(.in) .rs-mini:nth-child(2),
+html.flow .content-panel .rs-row:not(.in) .rs-mini:nth-child(3),
+html.flow .content-panel .rs-grid:not(.in) .rs-card:nth-child(1),
+html.flow .content-panel .rs-grid:not(.in) .rs-card:nth-child(2),
+html.flow .content-panel .rs-grid:not(.in) .rs-card:nth-child(3),
+html.flow .content-panel .rs-grid:not(.in) .rs-card:nth-child(4),
+html.flow .content-panel .rs-grid:not(.in) .rs-card:nth-child(5),
+html.flow .content-panel .rs-grid:not(.in) .rs-card:nth-child(6),
+html.flow .content-panel .rs-grid:not(.in) .rs-card:nth-child(7),
+html.flow .content-panel .rs-grid:not(.in) .rs-card:nth-child(8),
+html.flow .content-panel .rs-grid:not(.in) .rs-card:nth-child(9),
+html.flow .content-panel .rs-grid:not(.in) .rs-card:nth-child(10),
+html.flow .content-panel .rs-grid:not(.in) .rs-card:nth-child(11),
+html.flow .content-panel .rs-grid:not(.in) .rs-card:nth-child(12){opacity:0;transform:var(--from);will-change:transform,opacity;}
+html.flow .content-panel .about-hero-grid:not(.fl-done) #about-hero-sub,
+html.flow .content-panel .about-hero-grid:not(.fl-done) .hero-ask,
+html.flow .content-panel .about-hero-grid:not(.fl-done)>div:last-child,
+html.flow .content-panel .mk-strip:not(.fl-done) .mk-strip-lbl,
+html.flow .content-panel .mk-strip:not(.fl-done) .mk-norm:nth-child(1),
+html.flow .content-panel .mk-strip:not(.fl-done) .mk-norm:nth-child(2),
+html.flow .content-panel .mk-strip:not(.fl-done) .mk-norm:nth-child(3),
+html.flow .content-panel .mk-strip:not(.fl-done) .mk-norm:nth-child(4),
+html.flow .content-panel .mk-strip:not(.fl-done) .mk-norm:nth-child(5),
+html.flow .content-panel .mk-vp:not(.fl-done) .mk-vp-text,
+html.flow .content-panel .mk-vp.rev:not(.fl-done) .mk-vp-text,
+html.flow .content-panel .mk-vp:not(.fl-done) .mk-device,
+html.flow .content-panel .mk-vp.rev:not(.fl-done) .mk-device,
+html.flow .content-panel .mk-stats:not(.fl-done) .mk-stat:nth-child(1),
+html.flow .content-panel .mk-stats:not(.fl-done) .mk-stat:nth-child(2),
+html.flow .content-panel .mk-stats:not(.fl-done) .mk-stat:nth-child(3),
+html.flow .content-panel .mk-stats:not(.fl-done) .mk-stat:nth-child(4),
+html.flow .content-panel #about-tagline:not(.fl-done),
+html.flow .content-panel .mk-section:not(.fl-done)>[data-pg],
+html.flow .content-panel .mk-cta:not(.fl-done),
+html.flow .content-panel .mk-cta:not(.fl-done)>h2,
+html.flow .content-panel .mk-cta:not(.fl-done)>p,
+html.flow .content-panel .mk-cta:not(.fl-done)>.mk-cta-row,
+html.flow .content-panel>.mk-section:first-child:not(.fl-done) #sol-sub,
+html.flow .content-panel>.mk-section:first-child:not(.fl-done) #sol-cta,
+html.flow .content-panel>.mk-section:first-child:not(.fl-done) #plan-sub,
+html.flow .content-panel .mk-head:not(.fl-done)>*,
+html.flow .content-panel .mk-agents:not(.cols3):not(.fl-done) .mk-agent:nth-child(1),
+html.flow .content-panel .mk-agents:not(.cols3):not(.fl-done) .mk-agent:nth-child(2),
+html.flow .content-panel .mk-agents:not(.cols3):not(.fl-done) .mk-agent:nth-child(3),
+html.flow .content-panel .mk-agents:not(.cols3):not(.fl-done) .mk-agent:nth-child(4),
+html.flow .content-panel .mk-agents.cols3:not(.fl-done) .mk-agent:nth-child(1),
+html.flow .content-panel .mk-agents.cols3:not(.fl-done) .mk-agent:nth-child(2),
+html.flow .content-panel .mk-agents.cols3:not(.fl-done) .mk-agent:nth-child(3),
+html.flow .content-panel .mk-agents.cols3:not(.fl-done) .mk-agent:nth-child(4),
+html.flow .content-panel .mk-agents.cols3:not(.fl-done) .mk-agent:nth-child(5),
+html.flow .content-panel .mk-agents.cols3:not(.fl-done) .mk-agent:nth-child(6),
+html.flow .content-panel .mk-flow:not(.fl-done) .mk-flow-step:nth-child(1),
+html.flow .content-panel .mk-flow:not(.fl-done) .mk-flow-step:nth-child(2),
+html.flow .content-panel .mk-flow:not(.fl-done) .mk-flow-step:nth-child(3),
+html.flow .content-panel .mk-flow:not(.fl-done) .mk-flow-step:nth-child(4),
+html.flow #content-panel-2>.mk-section:nth-child(2):not(.fl-done)>div:first-child,
+html.flow .content-panel .mk-plans:not(.fl-done) .mk-plan:nth-child(odd),
+html.flow .content-panel .mk-plans:not(.fl-done) .mk-plan:nth-child(even),
+html.flow .content-panel .rs-head:not(.fl-done)>h1,
+html.flow .content-panel .rs-head:not(.fl-done)>p,
+html.flow .content-panel .rs-head:not(.fl-done)>.rs-search,
+html.flow .content-panel .rs-head:not(.fl-done)>.rs-chips,
+html.flow .content-panel .rs-sec:not(.fl-done),
+html.flow .content-panel .rs-row:not(.fl-done) .rs-mini:nth-child(1),
+html.flow .content-panel .rs-row:not(.fl-done) .rs-mini:nth-child(2),
+html.flow .content-panel .rs-row:not(.fl-done) .rs-mini:nth-child(3),
+html.flow .content-panel .rs-grid:not(.fl-done) .rs-card:nth-child(1),
+html.flow .content-panel .rs-grid:not(.fl-done) .rs-card:nth-child(2),
+html.flow .content-panel .rs-grid:not(.fl-done) .rs-card:nth-child(3),
+html.flow .content-panel .rs-grid:not(.fl-done) .rs-card:nth-child(4),
+html.flow .content-panel .rs-grid:not(.fl-done) .rs-card:nth-child(5),
+html.flow .content-panel .rs-grid:not(.fl-done) .rs-card:nth-child(6),
+html.flow .content-panel .rs-grid:not(.fl-done) .rs-card:nth-child(7),
+html.flow .content-panel .rs-grid:not(.fl-done) .rs-card:nth-child(8),
+html.flow .content-panel .rs-grid:not(.fl-done) .rs-card:nth-child(9),
+html.flow .content-panel .rs-grid:not(.fl-done) .rs-card:nth-child(10),
+html.flow .content-panel .rs-grid:not(.fl-done) .rs-card:nth-child(11),
+html.flow .content-panel .rs-grid:not(.fl-done) .rs-card:nth-child(12){transition:opacity .9s cubic-bezier(0.16,1,0.3,1) var(--d,0ms),transform 1.15s cubic-bezier(0.16,1,0.3,1) var(--d,0ms),border-color .15s !important;}
+html.flow .content-panel .about-hero-grid #about-hero-sub{--from:translate3d(0,72px,0) scale(.97);--d:480ms}
+html.flow .content-panel .about-hero-grid .hero-ask{--from:translate3d(-96px,0,0);--d:620ms}
+html.flow .content-panel .about-hero-grid>div:last-child{--from:translate3d(96px,0,0);--d:220ms}
+html.flow .content-panel .mk-strip .mk-strip-lbl{--from:translate3d(0,-56px,0);--d:0ms}
+html.flow .content-panel .mk-strip .mk-norm:nth-child(1){--from:translate3d(96px,0,0);--d:210ms}
+html.flow .content-panel .mk-strip .mk-norm:nth-child(2){--from:translate3d(96px,0,0);--d:300ms}
+html.flow .content-panel .mk-strip .mk-norm:nth-child(3){--from:translate3d(96px,0,0);--d:390ms}
+html.flow .content-panel .mk-strip .mk-norm:nth-child(4){--from:translate3d(96px,0,0);--d:480ms}
+html.flow .content-panel .mk-strip .mk-norm:nth-child(5){--from:translate3d(96px,0,0);--d:570ms}
+html.flow .content-panel .mk-vp .mk-vp-text{--from:translate3d(-96px,0,0);--d:0ms}
+html.flow .content-panel .mk-vp.rev .mk-vp-text{--from:translate3d(96px,0,0);--d:0ms}
+html.flow .content-panel .mk-vp .mk-device{--from:translate3d(96px,32px,0) rotate(4deg) scale(.92);--d:160ms}
+html.flow .content-panel .mk-vp.rev .mk-device{--from:translate3d(-96px,32px,0) rotate(-4deg) scale(.92);--d:160ms}
+html.flow .content-panel .mk-stats .mk-stat:nth-child(1){--from:translate3d(0,72px,0) scale(.97);--d:0ms}
+html.flow .content-panel .mk-stats .mk-stat:nth-child(2){--from:translate3d(0,-56px,0);--d:110ms}
+html.flow .content-panel .mk-stats .mk-stat:nth-child(3){--from:translate3d(0,72px,0) scale(.97);--d:220ms}
+html.flow .content-panel .mk-stats .mk-stat:nth-child(4){--from:translate3d(0,-56px,0);--d:330ms}
+html.flow .content-panel #about-tagline{--from:translate3d(0,72px,0) scale(.97);--d:120ms}
+html.flow .content-panel .mk-section>[data-pg]{--from:translate3d(0,56px,0) scale(.9);--d:0ms}
+html.flow .content-panel .mk-cta{--from:translate3d(0,56px,0) scale(.9);--d:0ms}
+html.flow .content-panel .mk-cta>h2{--from:translate3d(-96px,0,0);--d:160ms}
+html.flow .content-panel .mk-cta>p{--from:translate3d(96px,0,0);--d:260ms}
+html.flow .content-panel .mk-cta>.mk-cta-row{--from:translate3d(0,72px,0) scale(.97);--d:380ms}
+html.flow .content-panel>.mk-section:first-child #sol-sub{--from:translate3d(0,72px,0) scale(.97);--d:420ms}
+html.flow .content-panel>.mk-section:first-child #sol-cta{--from:translate3d(0,56px,0) scale(.9);--d:560ms}
+html.flow .content-panel>.mk-section:first-child #plan-sub{--from:translate3d(0,72px,0) scale(.97);--d:420ms}
+html.flow .content-panel .mk-head>*{--from:translate3d(0,72px,0) scale(.97);--d:0ms}
+html.flow .content-panel .mk-agents:not(.cols3) .mk-agent:nth-child(1){--from:translate3d(-96px,0,0);--d:0ms}
+html.flow .content-panel .mk-agents:not(.cols3) .mk-agent:nth-child(2){--from:translate3d(96px,0,0);--d:120ms}
+html.flow .content-panel .mk-agents:not(.cols3) .mk-agent:nth-child(3){--from:translate3d(-96px,0,0);--d:240ms}
+html.flow .content-panel .mk-agents:not(.cols3) .mk-agent:nth-child(4){--from:translate3d(96px,0,0);--d:360ms}
+html.flow .content-panel .mk-agents.cols3 .mk-agent:nth-child(1){--from:translate3d(0,72px,0) scale(.97);--d:0ms}
+html.flow .content-panel .mk-agents.cols3 .mk-agent:nth-child(2){--from:translate3d(0,72px,0) scale(.97);--d:90ms}
+html.flow .content-panel .mk-agents.cols3 .mk-agent:nth-child(3){--from:translate3d(0,72px,0) scale(.97);--d:180ms}
+html.flow .content-panel .mk-agents.cols3 .mk-agent:nth-child(4){--from:translate3d(0,72px,0) scale(.97);--d:270ms}
+html.flow .content-panel .mk-agents.cols3 .mk-agent:nth-child(5){--from:translate3d(0,72px,0) scale(.97);--d:360ms}
+html.flow .content-panel .mk-agents.cols3 .mk-agent:nth-child(6){--from:translate3d(0,72px,0) scale(.97);--d:450ms}
+html.flow .content-panel .mk-flow .mk-flow-step:nth-child(1){--from:translate3d(96px,0,0);--d:0ms}
+html.flow .content-panel .mk-flow .mk-flow-step:nth-child(2){--from:translate3d(96px,0,0);--d:130ms}
+html.flow .content-panel .mk-flow .mk-flow-step:nth-child(3){--from:translate3d(96px,0,0);--d:260ms}
+html.flow .content-panel .mk-flow .mk-flow-step:nth-child(4){--from:translate3d(96px,0,0);--d:390ms}
+html.flow #content-panel-2>.mk-section:nth-child(2)>div:first-child{--from:translate3d(0,56px,0) scale(.9);--d:0ms}
+html.flow .content-panel .mk-plans .mk-plan:nth-child(odd){--from:translate3d(-96px,32px,0) rotate(-4deg) scale(.92);--d:0ms}
+html.flow .content-panel .mk-plans .mk-plan:nth-child(even){--from:translate3d(96px,32px,0) rotate(4deg) scale(.92);--d:140ms}
+html.flow .content-panel .rs-head>h1{--from:translate3d(0,72px,0) scale(.97);--d:0ms}
+html.flow .content-panel .rs-head>p{--from:translate3d(0,72px,0) scale(.97);--d:120ms}
+html.flow .content-panel .rs-head>.rs-search{--from:translate3d(-96px,0,0);--d:240ms}
+html.flow .content-panel .rs-head>.rs-chips{--from:translate3d(96px,0,0);--d:340ms}
+html.flow .content-panel .rs-sec{--from:translate3d(-96px,0,0);--d:0ms}
+html.flow .content-panel .rs-row .rs-mini:nth-child(1){--from:translate3d(0,72px,0) scale(.97);--d:0ms}
+html.flow .content-panel .rs-row .rs-mini:nth-child(2){--from:translate3d(0,72px,0) scale(.97);--d:110ms}
+html.flow .content-panel .rs-row .rs-mini:nth-child(3){--from:translate3d(0,72px,0) scale(.97);--d:220ms}
+html.flow .content-panel .rs-grid .rs-card:nth-child(1){--from:translate3d(0,72px,0) scale(.97);--d:0ms}
+html.flow .content-panel .rs-grid .rs-card:nth-child(2){--from:translate3d(0,-56px,0);--d:100ms}
+html.flow .content-panel .rs-grid .rs-card:nth-child(3){--from:translate3d(0,72px,0) scale(.97);--d:200ms}
+html.flow .content-panel .rs-grid .rs-card:nth-child(4){--from:translate3d(0,-56px,0);--d:300ms}
+html.flow .content-panel .rs-grid .rs-card:nth-child(5){--from:translate3d(0,72px,0) scale(.97);--d:60ms}
+html.flow .content-panel .rs-grid .rs-card:nth-child(6){--from:translate3d(0,-56px,0);--d:160ms}
+html.flow .content-panel .rs-grid .rs-card:nth-child(7){--from:translate3d(0,72px,0) scale(.97);--d:260ms}
+html.flow .content-panel .rs-grid .rs-card:nth-child(8){--from:translate3d(0,-56px,0);--d:360ms}
+html.flow .content-panel .rs-grid .rs-card:nth-child(9){--from:translate3d(0,72px,0) scale(.97);--d:120ms}
+html.flow .content-panel .rs-grid .rs-card:nth-child(10){--from:translate3d(0,-56px,0);--d:220ms}
+html.flow .content-panel .rs-grid .rs-card:nth-child(11){--from:translate3d(0,72px,0) scale(.97);--d:320ms}
+html.flow .content-panel .rs-grid .rs-card:nth-child(12){--from:translate3d(0,-56px,0);--d:420ms}
+/* headline words (Início, Produto, Planos) */
+html.flow .content-panel .fl-w{display:inline-block;transition:opacity .8s cubic-bezier(0.16,1,0.3,1) var(--d,0ms),transform 1s cubic-bezier(0.16,1,0.3,1) var(--d,0ms),filter .8s cubic-bezier(0.16,1,0.3,1) var(--d,0ms);}
+html.flow .content-panel :is(.about-hero-grid,.content-panel>.mk-section:first-child):not(.in) .fl-w{opacity:0;transform:translate3d(0,.6em,0);filter:blur(8px);}
+/* micro-interactions on the same trigger: chart bars grow, tags pop */
+html.flow .content-panel .mk-bar{transform-origin:bottom;transition:transform 1.2s cubic-bezier(0.16,1,0.3,1) var(--d,0ms);}
+html.flow .content-panel .mk-vp:not(.in) .mk-bar{transform:scaleY(0);}
+html.flow .content-panel .mk-col:nth-child(1) .mk-bar{--d:490ms}html.flow .content-panel .mk-col:nth-child(2) .mk-bar{--d:600ms}html.flow .content-panel .mk-col:nth-child(3) .mk-bar{--d:710ms}html.flow .content-panel .mk-col:nth-child(4) .mk-bar{--d:820ms}html.flow .content-panel .mk-col:nth-child(5) .mk-bar{--d:930ms}
+html.flow .content-panel .mk-device .mk-tag{transition:opacity .4s cubic-bezier(0.16,1,0.3,1) var(--d,0ms),transform .7s cubic-bezier(.34,1.56,.64,1) var(--d,0ms);}
+html.flow .content-panel .mk-vp:not(.in) .mk-device .mk-tag{opacity:0;transform:scale(.55);}
+html.flow .content-panel .mk-device .mk-tag:nth-child(1){--d:780ms}html.flow .content-panel .mk-device .mk-tag:nth-child(2){--d:910ms}html.flow .content-panel .mk-device .mk-tag:nth-child(3){--d:1040ms}
 </style>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -14668,34 +14836,53 @@ function cloudSiteName(proj){
 </div>
 
 <script>
-/* ══ Home scroll reveal (preview: ?flow=1) ════════════════════════════════════
-   The CSS in <head> keeps every Home block below the hero hidden and offset.
-   When ~22% of a block is on screen (or a third of the screen for tall blocks)
-   it gets .in and its parts ease in, staggered; bars grow, tags pop and the
-   stat numbers count up on the same trigger. A block that drops back below the
-   screen resets, so it plays again on the way down. */
+/* ══ Scroll reveal on every public tab (Início, Produto, Planos, Recursos) ═════
+   The CSS in <head> keeps each block hidden and offset. When ~22% of a block is
+   on screen (or a third of the screen for tall blocks) it gets .in and its parts
+   ease in, staggered; chart bars grow, tags pop and the stat numbers count up on
+   the same trigger. A block that drops back below the screen resets, so it plays
+   again on the way down, and switching tabs replays the new tab from the top.
+   Recursos re-renders while you search or filter: those updates appear at once. */
 (function(){
   var root=document.documentElement;if(!root.classList.contains("flow"))return;
-  var P=document.getElementById("content-panel-0");
-  if(!P||!("IntersectionObserver" in window)){root.classList.remove("flow");return;}
-  // Headline words, staggered (re-split if the language switch rewrites the text)
-  var h=document.getElementById("about-headline");
-  function split(){if(!h||h.querySelector(".fl-w"))return;var words=h.textContent.trim().split(/\s+/);
-    h.innerHTML=words.map(function(w,i){return "<span class='fl-w' style='--d:"+(60+i*80)+"ms'>"+w.replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</span>";}).join(" ");}
-  split();if(h&&window.MutationObserver)new MutationObserver(split).observe(h,{childList:true,characterData:true});
+  if(!("IntersectionObserver" in window)){root.classList.remove("flow");return;}
+  var GROUPS=".about-hero-grid,.mk-strip,.mk-vp,.mk-stats,#about-tagline,.mk-cta,.content-panel>.mk-section:first-child,.mk-head,.mk-agents,.mk-flow,#content-panel-2>.mk-section:nth-child(2),.mk-plans,.rs-head,.rs-sec,.rs-row,.rs-grid";
+  // Headline words, staggered (re-split when the language switch rewrites the text)
+  ["about-headline","sol-title","plan-title"].forEach(function(id){var h=document.getElementById(id);if(!h)return;
+    function split(){if(h.querySelector(".fl-w"))return;var words=h.textContent.trim().split(/\s+/);
+      h.innerHTML=words.map(function(w,i){return "<span class='fl-w' style='--d:"+(60+i*80)+"ms'>"+w.replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</span>";}).join(" ");}
+    split();if(window.MutationObserver)new MutationObserver(split).observe(h,{childList:true,characterData:true});});
   var easeOut=function(t){return t>=1?1:1-Math.pow(2,-10*t);};
   function countUp(n,delay){var to=n.dataset.flTo||(n.dataset.flTo=n.textContent),m=to.match(/^(\d+)(.*)$/);if(!m)return;
     var end=+m[1],suf=m[2],t0=performance.now()+delay;n.textContent="0"+suf;cancelAnimationFrame(n._flR);
     (function step(t){var p=Math.max(0,Math.min(1,(t-t0)/1400));n.textContent=Math.round(end*easeOut(p))+suf;if(p<1)n._flR=requestAnimationFrame(step);})(performance.now());}
-  var groups=[].slice.call(P.querySelectorAll(".about-hero-grid,.mk-strip,.mk-vp,.mk-stats,#about-tagline,.mk-cta"));
-  var pg=P.querySelector(".mk-section>[data-pg]");if(pg)groups.push(pg.parentNode);
+  function show(el){if(el.classList.contains("in"))return;el.classList.add("in");clearTimeout(el._flT);
+    el._flT=setTimeout(function(){el.classList.add("fl-done");},2600);
+    el.querySelectorAll(".mk-stat .n").forEach(function(n,i){countUp(n,i*110);});}
+  function hide(el){clearTimeout(el._flT);el.classList.remove("in","fl-done");}
   var io=new IntersectionObserver(function(es){es.forEach(function(x){var el=x.target,vh=window.innerHeight;
-    if(x.isIntersecting&&(x.intersectionRatio>=.22||x.intersectionRect.height>=vh*.33)){
-      if(el.classList.contains("in"))return;el.classList.add("in");
-      el.querySelectorAll(".mk-stat .n").forEach(function(n,i){countUp(n,i*110);});}
-    else if(!x.isIntersecting&&x.boundingClientRect.top>=vh)el.classList.remove("in");
+    if(x.isIntersecting&&(x.intersectionRatio>=.22||x.intersectionRect.height>=vh*.33))show(el);
+    else if(!x.isIntersecting&&x.boundingClientRect.top>=vh&&x.rootBounds)hide(el);
   });},{threshold:[0,.1,.22,.35,.5],rootMargin:"0px 0px -6% 0px"});
-  groups.forEach(function(g){io.observe(g);});
+  function groupsIn(scope){var g=[].slice.call(scope.querySelectorAll(GROUPS));
+    scope.querySelectorAll(".mk-section>[data-pg]").forEach(function(pg){g.push(pg.parentNode);});return g;}
+  var panels=[].slice.call(document.querySelectorAll(".content-panel"));
+  panels.forEach(function(p){groupsIn(p).forEach(function(g){io.observe(g);});});
+  // Recursos: watch re-renders; updates caused by typing / clicking there appear instantly
+  var resHost=document.getElementById("res-list-view"),lastUse=0;
+  if(resHost&&window.MutationObserver){
+    ["input","click","keydown"].forEach(function(t){resHost.addEventListener(t,function(){lastUse=Date.now();},true);});
+    new MutationObserver(function(){var instant=Date.now()-lastUse<800;
+      groupsIn(resHost).forEach(function(g){if(g._flSeen)return;g._flSeen=1;
+        if(instant){g.classList.add("in","fl-done");}io.observe(g);});}).observe(resHost,{childList:true});}
+  // Switching tab replays that tab's blocks from the start
+  var orig=window.showContentTab;
+  if(typeof orig==="function")window.showContentTab=function(idx){
+    var p=document.getElementById("content-panel-"+idx),wasHidden=p&&p.style.display==="none";
+    if(wasHidden)groupsIn(p).forEach(function(g){hide(g);io.unobserve(g);});
+    var r=orig.apply(this,arguments);
+    if(wasHidden)groupsIn(p).forEach(function(g){io.observe(g);});
+    return r;};
 })();
 </script>
 </body>
