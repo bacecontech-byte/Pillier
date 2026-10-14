@@ -38,7 +38,7 @@
 <!-- Security: Cloudflare Turnstile (CAPTCHA bot protection) -->
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -243,6 +243,12 @@ html.flow .content-panel .rs-grid .rs-card:nth-child(12){--from:translate3d(0,-5
 html.flow .content-panel .mk-faq:not(.in) .mk-faq-i{opacity:0;transform:translate3d(0,40px,0);will-change:transform,opacity;}
 html.flow .content-panel .mk-faq:not(.fl-done) .mk-faq-i{transition:opacity .9s cubic-bezier(0.16,1,0.3,1) var(--d,0ms),transform 1.15s cubic-bezier(0.16,1,0.3,1) var(--d,0ms) !important;}
 html.flow .content-panel .mk-faq .mk-faq-i:nth-child(1){--d:0ms}html.flow .content-panel .mk-faq .mk-faq-i:nth-child(2){--d:80ms}html.flow .content-panel .mk-faq .mk-faq-i:nth-child(3){--d:160ms}html.flow .content-panel .mk-faq .mk-faq-i:nth-child(4){--d:240ms}html.flow .content-panel .mk-faq .mk-faq-i:nth-child(5){--d:320ms}html.flow .content-panel .mk-faq .mk-faq-i:nth-child(6){--d:400ms}html.flow .content-panel .mk-faq .mk-faq-i:nth-child(7){--d:480ms}
+html.flow .content-panel .plt-grid:not(.in) .plt-tile{opacity:0;transform:translate3d(0,48px,0);will-change:transform,opacity;}
+html.flow .content-panel .plt-grid:not(.fl-done) .plt-tile{transition:opacity .9s cubic-bezier(0.16,1,0.3,1) var(--d,0ms),transform 1.15s cubic-bezier(0.16,1,0.3,1) var(--d,0ms) !important;}
+html.flow .content-panel .plt-grid .plt-tile:nth-child(2){--d:120ms}html.flow .content-panel .plt-grid .plt-tile:nth-child(3){--d:200ms}
+html.flow .content-panel .plt-head:not(.in)>*{opacity:0;transform:translate3d(0,40px,0);}
+html.flow .content-panel .plt-head:not(.fl-done)>*{transition:opacity .9s cubic-bezier(0.16,1,0.3,1) var(--d,0ms),transform 1.15s cubic-bezier(0.16,1,0.3,1) var(--d,0ms) !important;}
+html.flow .content-panel .plt-head>h2{--d:100ms}html.flow .content-panel .plt-head>p{--d:200ms}
 /* headline words (Início, Produto, Planos) */
 html.flow .content-panel .fl-w{display:inline-block;transition:opacity .8s cubic-bezier(0.16,1,0.3,1) var(--d,0ms),transform 1s cubic-bezier(0.16,1,0.3,1) var(--d,0ms),filter .8s cubic-bezier(0.16,1,0.3,1) var(--d,0ms);}
 html.flow .content-panel :is(.about-hero-grid,.content-panel>.mk-section:first-child):not(.in) .fl-w{opacity:0;transform:translate3d(0,.6em,0);filter:blur(8px);}
@@ -725,6 +731,75 @@ body.light-mode .pg-win{box-shadow:0 24px 60px rgba(16,34,43,0.10);}
 .mk-quote{max-width:820px;margin:0 auto;text-align:center;}
 .mk-quote blockquote{font-family:var(--font-d);font-size:clamp(20px,2.8vw,27px);font-weight:600;color:var(--white);line-height:1.4;margin:0;}
 .mk-quote .by{margin-top:22px;display:flex;align-items:center;justify-content:center;gap:12px;font-size:14px;color:var(--text2);}
+/* Início · A plataforma (Captura, Memória, Conformidade): depth by shades, Pillier blue only as light */
+:root{--pl-win:#0a161b;--pl-chip:#0f2028;--pl-line:rgba(255,255,255,.08);--pl-glow:rgba(44,190,255,.24);--pl-glow2:rgba(44,190,255,.06);--pl-path:rgba(255,255,255,.26);--pl-ok:#4ade80;--pl-okbg:rgba(74,222,128,.12);--pl-okline:rgba(74,222,128,.35);--pl-bad:#f87171;--pl-badbg:rgba(248,113,113,.13);--pl-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;}
+body.light-mode{--pl-win:#f3f8fa;--pl-chip:#ffffff;--pl-line:rgba(0,0,0,.08);--pl-glow:rgba(44,190,255,.16);--pl-glow2:rgba(44,190,255,.04);--pl-path:rgba(0,0,0,.2);--pl-ok:#138a43;--pl-okbg:rgba(19,138,67,.09);--pl-okline:rgba(19,138,67,.28);--pl-bad:#c62828;--pl-badbg:rgba(198,40,40,.08);}
+.plt-sec{padding-top:24px;}
+.plt-head{text-align:center;max-width:760px;margin:0 auto 48px;}
+.plt-eye{font:500 12px var(--pl-mono);color:#2cbeff;letter-spacing:.06em;text-transform:uppercase;}
+.plt-head h2{font-family:var(--font-d);font-size:clamp(28px,4vw,46px);font-weight:800;color:var(--white);letter-spacing:-.03em;line-height:1.06;margin:12px 0 14px;text-wrap:balance;}
+.plt-head p{color:var(--text2);font-size:17px;line-height:1.55;margin:0 auto;max-width:56ch;}
+.plt-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;}
+.plt-tile{background:var(--navy2);border-radius:28px;padding:32px 28px 28px;display:flex;flex-direction:column;gap:22px;min-width:0;}
+.plt-wide{grid-column:span 2;}.plt-full{grid-column:1/-1;}
+.plt-tile h3{margin:0;font-family:var(--font-d);font-size:24px;font-weight:700;color:var(--white);letter-spacing:-.02em;display:flex;align-items:center;gap:10px;}
+.plt-tile h3 em{font:500 10.5px var(--pl-mono);font-style:normal;color:#2cbeff;border:1px solid rgba(44,190,255,.4);border-radius:999px;padding:3px 8px;}
+.plt-s{margin:6px 0 0;color:var(--text2);font-size:15.5px;line-height:1.5;}
+.plt-win{position:relative;flex:1;min-height:290px;border-radius:18px;border:1px solid var(--pl-line);overflow:hidden;padding:20px;color:var(--text);background:var(--pl-win) radial-gradient(120% 70% at 50% 118%,var(--pl-glow) 0%,var(--pl-glow2) 45%,transparent 70%);}
+.plt-panel{background:var(--pl-chip);border:1px solid var(--pl-line);border-radius:14px;}
+.plt-mono{font-family:var(--pl-mono);font-size:11.5px;}
+.plt-mut{color:var(--text2);}
+.plt-chip{display:inline-flex;align-items:center;font:500 11.5px var(--pl-mono);background:var(--pl-chip);border:1px solid var(--pl-line);border-radius:9px;padding:6px 10px;white-space:nowrap;color:var(--text);}
+.plt-pill{display:inline-flex;align-items:center;font:500 10.5px var(--pl-mono);color:var(--pl-ok);background:var(--pl-okbg);border:1px solid var(--pl-okline);border-radius:999px;padding:3px 9px;white-space:nowrap;}
+.plt-pill.plt-bad{color:var(--pl-bad);background:var(--pl-badbg);border-color:transparent;}
+.plt-spin{display:inline-block;width:11px;height:11px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:plSpin 1s linear infinite;}
+@keyframes plSpin{to{transform:rotate(360deg)}}
+.plt-pulse{animation:plPulse 2.4s ease-in-out infinite;}
+@keyframes plPulse{50%{box-shadow:0 0 0 6px var(--pl-okbg)}}
+.plt-cap{display:grid;grid-template-columns:150px 70px minmax(0,1fr);align-items:center;height:100%;}
+.plt-photo{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--pl-line);aspect-ratio:3/4;}
+.plt-photo img{display:block;width:100%;height:100%;object-fit:cover;}
+.plt-photo>span{position:absolute;left:8px;bottom:8px;font:500 10px var(--pl-mono);color:#fff;background:rgba(0,0,0,.55);border-radius:6px;padding:3px 6px;}
+.plt-mid{display:flex;flex-direction:column;align-items:center;gap:8px;color:#2cbeff;}
+.plt-ln{width:100%;height:1px;background:linear-gradient(90deg,transparent,#2cbeff,transparent);position:relative;overflow:hidden;}
+.plt-ln::after{content:"";position:absolute;top:0;left:-30%;width:30%;height:1px;background:#fff;animation:plScan 1.6s linear infinite;}
+@keyframes plScan{to{left:100%}}
+.plt-mid small{font:500 10px var(--pl-mono);}
+.plt-res{padding:16px;}
+.plt-res-h{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;}
+.plt-res-h b{font-size:15px;color:var(--white);}
+.plt-f{display:grid;grid-template-columns:96px minmax(0,1fr);gap:10px;padding:7px 0;border-top:1px solid var(--pl-line);font-size:12.5px;line-height:1.4;}
+.plt-f>span:first-child{font:500 10.5px var(--pl-mono);color:var(--text3);text-transform:uppercase;letter-spacing:.04em;padding-top:2px;}
+.plt-res-f{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;}
+.plt-res-f .plt-mono{font-size:10.5px;}
+.plt-search{display:flex;align-items:center;gap:8px;padding:10px 12px;font-size:13px;}
+.plt-search i{font-size:15px;color:var(--text2);}
+.plt-caret{display:inline-block;width:1px;height:14px;background:#2cbeff;margin-left:1px;vertical-align:-2px;animation:plBlink 1s steps(1) infinite;}
+@keyframes plBlink{50%{opacity:0}}
+.plt-hits{margin:12px 0 10px;font:500 11px var(--pl-mono);color:#2cbeff;}
+.plt-case{padding:10px 12px;margin-bottom:8px;font-size:12.5px;line-height:1.4;}
+.plt-case b{display:block;margin-bottom:2px;color:var(--white);}
+.plt-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;}
+.plt-conf{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:22px;height:100%;}
+.plt-flow{position:relative;min-height:250px;}
+.plt-flow svg{position:absolute;inset:0;width:100%;height:100%;}
+.plt-flow svg path{fill:none;stroke:var(--pl-path);stroke-width:1.4;stroke-dasharray:5 6;animation:plFlow 1.6s linear infinite;}
+@keyframes plFlow{to{stroke-dashoffset:-22}}
+.plt-flow .plt-chip{position:absolute;top:12px;transform:translateX(-50%);}
+.plt-rdo{position:absolute;left:0;right:0;bottom:0;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:11.5px;}
+.plt-rdo b{font-size:13px;color:var(--white);}
+.plt-checks{display:flex;flex-direction:column;gap:8px;justify-content:center;}
+.plt-ck{display:flex;align-items:center;gap:10px;padding:10px 12px;font-size:13px;}
+.plt-ck i{width:20px;height:20px;border-radius:50%;background:var(--pl-okbg);color:var(--pl-ok);display:grid;place-items:center;font-size:12px;flex-shrink:0;}
+.plt-ck span{flex:1;min-width:0;}
+.plt-ck small{font:500 10.5px var(--pl-mono);color:var(--text3);}
+.plt-more{text-align:center;margin-top:32px;}
+.plt-more a{font-weight:700;font-size:15px;color:#2cbeff;text-decoration:none;}
+.plt-more a:hover{text-decoration:underline;}
+body.light-mode .plt-tile{background:#ffffff;box-shadow:0 1px 0 rgba(0,0,0,.03);}
+@media (prefers-reduced-motion: reduce){.plt-spin,.plt-pulse,.plt-ln::after,.plt-caret,.plt-flow svg path{animation:none;}}
+@media(max-width:980px){.plt-grid{grid-template-columns:1fr;}.plt-wide,.plt-full{grid-column:auto;}.plt-conf{grid-template-columns:1fr;}}
+@media(max-width:620px){.plt-tile{padding:26px 18px 18px;border-radius:24px;}.plt-win{padding:14px;}.plt-cap{grid-template-columns:1fr;gap:12px;}.plt-photo{aspect-ratio:16/9;}.plt-mid{flex-direction:row;}.plt-ln{flex:1;}}
 .mk-faq{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:10px;}
 .mk-faq-i{background:var(--navy2);border:1px solid var(--border);border-radius:14px;padding:0 20px;}
 .mk-faq-i summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;font-family:var(--font-d);font-weight:700;font-size:16px;line-height:1.35;color:var(--white);}
@@ -2772,9 +2847,53 @@ body.light-mode #ts-modal .ts-card{background:#fff;color:#10222b;border-color:rg
       <div style="text-align:center;margin-top:20px;font-size:13.5px;color:var(--text3);font-style:italic;" id="about-tagline">Desenvolvido por engenheiros, para engenheiros.</div>
     </div>
 
-    <!-- Product playground (interactive demo) -->
-    <div class="mk-section" style="padding-top:0;">
-      <div data-pg></div>
+    <!-- A plataforma: Captura / Memória / Conformidade (the interactive demo lives in Produto) -->
+    <div class="mk-section plt-sec">
+      <div class="plt-head"><div class="plt-eye"><span data-pl="eye">A plataforma</span></div><h2><span data-pl="h">Tudo o que acontece na obra, registrado.</span></h2><p><span data-pl="sub">Da foto no canteiro ao RDO assinado, com a norma certa e todo o histórico da obra.</span></p></div>
+      <div class="plt-grid">
+        <article class="plt-tile plt-wide">
+          <div><h3><span data-pl="c1t">Captura</span> <em>IA</em></h3><p class="plt-s"><span data-pl="c1s">Uma foto ou um áudio. Em menos de um minuto, o incidente está descrito, com causa, solução e norma.</span></p></div>
+          <div class="plt-win"><div class="plt-cap">
+            <div class="plt-photo"><img src="/assets/pl-capture.jpg" alt="" loading="lazy" width="300" height="400"><span><span data-pl="c1ph">08:41 · Bloco B</span></span></div>
+            <div class="plt-mid"><span class="plt-spin" aria-hidden="true"></span><div class="plt-ln"></div><small><span data-pl="c1an">Analisando</span></small></div>
+            <div class="plt-res plt-panel">
+              <div class="plt-res-h"><b><span data-pl="c1i">Infiltração na laje</span></b><span class="plt-pill plt-bad"><span data-pl="c1sev">Alta</span></span></div>
+              <div class="plt-f"><span><span data-pl="k_cause">Causa</span></span><span><span data-pl="c1cause">Falha na impermeabilização da junta de dilatação</span></span></div>
+              <div class="plt-f"><span><span data-pl="k_sol">Solução</span></span><span><span data-pl="c1sol">Refazer a manta e testar estanqueidade por 72 h</span></span></div>
+              <div class="plt-f"><span><span data-pl="k_norm">Normas</span></span><span class="plt-mono">NBR 9575 · NBR 9574</span></div>
+              <div class="plt-res-f"><span class="plt-mono plt-mut"><span data-pl="c1loc">Bloco B · 3º pavimento</span></span><span class="plt-pill plt-pulse"><span data-pl="c1ok">registrado em 47 s</span></span></div>
+            </div>
+          </div></div>
+        </article>
+        <article class="plt-tile">
+          <div><h3><span data-pl="c2t">Memória</span></h3><p class="plt-s"><span data-pl="c2s">O que a empresa já resolveu, encontrado em segundos.</span></p></div>
+          <div class="plt-win">
+            <div class="plt-search plt-panel"><i class="ti ti-search" aria-hidden="true"></i><span><span data-pl="c2q">fissura em viga</span><span class="plt-caret"></span></span></div>
+            <div class="plt-hits"><span data-pl="c2hits">6 casos em 3 obras</span></div>
+            <div class="plt-case plt-panel"><b><span data-pl="c2a">Obra 0118 · Bloco C</span></b><span class="plt-mut"><span data-pl="c2ad">Reforço com fibra de carbono. Resolvido em 9 dias.</span></span></div>
+            <div class="plt-case plt-panel"><b><span data-pl="c2b">Obra 0131 · Garagem</span></b><span class="plt-mut"><span data-pl="c2bd">Injeção de epóxi e monitoramento por 30 dias.</span></span></div>
+            <div class="plt-chips"><span class="plt-chip"><span data-pl="c2n1">214 registros</span></span><span class="plt-chip"><span data-pl="c2n2">38 incidentes</span></span><span class="plt-chip"><span data-pl="c2n3">12 RDOs</span></span></div>
+          </div>
+        </article>
+        <article class="plt-tile plt-full">
+          <div><h3><span data-pl="c3t">Conformidade</span></h3><p class="plt-s"><span data-pl="c3s">Cada registro guarda quando, onde e quem. Pronto para o cliente, a fiscalização ou uma perícia.</span></p></div>
+          <div class="plt-win"><div class="plt-conf">
+            <div class="plt-flow">
+              <svg viewBox="0 0 400 250" preserveAspectRatio="none" aria-hidden="true"><path d="M40 34 V120 Q40 160 150 175 L200 192"/><path d="M140 34 V160 L200 192"/><path d="M260 34 V160 L200 192"/><path d="M360 34 V120 Q360 160 250 175 L200 192"/><path d="M200 100 V192"/></svg>
+              <span class="plt-chip" style="left:10%"><span data-pl="src1">Foto</span></span><span class="plt-chip" style="left:35%"><span data-pl="src2">Voz</span></span><span class="plt-chip" style="left:65%"><span data-pl="src3">GPS</span></span><span class="plt-chip" style="left:90%"><span data-pl="src4">Hora</span></span>
+              <span class="plt-chip" style="left:50%;top:72px"><span data-pl="src5">Assinatura</span></span>
+              <div class="plt-rdo plt-panel"><div style="min-width:0"><b><span data-pl="c3doc">RDO #2418 · 14 out</span></b><div class="plt-mut"><span data-pl="c3who">Eng. Ana Luiza · Residencial Aurora</span></div></div><span class="plt-pill"><span data-pl="c3sig">Assinado</span></span></div>
+            </div>
+            <div class="plt-checks">
+              <div class="plt-ck plt-panel"><i class="ti ti-check" aria-hidden="true"></i><span><span data-pl="ck1">Data e hora de cada foto</span></span><small>08:41</small></div>
+              <div class="plt-ck plt-panel"><i class="ti ti-check" aria-hidden="true"></i><span><span data-pl="ck2">Localização no canteiro</span></span><small>-23.56</small></div>
+              <div class="plt-ck plt-panel"><i class="ti ti-check" aria-hidden="true"></i><span><span data-pl="ck3">Responsável identificado</span></span><small>CREA</small></div>
+              <div class="plt-ck plt-panel"><i class="ti ti-check" aria-hidden="true"></i><span><span data-pl="ck4">Normas referenciadas</span></span><small>NBR · NR</small></div>
+            </div>
+          </div></div>
+        </article>
+      </div>
+      <div class="plt-more"><a href="/produto" onclick="showContentPage(1);return false;"><span data-pl="more">Ver a demo interativa na aba Produto →</span></a></div>
     </div>
 
     <!-- FAQ: answers people ask search engines and AI assistants (also in FAQPage structured data) -->
@@ -5768,12 +5887,16 @@ function changeLang(i){
   toast(STRINGS[i].toastWelcome||"Langue mise à jour");
 }
 
+// Início · A plataforma texts: [fr, en, pt]
+var _PL={"eye": ["La plateforme", "The platform", "A plataforma"], "h": ["Tout ce qui se passe sur le chantier, consigné.", "Everything that happens on site, on record.", "Tudo o que acontece na obra, registrado."], "sub": ["De la photo sur le chantier au rapport signé, avec la bonne norme et tout l'historique.", "From the photo on site to the signed report, with the right standard and the whole history.", "Da foto no canteiro ao RDO assinado, com a norma certa e todo o histórico da obra."], "c1t": ["Capture", "Capture", "Captura"], "c1s": ["Une photo ou une note vocale. En moins d'une minute, l'incident est décrit, avec cause, solution et norme.", "A photo or a voice note. In under a minute, the incident is described, with cause, fix and standard.", "Uma foto ou um áudio. Em menos de um minuto, o incidente está descrito, com causa, solução e norma."], "c1ph": ["08:41 · Bloc B", "08:41 · Block B", "08:41 · Bloco B"], "c1an": ["Analyse", "Analyzing", "Analisando"], "c1i": ["Infiltration dans la dalle", "Leak in the slab", "Infiltração na laje"], "c1sev": ["Haute", "High", "Alta"], "k_cause": ["Cause", "Cause", "Causa"], "c1cause": ["Défaut d'étanchéité du joint de dilatation", "Failed waterproofing at the expansion joint", "Falha na impermeabilização da junta de dilatação"], "k_sol": ["Solution", "Fix", "Solução"], "c1sol": ["Refaire la membrane et tester l'étanchéité pendant 72 h", "Redo the membrane and run a 72 h water test", "Refazer a manta e testar estanqueidade por 72 h"], "k_norm": ["Normes", "Standards", "Normas"], "c1loc": ["Bloc B · 3e étage", "Block B · 3rd floor", "Bloco B · 3º pavimento"], "c1ok": ["enregistré en 47 s", "logged in 47 s", "registrado em 47 s"], "c2t": ["Mémoire", "Memory", "Memória"], "c2s": ["Ce que l'entreprise a déjà résolu, retrouvé en quelques secondes.", "What the company already solved, found in seconds.", "O que a empresa já resolveu, encontrado em segundos."], "c2q": ["fissure dans une poutre", "crack in a beam", "fissura em viga"], "c2hits": ["6 cas sur 3 chantiers", "6 cases across 3 projects", "6 casos em 3 obras"], "c2a": ["Chantier 0118 · Bloc C", "Project 0118 · Block C", "Obra 0118 · Bloco C"], "c2ad": ["Renfort en fibre de carbone. Résolu en 9 jours.", "Carbon-fiber reinforcement. Solved in 9 days.", "Reforço com fibra de carbono. Resolvido em 9 dias."], "c2b": ["Chantier 0131 · Parking", "Project 0131 · Garage", "Obra 0131 · Garagem"], "c2bd": ["Injection d'époxy et suivi pendant 30 jours.", "Epoxy injection and 30 days of monitoring.", "Injeção de epóxi e monitoramento por 30 dias."], "c2n1": ["214 enregistrements", "214 records", "214 registros"], "c2n2": ["38 incidents", "38 incidents", "38 incidentes"], "c2n3": ["12 rapports", "12 reports", "12 RDOs"], "c3t": ["Conformité", "Compliance", "Conformidade"], "c3s": ["Chaque enregistrement garde quand, où et qui. Prêt pour le client, l'inspection ou une expertise.", "Every record keeps when, where and who. Ready for the client, an inspection or expert review.", "Cada registro guarda quando, onde e quem. Pronto para o cliente, a fiscalização ou uma perícia."], "src1": ["Photo", "Photo", "Foto"], "src2": ["Voix", "Voice", "Voz"], "src3": ["GPS", "GPS", "GPS"], "src4": ["Heure", "Time", "Hora"], "src5": ["Signature", "Signature", "Assinatura"], "c3doc": ["Rapport #2418 · 14 oct", "Report #2418 · Oct 14", "RDO #2418 · 14 out"], "c3who": ["Ing. Ana Luiza · Résidence Aurora", "Eng. Ana Luiza · Aurora Residences", "Eng. Ana Luiza · Residencial Aurora"], "c3sig": ["Signé", "Signed", "Assinado"], "ck1": ["Date et heure de chaque photo", "Date and time of every photo", "Data e hora de cada foto"], "ck2": ["Localisation sur le chantier", "Location on site", "Localização no canteiro"], "ck3": ["Responsable identifié", "Person in charge identified", "Responsável identificado"], "ck4": ["Normes référencées", "Standards referenced", "Normas referenciadas"], "more": ["Voir la démo interactive dans Produit →", "See the interactive demo in Product →", "Ver a demo interativa na aba Produto →"]};
+function _plLang(){var L=lang===1?1:lang===0?0:2;document.querySelectorAll("[data-pl]").forEach(function(e){var v=_PL[e.getAttribute("data-pl")];if(v&&e.textContent!==v[L])e.textContent=v[L];});}
 // FAQ on Início: [fr, en, pt]
 var _FAQ=[{"q": ["Qu'est-ce que Pillier ?", "What is Pillier?", "O que é a Pillier?"], "a": ["Pillier est une plateforme de gestion de chantier par intelligence artificielle pour les entreprises du BTP, ingénieurs et architectes. Vous enregistrez photos et notes vocales sur le chantier : Pillier rédige le rapport journalier, documente les incidents avec cause probable, solution et normes applicables, et organise les finances et les documents du chantier.", "Pillier is an AI construction management platform for builders, engineers and architects. You record photos and voice notes on site and Pillier writes the daily report, documents incidents with probable cause, solution and applicable standards, and organizes the project's finances and documents.", "A Pillier é uma plataforma de gestão de obra com inteligência artificial para construtoras, engenheiros e arquitetos no Brasil. Você registra fotos e áudios no canteiro e a Pillier gera o RDO, documenta incidentes com causa provável, solução e normas aplicáveis, e organiza o financeiro e os documentos da obra."]}, {"q": ["Comment faire un rapport journalier numérique avec Pillier ?", "How do I create a digital daily report with Pillier?", "Como fazer um RDO digital com a Pillier?"], "a": ["Depuis votre téléphone, prenez des photos ou enregistrez une note vocale sur le chantier. Pillier assemble le rapport du jour avec les activités, l'équipe, les événements et les photos. Le responsable le relit, le signe dans la plateforme et le partage avec le client.", "From your phone, take photos or record a voice note on site. Pillier assembles the day's report with activities, crew, events and photos. The person in charge reviews it, signs it in the platform and shares it with the client.", "Pelo celular, tire fotos ou grave um áudio no canteiro. A Pillier monta o RDO do dia com atividades, equipe, ocorrências e fotos. O responsável revisa, assina na própria plataforma e compartilha o relatório com o cliente."]}, {"q": ["Un rapport journalier numérique a-t-il une valeur juridique ?", "Is a digital daily report legally valid?", "O RDO digital tem validade jurídica?"], "a": ["Un rapport journalier numérique peut servir de preuve lorsqu'il montre quand, où et par qui chaque enregistrement a été fait. Pillier enregistre la date, l'heure et la localisation de chaque capture, et le responsable peut signer le rapport électroniquement. Si votre contrat exige une signature avec certificat qualifié, vérifiez cette exigence avec le maître d'ouvrage.", "A digital daily report can serve as evidence when it shows when, where and by whom each record was made. Pillier records the date, time and location of every capture, and the person in charge can sign the report electronically. If your contract requires a signature with a qualified digital certificate (ICP-Brasil in Brazil), confirm that requirement with the client.", "O RDO digital pode servir como prova quando mostra quando, onde e por quem cada registro foi feito. A Pillier registra data, hora e localização de cada captura, e o responsável pode assinar o RDO eletronicamente. Se o seu contrato exigir assinatura com certificado digital ICP-Brasil, confirme esse requisito com o contratante."]}, {"q": ["Pillier fonctionne-t-il sur téléphone et sans internet ?", "Does Pillier work on a phone and offline?", "A Pillier funciona no celular e sem internet?"], "a": ["Oui. Pillier fonctionne dans le navigateur du téléphone et peut être installé comme une application. Sur un chantier sans réseau, les captures restent enregistrées et se synchronisent dès que la connexion revient.", "Yes. Pillier runs in your phone's browser and can be installed as an app. On a site with no signal, captures are saved and sync as soon as the connection returns.", "Sim. A Pillier funciona no navegador do celular e pode ser instalada como aplicativo. No canteiro sem sinal, as capturas ficam salvas e são sincronizadas quando a conexão volta."]}, {"q": ["Quelles normes techniques Pillier prend-il en compte ?", "Which technical standards does Pillier cover?", "Quais normas técnicas a Pillier considera?"], "a": ["Au Brésil, les normes ABNT NBR (par exemple la NBR 6118) et les normes réglementaires comme la NR-18 et la NR-35 ; en France, les DTU, les NF et les Eurocodes. Pillier suggère les normes probablement applicables à chaque incident, à vérifier par l'ingénieur.", "In Brazil, ABNT NBR standards (for example NBR 6118) and regulatory standards such as NR-18 and NR-35; in France, DTU, NF and Eurocodes. Pillier suggests the standards likely to apply to each incident for the engineer to verify.", "Normas brasileiras ABNT NBR (por exemplo a NBR 6118) e normas regulamentadoras como a NR-18 e a NR-35, além de DTU, NF e Eurocódigos para obras na França. A Pillier sugere as normas provavelmente aplicáveis a cada incidente para o engenheiro verificar."]}, {"q": ["Combien coûte Pillier ?", "How much does Pillier cost?", "Quanto custa a Pillier?"], "a": ["Les offres commencent avec Starter, puis Pro et Team ; Enterprise est sur devis. Les prix s'affichent dans votre devise sur la page Offres, et vous pouvez essayer gratuitement avant de vous abonner.", "Plans start with Starter, followed by Pro and Team; Enterprise is priced on request. Prices are shown in your currency on the Plans page, and you can try Pillier for free before subscribing.", "Os planos começam em R$ 299 por mês (Starter). O Pro custa R$ 499/mês, o Team R$ 999/mês e o Enterprise tem preço sob consulta. Você pode testar grátis antes de assinar."]}, {"q": ["À qui s'adresse Pillier ?", "Who is Pillier for?", "Para quem é a Pillier?"], "a": ["Aux ingénieurs et architectes indépendants, aux petites et moyennes entreprises du BTP, aux entreprises générales et aux grands groupes de construction, d'infrastructure et de promotion immobilière qui veulent documenter le chantier et retrouver une réponse en quelques secondes.", "Independent engineers and architects, small and mid-size builders, general contractors and large construction, infrastructure and real estate companies that want to document the site and find answers in seconds.", "Para engenheiros e arquitetos autônomos, pequenas e médias construtoras, empreiteiras e grandes empresas de construção, infraestrutura e incorporação que querem registrar a obra e encontrar respostas em segundos."]}];
 function _faqLang(){var L=lang===1?1:lang===0?0:2,t=document.getElementById("faq-title");if(t)t.textContent=["Questions fréquentes","Frequently asked questions","Perguntas frequentes"][L];
   _FAQ.forEach(function(f,i){var q=document.getElementById("faq-q"+(i+1)),a=document.getElementById("faq-a"+(i+1));if(q)q.textContent=f.q[L];if(a)a.textContent=f.a[L];});}
 function applyLang(){
   try{_faqLang();}catch(e){}
+  try{_plLang();}catch(e){}
   translateNav();
   syncLangSelects();
   // Re-localize the marketing URL to the new language (e.g. /recursos → /resources)
@@ -14933,7 +15056,7 @@ function cloudSiteName(proj){
 (function(){
   var root=document.documentElement;if(!root.classList.contains("flow"))return;
   if(!("IntersectionObserver" in window)){root.classList.remove("flow");return;}
-  var GROUPS=".about-hero-grid,.mk-strip,.mk-vp,.mk-stats,#about-tagline,.mk-cta,.content-panel>.mk-section:first-child,.mk-head,.mk-agents,.mk-flow,#content-panel-2>.mk-section:nth-child(2),.mk-plans,.rs-head,.rs-sec,.rs-row,.rs-grid,.mk-faq";
+  var GROUPS=".about-hero-grid,.mk-strip,.mk-vp,.mk-stats,#about-tagline,.mk-cta,.content-panel>.mk-section:first-child,.mk-head,.mk-agents,.mk-flow,#content-panel-2>.mk-section:nth-child(2),.mk-plans,.rs-head,.rs-sec,.rs-row,.rs-grid,.mk-faq,.plt-grid,.plt-head";
   // Headline words, staggered (re-split when the language switch rewrites the text)
   ["about-headline","sol-title","plan-title"].forEach(function(id){var h=document.getElementById(id);if(!h)return;
     function split(){if(h.querySelector(".fl-w"))return;var words=h.textContent.trim().split(/\s+/);
