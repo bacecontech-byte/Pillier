@@ -118,11 +118,9 @@ async function handleLlms(req, res) {
   L.push('Engenheiros e arquitetos autônomos, pequenas e médias construtoras, empreiteiras, empresas de infraestrutura e incorporadoras.');
   L.push('');
   L.push('## Planos');
-  L.push('- Starter: R$ 299/mês (1 projeto ativo, captura por foto e voz, Pillier IA, dashboard)');
-  L.push('- Pro: R$ 499/mês (projetos ilimitados, análise de PDF, detecção de padrões)');
-  L.push('- Team: R$ 999/mês (até 15 membros, colaboração em tempo real)');
-  L.push('- Enterprise: sob consulta (SSO, integrações ERP/BIM, SLA)');
-  L.push('- Teste grátis disponível: ' + base + '/planos');
+  L.push('- Profissional: R$ 399/mês, até 5 membros: projetos ilimitados, captura por foto e voz, RDO digital, Pillier IA, financeiro, base de conhecimento, colaboração em tempo real');
+  L.push('- Enterprise: equipes com mais de 5 membros, preço sob consulta (SSO, integrações ERP/BIM, SLA)');
+  L.push('- Teste grátis, sem cartão de crédito: ' + base + '/planos');
   L.push('');
   L.push('## Páginas');
   L.push('- [Início](' + base + '/): visão geral');
