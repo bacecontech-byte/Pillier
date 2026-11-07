@@ -3703,6 +3703,7 @@ function applyStoredPlan(){try{var sp=localStorage.getItem('pillier_plan');if(sp
 var _DAY_MS=86400000, _TRIAL_DAYS=30;
 function _t3b(en,fr,pt){return (typeof lang!=='undefined'&&lang===1)?en:(typeof lang!=='undefined'&&lang===0)?fr:pt;}
 function _trialEnd(){try{var v=localStorage.getItem('pillier_trial_end');return v?parseInt(v,10):0;}catch(e){return 0;}}
+function _trialUsed(){try{return localStorage.getItem('pillier_trial_used')==='1';}catch(e){return false;}}
 function _isPaid(){try{return localStorage.getItem('pillier_paid')==='1';}catch(e){return false;}}
 function _isTrialing(){return _pUsage.plan!=='free' && _trialEnd()>0 && !_isPaid();}
 function _trialDaysLeft(){var e=_trialEnd();return e?Math.max(0,Math.ceil((e-Date.now())/_DAY_MS)):0;}
@@ -3711,9 +3712,15 @@ function _persistPlan(planKey){try{if(typeof dbOk!=='undefined'&&dbOk&&me&&me.em
 // Start a 30-day trial of a paid plan (no charge yet)
 function startTrial(planKey){
   if(!PILLIER_PLANS[planKey]||planKey==='free'||planKey==='enterprise')return;
-  // Card-upfront trial: collect payment details via Stripe Checkout before
-  // the trial activates. No charge today; the trial is activated on return.
-  startCheckout(planKey,true);
+  // Trial without payment details for now (no Stripe step): the 30-day trial
+  // starts right away; at the end, checkTrialExpiry() moves the account back to Free.
+  if(_isTrialing()||_isPaid())return;
+  // One trial per account on this device: once used, the button leads to the paid plan instead.
+  if(_trialUsed()){startCheckout(planKey,false);return;}
+  _pUsage.plan=planKey;
+  try{localStorage.setItem('pillier_trial_used','1');localStorage.setItem('pillier_plan',planKey);localStorage.setItem('pillier_trial_end',String(Date.now()+_TRIAL_DAYS*_DAY_MS));localStorage.removeItem('pillier_paid');}catch(e){}
+  _persistPlan(planKey);_reflectPlan();
+  try{toast(_t3b('Your 30-day free trial has started','Votre essai gratuit de 30 jours a commencé','Seu teste grátis de 30 dias começou'));}catch(e){}
 }
 // Downgrade to Free (end trial / cancel)
 function downgradeFree(){
@@ -14389,7 +14396,7 @@ function renderBilling(){
     } else {
       if(k==="enterprise"){
         actions="<button onclick=\"contactSales()\" style='"+pbtn+"'>"+_t3b("Contact us","Nous contacter","Fale conosco")+"</button>";
-      } else if(cur==="free"){
+      } else if(cur==="free"&&!_trialUsed()){
         actions="<button onclick=\"startTrial('"+k+"')\" style='"+pbtn+"'>"+_t3b("Start 30-day trial","Essai 30 jours","Testar 30 dias")+"</button>";
       } else {
         actions="<button onclick=\"startCheckout('"+k+"')\" style='"+pbtn+"'>"+_t3b("Choose","Choisir","Escolher")+"</button>";
