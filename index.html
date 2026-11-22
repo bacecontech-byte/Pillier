@@ -801,6 +801,7 @@ body.light-mode .plt-tile{background:#ffffff;box-shadow:0 1px 0 rgba(0,0,0,.03);
 @media(max-width:620px){.plt-tile{padding:26px 18px 18px;border-radius:24px;}.plt-win{padding:14px;}.plt-cap{grid-template-columns:1fr;gap:12px;}.plt-photo{aspect-ratio:16/9;}.plt-mid{flex-direction:row;}.plt-ln{flex:1;}}
 /* Phones: 16px fields on the public pages so the browser does not zoom into them on focus */
 @media(max-width:768px){#s-content input,#s-content textarea,#s-content select,#s-login input,#s-login textarea,#s-login select{font-size:16px !important;}}
+.inc-modal-btn i{font-size:14px;vertical-align:-2px;margin-right:2px;}
 .mk-faq{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:10px;}
 .mk-faq-i{background:var(--navy2);border:1px solid var(--border);border-radius:14px;padding:0 20px;}
 .mk-faq-i summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;font-family:var(--font-d);font-weight:700;font-size:16px;line-height:1.35;color:var(--white);}
@@ -7613,8 +7614,8 @@ function openIncModal(id){
   }
   // Labels in current language
   document.getElementById("imd-lbl-desc").textContent=S.lblDesc||"Description";
-  document.getElementById("imd-lbl-cause").textContent=S.lblCause||"Cause probable";
-  document.getElementById("imd-lbl-action").textContent=S.lblSolution||"Solution recommandée";
+  document.getElementById("imd-lbl-cause").textContent=plL("Cause probable","Probable cause","Causa provável");
+  document.getElementById("imd-lbl-action").textContent=plL("Solution recommandée","Recommended solution","Solução recomendada");
   document.getElementById("imd-lbl-norms").textContent=normsLabel();
   document.getElementById("imd-lbl-edit").textContent=S.btnEdit||"Modifier";
   document.getElementById("imd-lbl-resolve").textContent=e.status==="resolved"?(S.btnReopen||"Réouvrir"):(S.btnResolve||"Résoudre");
@@ -14515,9 +14516,9 @@ function cloudSiteName(proj){
       </div>
     </div>
     <div class="inc-modal-footer">
-      <button class="inc-modal-btn imb-edit" id="imd-btn-edit" onclick="closeIncModal();editEntry(window._incModalId)">✏️ <span id="imd-lbl-edit">Modifier</span></button>
-      <button class="inc-modal-btn imb-resolve" id="imd-btn-resolve" onclick="resolveEntry(window._incModalId);closeIncModal()">✅ <span id="imd-lbl-resolve">Résoudre</span></button>
-      <button class="inc-modal-btn imb-delete" id="imd-btn-delete" onclick="closeIncModal();deleteEntry(window._incModalId)">🗑 <span id="imd-lbl-delete">Supprimer</span></button>
+      <button class="inc-modal-btn imb-edit" id="imd-btn-edit" onclick="closeIncModal();editEntry(window._incModalId)"><i class="ti ti-pencil" aria-hidden="true"></i> <span id="imd-lbl-edit">Modifier</span></button>
+      <button class="inc-modal-btn imb-resolve" id="imd-btn-resolve" onclick="resolveEntry(window._incModalId);closeIncModal()"><i class="ti ti-circle-check" aria-hidden="true"></i> <span id="imd-lbl-resolve">Résoudre</span></button>
+      <button class="inc-modal-btn imb-delete" id="imd-btn-delete" onclick="closeIncModal();deleteEntry(window._incModalId)"><i class="ti ti-trash" aria-hidden="true"></i> <span id="imd-lbl-delete">Supprimer</span></button>
     </div>
   </div>
 </div>
