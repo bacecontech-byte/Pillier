@@ -9499,6 +9499,10 @@ function siteJurisdiction(projName){
     var p=(projects||[]).filter(function(x){return x.name===projName;})[0];
     var loc=((p&&p.location)||"").toLowerCase();
     if(/bras|brazil|br[ée]sil|brasil/.test(loc))return "BR";
+    // Brazilian sites are usually saved as "City, UF" or "City - UF" without the country.
+    // UF codes shared with US states or Spain (AL, MA, MT, MS, PA, SC, ES) are left to the city list.
+    if(/(,|\s-)\s*(ac|ap|am|ba|ce|df|go|mg|pb|pr|pe|pi|rj|rn|rs|ro|rr|sp|se|to)\b/.test(loc))return "BR";
+    if(/s[ãa]o paulo|rio de janeiro|belo horizonte|bras[íi]lia|curitiba|porto alegre|salvador|recife|fortaleza|manaus|bel[ée]m|goi[âa]nia|florian[óo]polis|campinas|santos|vit[óo]ria|natal|macei[óo]|jo[ãa]o pessoa|teresina|cuiab[áa]|campo grande|aracaju|s[ãa]o lu[íi]s/.test(loc))return "BR";
     if(/fran|france|paris|lyon|marseille|toulouse|nantes|bordeaux|lille/.test(loc))return "FR";
     if(/portug|lisbo|porto|espan|spain|deutsch|german|allemagne|itali|belg|nederl|europe/.test(loc))return "EU";
   }catch(e){}
@@ -10178,7 +10182,8 @@ async function handlePhoto(input){
       document.getElementById("ai-p-normes").textContent=p.normes||"NA";
       var _npl=document.getElementById("lbl-normes");if(_npl)_npl.textContent=normsLabel();
       if(p.title)document.getElementById("c-title").value=cleanTitle(p.title);
-      if(p.sev)document.getElementById("c-sev").value=p.sev;
+      // AI may answer "high", "alta", "élevé"…: map to the select's values and move the slider too
+      if(p.sev){var _sv=String(p.sev).toLowerCase(),_se=document.getElementById("c-sev");if(_se){_se.value=/crit/.test(_sv)?"critical":/elev|élev|high|alt/.test(_sv)?"high":/moy|med|méd/.test(_sv)?"medium":"low";try{syncSevSlider();}catch(_e){}}}
       // Pre-select the AI category: it decides which folder the capture is filed in
       // (the user can still change the chip before saving).
       if(p.cat){var _ce=document.getElementById("c-cat");if(_ce){_ce.value=canonCat(p.cat);try{syncCatChips();}catch(_e){}}}
