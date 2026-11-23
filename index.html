@@ -730,6 +730,40 @@ body.light-mode .pg-win{box-shadow:0 24px 60px rgba(16,34,43,0.10);}
 .mk-quote{max-width:820px;margin:0 auto;text-align:center;}
 .mk-quote blockquote{font-family:var(--font-d);font-size:clamp(20px,2.8vw,27px);font-weight:600;color:var(--white);line-height:1.4;margin:0;}
 .mk-quote .by{margin-top:22px;display:flex;align-items:center;justify-content:center;gap:12px;font-size:14px;color:var(--text2);}
+/* Início hero video (hv-) */
+.hv-media{position:relative;min-width:0;display:flex;flex-direction:column;align-items:flex-end;padding:0;}
+.hv-glow{position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);width:min(640px,95%);aspect-ratio:1;background:radial-gradient(circle,rgba(44,190,255,0.14) 0%,rgba(44,190,255,0.05) 38%,transparent 70%);pointer-events:none;z-index:0;}
+.hv-frame{position:relative;z-index:1;width:100%;max-width:660px;aspect-ratio:16/9;border-radius:16px;border:1px solid var(--border2);box-shadow:0 24px 60px rgba(0,0,0,0.28);overflow:hidden;background:#0c1b22;}
+.hv-frame video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
+.hv-play{position:absolute;right:14px;bottom:14px;display:flex;align-items:center;gap:8px;background:rgba(10,24,30,0.78);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:#fff;border:1px solid rgba(255,255,255,0.18);border-radius:999px;padding:8px 14px 8px 8px;font-family:var(--font-b);font-size:13px;font-weight:600;cursor:pointer;transition:background .2s,border-color .2s;}
+.hv-play:hover{background:rgba(10,24,30,0.92);border-color:#2cbeff;}
+.hv-dot{width:26px;height:26px;border-radius:50%;background:#2cbeff;display:grid;place-items:center;font-size:13px;}
+.hv-chaps{position:relative;z-index:1;width:100%;max-width:660px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px;}
+.hv-chap{background:none;border:0;padding:0;text-align:left;cursor:pointer;color:var(--text3);min-width:0;font-family:var(--font-b);}
+.hv-track{display:block;height:3px;border-radius:2px;background:rgba(255,255,255,0.08);overflow:hidden;margin-bottom:9px;}
+body.light-mode .hv-track{background:rgba(0,0,0,0.08);}
+.hv-fill{display:block;height:100%;width:0;background:#2cbeff;}
+.hv-lab{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;transition:color .2s;}
+.hv-lab i{font-size:15px;flex-shrink:0;}
+.hv-d{display:block;font-size:11.5px;line-height:1.35;margin-top:3px;color:var(--text3);}
+.hv-chap.on .hv-lab,.hv-chap:hover .hv-lab{color:var(--white);}
+.hv-chap.on .hv-lab i{color:#2cbeff;}
+.hv-chap:focus-visible,.hv-play:focus-visible,.hv-x:focus-visible{outline:2px solid #2cbeff;outline-offset:2px;}
+.hv-lb{position:fixed;inset:0;z-index:10050;background:rgba(4,12,16,0.86);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:none;place-items:center;padding:16px;}
+.hv-lb.open{display:grid;}
+.hv-lb-box{position:relative;width:min(1100px,100%);}
+.hv-lb video{width:100%;aspect-ratio:16/9;border-radius:14px;background:#000;display:block;box-shadow:0 30px 80px rgba(0,0,0,0.5);}
+.hv-x{position:absolute;top:-44px;right:0;background:none;border:1px solid rgba(255,255,255,0.18);color:#fff;border-radius:999px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer;font-size:16px;}
+.hv-cta{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;margin-top:16px;font-size:13px;color:#8a8a95;font-family:var(--font-b);}
+.hv-cta a{background:#2cbeff;color:#fff;border-radius:999px;padding:9px 18px;font-weight:600;text-decoration:none;}
+@media(max-width:768px){
+  .hv-media{align-items:stretch;}
+  .hv-chaps{gap:6px;}
+  .hv-d,.hv-lab i{display:none;}
+  .hv-lab{font-size:11.5px;}
+  .hv-play{right:10px;bottom:10px;font-size:12px;padding:6px 12px 6px 6px;}
+  .hv-dot{width:22px;height:22px;font-size:11px;}
+}
 /* Início · A plataforma (Captura, Memória, Conformidade): depth by shades, Pillier blue only as light */
 :root{--pl-win:#0a161b;--pl-chip:#0f2028;--pl-line:rgba(255,255,255,.08);--pl-glow:rgba(44,190,255,.24);--pl-glow2:rgba(44,190,255,.06);--pl-path:rgba(255,255,255,.26);--pl-ok:#4ade80;--pl-okbg:rgba(74,222,128,.12);--pl-okline:rgba(74,222,128,.35);--pl-bad:#f87171;--pl-badbg:rgba(248,113,113,.13);--pl-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;}
 body.light-mode{--pl-win:#f3f8fa;--pl-chip:#ffffff;--pl-line:rgba(0,0,0,.08);--pl-glow:rgba(44,190,255,.16);--pl-glow2:rgba(44,190,255,.04);--pl-path:rgba(0,0,0,.2);--pl-ok:#138a43;--pl-okbg:rgba(19,138,67,.09);--pl-okline:rgba(19,138,67,.28);--pl-bad:#c62828;--pl-badbg:rgba(198,40,40,.08);}
@@ -2762,11 +2796,21 @@ body.light-mode #ts-modal .ts-card{background:#fff;color:#10222b;border-color:rg
           <button onclick="askBaceFromAbout()" style="display:flex;align-items:center;gap:6px;background:#2cbeff;color:#fff;border:none;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-b);flex-shrink:0;" id="about-ask-btn">Ask Pillier <span style="font-size:15px;">↑</span></button>
         </div>
       </div>
-      <!-- Right: digital-twin showcase -->
-      <div style="display:flex;align-items:center;justify-content:flex-end;padding:0;position:relative;overflow:hidden;">
-        <div aria-hidden="true" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:min(640px,95%);aspect-ratio:1;background:radial-gradient(circle,rgba(44,190,255,0.14) 0%,rgba(44,190,255,0.05) 38%,transparent 70%);pointer-events:none;z-index:0;"></div>
-        <img src="/assets/hero-twin.jpg" alt="Pillier AI — gêmeo digital da obra: relatório diário gerado por IA, base de conhecimento indexada e monitoramento da contenção em tempo real" loading="lazy" style="width:100%;max-width:660px;height:auto;border-radius:16px;border:1px solid var(--border2);box-shadow:0 24px 60px rgba(0,0,0,0.28);position:relative;z-index:1;display:block;">
+      <!-- Right: 30 s product video. Silent loop in the hero, four steps under it, full 1080p video in a lightbox. -->
+      <div class="hv-media">
+        <div class="hv-glow" aria-hidden="true"></div>
+        <div class="hv-frame">
+          <video id="hv-loop" muted playsinline loop preload="none" poster="/assets/hero-video-pt.jpg" aria-label="Pillier em 30 segundos: foto da obra, diagnóstico da IA, casos parecidos e gestão da obra"></video>
+          <button type="button" class="hv-play" id="hv-play" onclick="hvOpen(0)"><span class="hv-dot"><svg width="12" height="12" viewBox="0 0 24 24" fill="#fff" aria-hidden="true" style="margin-left:2px"><path d="M7 4v16l13-8z"/></svg></span><span id="hv-play-t">Ver em 30 s</span></button>
+        </div>
+        <div class="hv-chaps" id="hv-chaps">
+          <button type="button" class="hv-chap" data-i="0" onclick="hvOpen(1.6)"><span class="hv-track"><span class="hv-fill"></span></span><span class="hv-lab"><i class="ti ti-camera"></i><span id="hv-c0">Capturar</span></span><span class="hv-d" id="hv-d0">Foto ou voz no canteiro</span></button>
+          <button type="button" class="hv-chap" data-i="1" onclick="hvOpen(4)"><span class="hv-track"><span class="hv-fill"></span></span><span class="hv-lab"><i class="ti ti-sparkles"></i><span id="hv-c1">Analisar</span></span><span class="hv-d" id="hv-d1">A IA aponta causa e ação</span></button>
+          <button type="button" class="hv-chap" data-i="2" onclick="hvOpen(8)"><span class="hv-track"><span class="hv-fill"></span></span><span class="hv-lab"><i class="ti ti-search"></i><span id="hv-c2">Encontrar</span></span><span class="hv-d" id="hv-d2">Casos parecidos das suas obras</span></button>
+          <button type="button" class="hv-chap" data-i="3" onclick="hvOpen(15)"><span class="hv-track"><span class="hv-fill"></span></span><span class="hv-lab"><i class="ti ti-layout-dashboard"></i><span id="hv-c3">Gerenciar</span></span><span class="hv-d" id="hv-d3">Custos, documentos e RDO</span></button>
+        </div>
       </div>
+    </div>
     </div>
 
     <!-- Standards / compliance strip -->
@@ -14211,6 +14255,7 @@ function renderPlans(){
 }
 // Trilingual copy for the redesigned marketing sections (new ids only).
 function translateMarketingExtras(){
+  try{if(typeof hvApply==="function")hvApply();}catch(e){}
   var setT=function(id,v){var el=document.getElementById(id);if(el!=null)el.textContent=v;};
   var L=function(en,fr,pt){return _t3b(en,fr,pt);};
   // --- Home ---
@@ -15004,6 +15049,92 @@ function cloudSiteName(proj){
   var OPEN="width=device-width, initial-scale=1.0",LOCK="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
   function sync(){var v=app.classList.contains("active")?LOCK:OPEN;if(vp.getAttribute("content")!==v)vp.setAttribute("content",v);}
   sync();if(window.MutationObserver)new MutationObserver(sync).observe(app,{attributes:true,attributeFilter:["class"]});
+})();
+</script>
+<!-- Início hero video lightbox -->
+<div class="hv-lb" id="hv-lb" role="dialog" aria-modal="true" aria-label="Pillier" onclick="if(event.target===this)hvClose()">
+  <div class="hv-lb-box">
+    <button type="button" class="hv-x" id="hv-x" onclick="hvClose()" aria-label="Fechar"><i class="ti ti-x"></i></button>
+    <video id="hv-full" controls playsinline preload="none"></video>
+    <div class="hv-cta"><span id="hv-cta-t">Grátis por 30 dias, sem cartão.</span><a href="#" id="hv-cta-b" onclick="hvClose();showAuthPage();return false;">Começar grátis</a></div>
+  </div>
+</div>
+<script>
+// Início hero video: the silent 720p loop starts after the page has loaded (never on data saver or reduced motion),
+// plays only while visible, and its four steps follow the loop. The 1080p video loads only when opened.
+(function(){
+  var LOOP=[0,2.4,6.4,13.4], started=false, visible=false;
+  function vid(){return (typeof lang!=="undefined"&&lang===2)?"pt":"en";}
+  function canMove(){
+    try{var c=navigator.connection;if(c&&c.saveData)return false;}catch(e){}
+    try{if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)return false;}catch(e){}
+    return true;
+  }
+  function loopEl(){return document.getElementById("hv-loop");}
+  function play(){var v=loopEl();if(!v||!started||!visible)return;if(document.getElementById("hv-lb").classList.contains("open"))return;var p=v.play();if(p&&p.catch)p.catch(function(){});}
+  function setSrc(){
+    var v=loopEl();if(!v)return;var k=vid();
+    if(v.dataset.v===k)return;v.dataset.v=k;
+    v.poster="/assets/hero-video-"+k+".jpg";
+    if(started){v.src="/videos/pillier-hero-loop-"+k+".mp4";play();}
+    var f=document.getElementById("hv-full");if(f){f.pause();f.removeAttribute("src");f.load();}
+  }
+  function start(){
+    if(started||!canMove())return;var v=loopEl();if(!v)return;
+    started=true;v.preload="auto";v.src="/videos/pillier-hero-loop-"+(v.dataset.v||vid())+".mp4";play();
+  }
+  window.hvApply=function(){
+    var L=function(en,fr,pt){return _t3b(en,fr,pt);},set=function(id,t){var e=document.getElementById(id);if(e)e.textContent=t;};
+    set("hv-play-t",L("Watch in 30 s","Voir en 30 s","Ver em 30 s"));
+    var c=[[["Capture","Capturer","Capturar"],["Photo or voice on site","Photo ou voix sur le chantier","Foto ou voz no canteiro"]],
+           [["Analyze","Analyser","Analisar"],["AI finds cause and action","L’IA donne cause et action","A IA aponta causa e ação"]],
+           [["Find","Retrouver","Encontrar"],["Similar cases from your sites","Cas similaires de vos chantiers","Casos parecidos das suas obras"]],
+           [["Manage","Piloter","Gerenciar"],["Costs, documents, daily report","Coûts, documents, journal","Custos, documentos e RDO"]]];
+    c.forEach(function(x,i){set("hv-c"+i,L(x[0][0],x[0][1],x[0][2]));set("hv-d"+i,L(x[1][0],x[1][1],x[1][2]));});
+    set("hv-cta-t",L("Free for 30 days, no card.","Gratuit 30 jours, sans carte.","Grátis por 30 dias, sem cartão."));
+    set("hv-cta-b",L("Start free","Commencer gratuitement","Começar grátis"));
+    var x=document.getElementById("hv-x");if(x)x.setAttribute("aria-label",L("Close","Fermer","Fechar"));
+    var v=loopEl();if(v)v.setAttribute("aria-label",L("Pillier in 30 seconds: site photo, AI diagnosis, similar past cases and site management","Pillier en 30 secondes : photo du chantier, diagnostic IA, cas similaires et pilotage du chantier","Pillier em 30 segundos: foto da obra, diagnóstico da IA, casos parecidos e gestão da obra"));
+    setSrc();
+  };
+  window.hvOpen=function(at){
+    var lb=document.getElementById("hv-lb"),f=document.getElementById("hv-full");if(!lb||!f)return;
+    if(!f.getAttribute("src"))f.src="/videos/pillier-30s-"+vid()+".mp4";
+    lb.classList.add("open");var v=loopEl();if(v)v.pause();
+    // preload="none" never fetches until play() runs, so start playback inside the click and seek once metadata is in
+    var seek=function(){try{f.currentTime=at||0;}catch(e){}};
+    f.preload="auto";
+    if(f.readyState>=1)seek();else f.addEventListener("loadedmetadata",seek,{once:true});
+    var p=f.play();if(p&&p.catch)p.catch(function(){});
+    var x=document.getElementById("hv-x");if(x)x.focus();
+  };
+  window.hvClose=function(){
+    var lb=document.getElementById("hv-lb"),f=document.getElementById("hv-full");if(!lb||!lb.classList.contains("open"))return;
+    if(f)f.pause();lb.classList.remove("open");play();var p=document.getElementById("hv-play");if(p)p.focus();
+  };
+  document.addEventListener("keydown",function(e){if(e.key==="Escape")hvClose();});
+  // the four steps follow the loop
+  function tick(){
+    var v=loopEl();
+    if(v&&started&&visible&&!v.paused){
+      var tm=v.currentTime||0,i=0,k;for(k=0;k<LOOP.length;k++)if(tm>=LOOP[k])i=k;
+      var end=i<LOOP.length-1?LOOP[i+1]:(v.duration||22.9),f=Math.max(0,Math.min(1,(tm-LOOP[i])/(end-LOOP[i])));
+      var ch=document.querySelectorAll("#hv-chaps .hv-chap");
+      for(k=0;k<ch.length;k++){ch[k].classList.toggle("on",k===i);ch[k].querySelector(".hv-fill").style.width=(k<i?100:k===i?f*100:0)+"%";}
+    }
+    requestAnimationFrame(tick);
+  }
+  function init(){
+    var v=loopEl();if(!v)return;
+    if(!v.dataset.v)v.dataset.v=vid();
+    if("IntersectionObserver" in window){
+      new IntersectionObserver(function(es){visible=es[0].isIntersecting;if(visible)play();else v.pause();},{threshold:0.25}).observe(v);
+    }else visible=true;
+    var go=function(){setTimeout(start,600);};
+    if(document.readyState==="complete")go();else window.addEventListener("load",go,{once:true});
+    requestAnimationFrame(tick);
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 })();
 </script>
 </body>

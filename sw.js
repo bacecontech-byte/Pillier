@@ -26,7 +26,9 @@ function isBypass(url) {
   return /supabase/.test(url.hostname)
       || url.pathname.indexOf('/api/') === 0
       || /generativelanguage\.googleapis\.com$/.test(url.hostname)
-      || /(^|\.)groq\.com$/.test(url.hostname);
+      || /(^|\.)groq\.com$/.test(url.hostname)
+      // Videos use Range requests; a cached full response breaks seeking (Safari)
+      || /\.(mp4|webm|mov)$/i.test(url.pathname);
 }
 
 self.addEventListener('install', function (e) {
